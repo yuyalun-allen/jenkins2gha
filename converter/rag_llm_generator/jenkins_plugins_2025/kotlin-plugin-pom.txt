@@ -1,0 +1,22 @@
+# kotlin-plugin-pom
+Parent POM for Kotlin based Jenkins Plugins
+
+## Usage
+
+In order to use the new POM:
+* Change the parent POM of your plugin:
+```xml
+  <parent>
+    <groupId>org.jenkins-ci.plugins</groupId>
+    <artifactId>kotlin-plugin</artifactId>
+    <version>1.0</version> <!-- or whatever the newest version available is -->
+    <relativePath />
+  </parent>
+```
+* Override the needed properties, e.g.:
+```xml
+  <properties>
+    <jenkins.version>2.89.4</jenkins.version>
+    <java.level>8</java.level>
+  </properties>
+```

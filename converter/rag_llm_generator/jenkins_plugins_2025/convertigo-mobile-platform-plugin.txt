@@ -1,0 +1,11 @@
+# convertigo-mobile-platform-plugin
+Convertigo mobile platform plugin is able to integrate Convertigo Mobility Platform projects in a
+Continuous Integration process. The plugin can build, deploy and test Convertigo
+Mobility platform projects and generate JUnit format XML test reports to be handled
+by Jenkins.
+
+Projects can pulled out from SCM and automatically built by this plugin.
+The plugin also enables testing by calling Convertigo's test cases and checking the results.
+
+See documentation in http://www.convertigo.com/jenkins-plugin/
+

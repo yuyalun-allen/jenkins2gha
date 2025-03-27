@@ -1,0 +1,36 @@
+# Jenkins Groovy Axis Plugin
+
+## Description
+
+This plugin allows to have scriptable axes for Matrix Jobs. Groovy is the scripting language being used.
+
+The script will have to return a list of strings and each of the strings will be an element of the axis.
+
+If the script does not return a list of strings then [default] will be returned instead.
+
+## Examples:
+
+Define an axis with three values:
+
+	return [ "Axis1", "Axis2", "Axis3" ]
+	
+Define the same axis programmatically:
+
+	def result = []
+	(1..3).each {
+	   result += "Axis"+it
+	}
+	return result
+
+Define an axis whose values are the files in the root directory:
+
+	def dir = new File('/')
+	def result = []
+	dir.eachFile { 
+	    if (it.isFile()) {
+	        result += it.canonicalPath
+	    }
+	}
+
+	return result
+	

@@ -1,0 +1,20 @@
+# LOGBack appender for NATS Topic
+
+Provides the ability to send logs to [LOGBack](https://logback.qos.ch/) and off-load to an external
+[NATS](https://nats.io/) pub/sub topic.
+
+## How to use it
+
+This is a pure library plugin which includes the following dependencies:
+
+- [LOGBack](https://search.maven.org/#artifactdetails%7Cch.qos.logback%7Clogback-classic%7C1.2.3%7Cjar) classic
+- [LOGBack nats appender](https://search.maven.org/#artifactdetails%7Ccom.gerritforge%7Clogback-nats-appender%7C0.2.2%7Cjar)
+- [NATS Java Client](https://search.maven.org/#artifactdetails%7Cio.nats%7Cjnats%7C1.0%7Cbundle)
+
+It does not provide any end-user functionality but it is designed
+to be used as dependency from other plugins that are willing to post
+events through LOGBack.
+
+See below an sample list of plugins that are providing events to LOGBack:
+
+- [Statistics Gatherer](https://plugins.jenkins.io/statistics-gatherer)

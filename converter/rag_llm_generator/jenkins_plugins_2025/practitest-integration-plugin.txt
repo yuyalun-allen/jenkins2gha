@@ -1,0 +1,55 @@
+  # PractiTest Jenkins plugin
+
+Create Test Runs in PractiTest with results from Jenkins builds.
+
+## Plugin Installation from .hpi file
+
+In jenkins web UI:
+1. Click on  _Manage Jenkins_ in the left menu
+2. Select _Manage Plugins_
+3. Go to _Advanced_ tab
+4. Scroll to _Upload Plugin_
+5. Click the _Browse..._ button
+6. Select the practitest.hpi file
+7. Click _Upload_
+
+## Plugin configuration
+
+In jenkins web UI:
+1. Click on  _Manage Jenkins_ in the left menu
+2. Click on _Configure System_
+3. Scroll down to _PractiTest Plugin Settings_
+4. Paste your API Token
+
+## Configure Jenkins project to create runs in PractiTest
+
+If you don't have existing projects create one by slecting _New Item_ in the left menu. Click on the project you want to connect to PractiTest and follow these steps:
+
+1. Click _Configure_ in the left menu
+2. Scroll down to _Post-build Actions_
+3. Click on _Add post-build action_ and select PractiTest
+4. Paste instance URL from PractiTest (e.g. https://prod.practitest.com/p/1/sets/5/instances/59/edit)
+5. Click _Save_
+
+## Development
+
+Run in console
+`mvn hpi:run -Pjenkins`
+
+And access : http://127.0.0.1:8080/jenkins/
+
+## Release
+Run in console
+`mvn hpi:hpi`
+The practitest.hip file should be in target/ directory.
+
+## Running jenkins in docker
+
+To run jenkins in docker execute:
+```
+docker pull jenkinsci/jenkins:lts
+docker run -p 8080:8080 -p 50000:50000 jenkinsci/jenkins:lts
+```
+
+If you are running with docker-machine
+access jenkins through docker machine ip (to find out run `echo $DOCKER_HOST`) otherwise just access http://localhost:8080 in your browser.

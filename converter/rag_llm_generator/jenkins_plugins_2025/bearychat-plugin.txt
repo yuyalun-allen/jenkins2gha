@@ -1,0 +1,5 @@
+Deprecated: BearyChat plugin for Jenkins
+========================================
+
+Since https://bearychat.com has closed in last few years,
+this plugin has been removed from the Jenkins Update Center.

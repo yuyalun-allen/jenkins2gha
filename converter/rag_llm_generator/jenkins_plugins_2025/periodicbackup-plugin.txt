@@ -1,0 +1,137 @@
+# Periodic Backup extension implementation tutorial
+
+This tutorial was written to show how to implement an extension points to the Periodic Backup plugin.
+### Extension points
+
+The Periodic Backup plugin provides three extension points to allow developers to easily add features.
+The extension points are:
+
+*   Storage: how to store/restore the files
+*   Location: where to store/restore the files to/from
+*   FileManager: which files to store/restore
+
+A new Storage implementation (TarGzStorage) will be created.
+Every Storage implementation extends the abstract Storage class.
+
+### How to define the descriptor:
+
+
+    @Extension
+    public static class DescriptorImpl extends StorageDescriptor {
+        public String getDisplayName() {
+            return "TarGzStorage";
+        }
+
+        @Override
+        public String getArchiveFileExtension() {
+            return "tar.gz";
+        }
+    }
+
+Where:
+
+*   getDisplayName – the name of the Storage we will see in the Storage configuration.
+*   getArchiveFileExtension – extension of the archive file.
+
+### Storage methods
+
+The org.codehaus.plexus.archiver library will be used. The backupStart method initializes the archiving:
+
+
+    @Override
+    public void backupStart(String tempDirectoryPath, String archiveFilenameBase) throws PeriodicBackupException {
+        // Create a new archiver
+        archiver = new TarArchiver();
+        // Set the destination file
+        File destination = new File(new File(tempDirectoryPath), Util.createFileName(archiveFilenameBase, this.getDescriptor().getArchiveFileExtension()));
+        archiver.setDestFile(destination);
+
+        // Support long filenames
+        archiver.setLongfile(TarLongFileMode.gnu);
+        // Set the compression method
+        archiver.setCompression(TarArchiver.TarCompressionMethod.gzip);
+    }
+
+The backupAddFile method will add the files to the archive and backupStop will finalize the backup.
+
+
+    @Override
+    public void backupAddFile(File fileToStore) throws PeriodicBackupException {
+        try {
+            archiver.addFile(fileToStore, Util.getRelativePath(fileToStore, Hudson.getInstance().getRootDir()));
+        } catch (ArchiverException e) {
+            LOGGER.warning("Could not add file to the archive. " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Iterable backupStop() throws PeriodicBackupException {
+        try {
+            archiver.createArchive();
+        } catch (ArchiverException e) {
+            LOGGER.warning("Could not create archive " + archiver.getDestFile() + " " + e.getMessage());
+        } catch (IOException e) {
+            LOGGER.warning("Could not create archive " + archiver.getDestFile() + " " + e.getMessage());
+        }
+        return Lists.newArrayList(archiver.getDestFile());
+    }
+
+### Constructor
+
+The DataBoundConstructor annotation is needed as for normal Jenkins plugins:
+
+
+    @DataBoundConstructor
+    public TarGzStorage() {
+        super();
+    }
+
+### Restoring
+
+The basic backup functionality is now ready. Now the restoring needs to be implemented.
+
+
+    @Override
+    public void unarchiveFiles(Iterable archives, File tempDir) {
+        // Setting up unArchiver
+        TarGZipUnArchiver unArchiver = new TarGZipUnArchiver();
+        unArchiver.setDestDirectory(tempDir);
+
+        // Extracting each archive to the temporary directory
+        for(File archive : archives) {
+            unArchiver.setSourceFile(archive);
+            LOGGER.info("Extracting files from " + archive.getAbsolutePath() + " to " + tempDir.getAbsolutePath());
+            try {
+                unArchiver.extract();
+            } catch (ArchiverException e) {
+                LOGGER.warning("Could not extract from " + archive.getAbsolutePath() + e.getMessage());
+            }
+
+            // Deleting the archive file
+            LOGGER.info("Deleting " + archive.getAbsolutePath());
+            if(!archive.delete()) {
+                LOGGER.warning("Could not delete " + archive.getAbsolutePath());
+            }
+        }
+    }
+
+### Equals & hashCode
+
+The equals and hashCode methods need to be implemented since the objects will be compared.
+
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof ZipStorage;
+    }
+
+    @Override
+    public int hashCode() {
+        return 93;
+    }
+
+Now the TarGzStorage class is ready.
+
+### Update notes for 2.0
+
+Logging configurations for the logger "UnArchiver" should be updated to use the package "org.codehaus.plexus.archiver"

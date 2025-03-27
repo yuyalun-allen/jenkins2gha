@@ -1,0 +1,3 @@
+# perfci
+
+This plugin can launch a performance test with JMeter, and generate a test report after test finished. It also includes features such as comparing 2 test run report, showing trend report over multiple builds, and integrating with NMON monitoring to target servers.

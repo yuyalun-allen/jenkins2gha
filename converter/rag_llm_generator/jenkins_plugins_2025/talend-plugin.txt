@@ -1,0 +1,101 @@
+# talend
+
+## Introduction
+
+The Talend plugin connects your Jenkins to [Talend Cloud](https://cloud.talend.com). It supports the following actions:
+
+- Create a Task
+- Run a Task
+- Run a Promotion
+
+## Getting started
+
+After installation, first you must configure your connection to Talend Cloud. On the Configure System page of your Jenkins server,
+add the Talend Cloud Personal Access Token and select the Talend Cloud Environment of your Talend Cloud instance.
+
+There is only 1 access token for your whole Jenkins installation, so any Jenkins user that can create Builds or Pipelines can access
+Talend Cloud with these credentials!
+
+![Configuration](docs/images/globalconfig.png "Global Configuration")
+
+Now you are ready to create your first job.
+
+Please take note that all settings are stored by name, not by ID, so if you rename items in Talend Cloud, your Jenkins configuration is
+broken. This is to keep the UI and the Pipeline versions act the same.
+
+### Create a Task
+
+Create a Freestyle Job and add the build task "Talend Create Task". You can create Jobs, Routes, DataServices and Pipeline tasks.
+The Artifact name is a textbox so you can plan creating a task that where the Artifact has not been uploaded yet. (and use jenkins parameters).
+![Create a New Task Image](docs/images/createtask.png "Create a New Task")
+
+### Run a Task
+
+Create a Freestyle Job and add the build task "Talend Run Task". You can select the task by first selecting the 
+Environment, then the Workspace and then the Task.
+
+![Run a Task Image](docs/images/runtask.png "Run a Task")
+
+
+### Run a Promotion
+
+Create a Freestyle Job and add the build task "Talend Run Promotion". First, select a promotion, then the type of Artifact you would 
+like to promote, and so on.
+You can choose to overwrite resources and run profiles.
+
+![Run a Task Image](docs/images/runpromotion.png "Run a Task")
+
+
+## Pipeline integration
+
+Pipeline scripts are supported. 
+
+### createTask
+
+```
+params = '''Secret_Token=secret token
+            TempFolder=/var/temp/''' 
+    
+createTask  artifact: 'My_First_Job', 
+            environment: 'DEVELOPMENT', 
+            parameters: params,
+            workspace: 'SOMEPROJECT',
+            runtimeType: 'REMOTE_ENGINE',
+            runtime: 'RemoteEngine_1',
+            AutoUpgradable: true,
+            OverrideWithDefaultParameters: true
+```
+
+### runTask
+
+```
+runTask environment: 'DEVELOPMENT', task: 'My_Second_Job', workspace: 'OURBIGPROJECT'
+```
+
+### runPromotion
+
+```
+runPromotion promotion: 'DEV to TEST', artifactType: 'ACTION', workspace: 'MyPlayground', task: 'My_Second_Job'
+```
+
+If you are promoting an environment, you dont have to include any type of artifact, 'promotion' and 'artifactType' are enough
+If you are promoting a workspace, add 'workspace'
+If you are promoting any other artifact type, add workspace and 'plan', 'task' or 'artifact' respectively.
+
+The ArtifactTypes are the interal Talend Cloud API ones + ENVIRONMENT for those daring to use it:
+
+- ENVIRONMENT for promoting Environments
+- WORKSPACE for promoting Workspaces
+- PLAN to promote Plans
+- FLOW to promote Tasks
+- ACTION to promote Artifacts
+
+
+## Contributing
+
+If you want to contribute, please read the [contribution guidelines](CONTRIBUTING.md)
+
+## LICENSE
+
+Licensed under GPL-3.0-only, see [LICENSE](LICENSE.md)
+

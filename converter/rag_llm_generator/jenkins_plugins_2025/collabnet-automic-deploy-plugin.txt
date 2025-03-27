@@ -1,0 +1,20 @@
+####Jenkins Plugin for Continuous Deployment using Collabnet Teamforge and Automic
+
+
+This plugin allows a developer to connect their [Collabnet Teamforge](http://www.collab.net/products/teamforge) project to a [Automic Deployment Manager](http://automic.com/solutions/lets-automate/application-release-automation/) system. 
+
+Once a Jenkins job has been configured with this plugin as a post-build action along with a Collabnet Teamforge(CTF) Repository, every successful build  on that repository will create an Automic Deployment Package along with its components. The packages, components and other configuration information can all be fed through the plugin (See screenshot below). This allows for continuous deployment feature between a CTF repository and Automic's deployment manager. 
+
+Please refer to http://www.collab.net/deploy for the complete details on the integration.
+
+#### Screenshots
+<div>
+<b>Jenkins Configuration of a Job with the Collabnet Automic Deploy plugin</b>
+<img src="http://rajasaur.github.io/rb-extension-pack/screenshots/automic_jenkins_configure.png" width=800 height=500" /> 
+</div>
+
+
+#### Dependencies
+* Collabnet Plugin (https://wiki.jenkins-ci.org/display/JENKINS/CollabNet+Plugin)
+* Collabnet Teamforge 
+* Automic Deployment Manager 

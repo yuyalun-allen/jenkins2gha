@@ -1,0 +1,47 @@
+# Jenkins client-side Diagnostics
+ 
+## Installation
+
+```
+npm install --save @jenkins-cd/diag
+```
+
+## logger(category)
+Get a `LOGGER` for the specified category.
+
+```javascript
+var LOGGER = require('@jenkins-cd/diag').logger('sse');
+ 
+// Log messages etc . See below.
+```
+
+### error(message [, other-args])
+
+```javascript
+var LOGGER = require('@jenkins-cd/diag').logger('sse');
+
+LOGGER.error('Invalid SSE event message format.', event);
+```
+
+Error logs are always logged, so no configuration needed here.
+
+### debug(message [, other-args])
+
+Currently, this module uses the [enabled] package for logging debug messages.
+
+> __NOTE__: One slight terminology difference between this package and the [enabled] package is that this package uses the term "category" (log "category") where [enabled] uses the term "namespace"/"name". Aside from that, everything else is the same.
+
+```javascript
+var LOGGER = require('@jenkins-cd/diag').logger('sse');
+
+LOGGER.debug(`SSE event ${event.jenkins_channel}/${event.jenkins_event}:`, event);
+```
+
+Please see the [enabled] (and [env-variable]) docs for how to turn on/off debug logging in the Browser.
+
+### isDebugEnabled()
+
+Returns true if debug logging is enabled for the category associated with the logger instance.
+ 
+[enabled]: https://www.npmjs.com/package/enabled
+[env-variable]: https://www.npmjs.com/package/env-variable

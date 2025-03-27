@@ -1,0 +1,24 @@
+# LoadNinja Plugin for Jenkins
+
+Use this plugin to integrate LoadNinja tests in your Jenkins builds.
+
+## What is LoadNinja? 
+
+LoadNinja is a cloud-based load testing and performance testing platform for web applications. It helps developers, QA teams, and performance engineers check if their web servers sustain a massive load and if the servers are robust and scalable.
+
+## Configure your build
+
+1. In Jenkins, select a job for LoadNinja tests and click **Configure**.
+2. In the **Build** section, locate the **Add build step** drop-down list and select _LoadNinja_ there. 
+3. Next, specify the following data: 
+  * **apiKey**—a unique API key generated for your LoadNinja account, obtainable from the **API Keys** tab in the LoadNinja settings dialog. 
+  * **scenario ID**—a unique ID of the load test scenario you want to use for this run, obtainable from the [LoadNinja REST API](https://app.swaggerhub.com/apis-docs/smartbear/loadninja/1.0) or scenario URL in the LoadNinja UI. 
+4. (_Optional_) Specify additional pass criteria (error percentage, average step duration) by selecting the corresponding options and entering the expected values. 
+5. Configure post-build actions. 
+  Currently, this plugin supports the following report types:
+  * JUnit-style XML reports
+  * [Zephyr](https://getzephyr.com) reports in Jira
+
+## Usage notes
+
+* While running, the plugin will post status of the test run every 1 minute in the Jenkins console.

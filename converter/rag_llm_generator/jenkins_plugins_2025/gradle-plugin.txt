@@ -1,0 +1,531 @@
+:imagesdir: images
+:thumbnail: width=80%,align="center"
+
+= Jenkins Gradle Plugin
+
+image:https://img.shields.io/jenkins/plugin/v/gradle.svg[Jenkins Plugin,link=https://plugins.jenkins.io/gradle]
+image:https://img.shields.io/github/release/jenkinsci/gradle-plugin.svg?label=changelog[link="https://github.com/jenkinsci/gradle-plugin/releases/latest"]
+image:https://img.shields.io/jenkins/plugin/i/gradle.svg?color=blue[Jenkins Plugin Installs,link=https://plugins.jenkins.io/gradle]
+
+== Description
+
+This plugin adds http://www.gradle.org/[Gradle] Support to Jenkins.
+http://www.gradle.org/[Gradle] is managed as another tool inside Jenkins (the same way as Ant or Maven), including support for automatic installation and a new build step is provided to execute Gradle tasks.
+
+It also detects any https://gradle.com/build-scans/[Develocity] Build Scan publications to provide an enhanced job summary for each Gradle or Maven build invocation that occurred during the job.
+
+You can have the https://docs.gradle.com/enterprise/gradle-plugin/[Develocity Gradle plugin] and the https://docs.gradle.com/enterprise/maven-extension/[Develocity Maven extension] automatically injected into your Gradle and Maven builds.
+See <<Develocity integration>> for more details.
+
+== Configuration
+
+Gradle configuration is performed in the *Configure System* (before Jenkins 2.0) or *Global Tool Configuration* (starting in Jenkins 2.0).
+In both cases these options reside in the *Manage Jenkins* section.
+
+In the *Gradle* section provided by this plugin, several installations can be configured:
+
+image::gradle-tool-installation.png[Tool installations,{thumbnail}]
+
+The system provides both automatic installation, which can be performed by directly downloading a Gradle distribution from the http://www.gradle.org/[Gradle website] or executing some shell commands to achieve the same.
+Besides, for nodes which already have Gradle installed, the tool can be manually configured, by unchecking the *Install automatically* checkbox and providing the base path (as a `GRADLE_HOME` environment variable) of the installation.
+
+== Usage
+
+The Gradle plugin provides an *Invoke Gradle script* build step.
+
+image::gradle-build-step.png[Build step,{thumbnail}]
+
+The first configuration option is whether to use one of the installation configured in Jenkins (see previous section) of use the https://docs.gradle.org/current/userguide/gradle_wrapper.html[Gradle Wrapper] which is the Gradle-provided mechanism to "embed" the use of a specific Gradle version in a build, installing it if necessary.
+
+Other configuration options include:
+
+* A description to use for the build step.
+* Switches (options) to provide to the Gradle execution.
+* Tasks to execute (if blank the defaults tasks of the build will be invoked).
+* Path to the build script if different from the root directory of the build.
+* Name of the build script if different from `build.gradle`.
+
+If a https://gradle.com/build-scans/[Gradle Build Scan] is produced during a build, then a link to it is added to the build page.
+
+image::jenkins-build-scan.png[Build Scan link,width=60%,align="center"]
+
+== Capturing build scans from the console log
+
+If you are not using the Gradle build step described above, or have a Maven build, you can configure to detect published https://gradle.com/build-scans/[build scans] from the console log.
+For doing so, go to *Build Environment* and check *Inspect build log for published build scans*.
+
+image::inspect-logs-for-build-scans.png[Inspect build log for Build Scan,{thumbnail}]
+
+If build scans are detected in the console log of a build, a badge will be added to the build page.
+This works for https://gradle.com/build-scans/[build scans] produced by Gradle and Maven builds.
+
+image::jenkins-build-scan.png[Build Scan link,width=60%,align="center"]
+
+== Capturing build scans from Jenkins Pipeline
+
+When using Jenkins pipeline, there is the build step wrapper `withGradle` which can be used to find the build scans emitted by Gradle or Maven builds and show them on the build page.
+In order to do so, wrap your `sh` or `bat` steps which invoke Gradle or Maven into `withGradle`.
+
+For example:
+[source]
+
+----
+node {
+  withGradle {
+    sh './gradlew build'
+  }
+}
+----
+
+This causes the shell output to be highlighted and build scan links, which are published, are captured.
+The captured build scan links are then shown on the build page and in the pipeline steps view.
+
+image::pipeline-steps-scan.png[Build scan in pipeline view,{thumbnail}]
+
+There is also the `findBuildScans()` step, which finds the build scans in the complete log of the pipeline job.
+The `withGradle` wrapper should be used instead, since it also deals well with parallel output.
+
+image::find-build-scans.png[Find build scans,{thumbnail}]
+
+== Enriched build scans
+
+Build scans links on the Job summary page can be enriched with data fetched from the https://docs.gradle.com/enterprise/api-manual/[Develocity server API].
+If enabled, the project name, requested tasks, build tool version, build outcome and build scan links will be provided.
+This feature is available for both Gradle and Maven builds and compatible with auto-injection documented below.
+
+image::enriched-build-scans.png[Enriched build scans,{thumbnail}]
+
+> **Note**
+> - Build scans published on the public instance (https://scans.gradle.com) are not eligible.
+
+> **Note**
+> - Enabling this feature will trigger 2 HTTP requests to the Develocity server per build scan published.
+
+=== Enriched build scans configuration
+
+The configuration of the feature can be done in the Jenkins global system configuration.
+
+The feature can be enabled or disabled (default).
+
+If anonymous access to the API is not allowed, an access key has to be provided.
+
+HTTP client settings can also be customized.
+
+image::enriched-build-scans-configuration.png[Enriched build scans configuration,{thumbnail}]
+
+== Develocity integration
+
+The plugin can be configured to inject the https://docs.gradle.com/enterprise/gradle-plugin/[Develocity Gradle plugin] or the https://docs.gradle.com/enterprise/maven-extension/[Develocity Maven extension] into any Gradle or Maven build that is executed on the Jenkins server or on any of its connected agents.
+To achieve this, the plugin installs various files on each agent depending on the configuration via the global options in the `Manage Jenkins/Configure System` section.
+
+The same auto-injection behavior is available for the https://github.com/gradle/common-custom-user-data-gradle-plugin[Common Custom User Data Gradle plugin] and the https://github.com/gradle/common-custom-user-data-maven-extension[Common Custom User Data Maven extension].
+
+> **Note**
+> - The configuration applies to all builds on all connected agents matching the specified label criteria, or all in case no label criteria are defined.
+
+=== Enable auto-injection
+
+The auto-injection is split into several levels to have fine-grained control over the enablement of this feature.
+
+[IMPORTANT]
+=====
+Develocity `2024.1` or above is required starting from version `2.12` and above. See <<_short_lived_access_tokens>> for more infos.
+=====
+[IMPORTANT]
+=====
+Starting from plugin version `2.13`, the Maven extension is not bundled with the Jenkins Gradle plugin and requires an explicit version configuration to be injected.
+When upgrading from an earlier version, the injection will be turned off until the version is configured.
+=====
+
+==== Global
+
+To globally enable the auto-injection, click the `Enable auto-injection` checkbox in the `Develocity integration` section of the global options in the `Manage Jenkins/Configure System` section.
+Next set the URL of the Develocity instance to which the build scans should be published to.
+
+image::enable-auto-injection.png[Enable auto-injection,{thumbnail}]
+
+Optionally you can click the `Enforce Develocity server url` checkbox to enforce the configured Develocity URL over a URL configured in the project's build (only applies to Gradle projects).
+
+===== VCS repository filtering (Beta)
+
+It is also possible to enable/disable injection for specific repositories by specifying VCS repository filters. These are _Newline-delimited_ set of rules in the form of `+|-:repository_matching_keyword`, which will be used in a contains check against the repository URL.
+
+image::general-vcs-repository-filters.png[Git VCS repository filters, {thumbnail}]
+
+Consider the following examples:
+[source]
+
+----
++:foo
+----
+The injection will only be performed for Git repository URLs which contain `foo`.
+[source]
+
+----
+-:foo
+----
+The injection will not be performed for Git repository URLs which contain `foo`, but will be for all others.
+[source]
+
+----
++:foo
+-:foobar
+----
+The injection will be performed for Git repository URLs which contain `foo`, but not the ones containing `foobar`.
+
+The exclusion patterns take precedence over the inclusion patterns.
+
+> **Note**
+> - This feature is currently in Beta and requires Git Plugin to be installed. If Git Plugin is not installed, the following warning message will be show instead. The feature supports both Gradle and Maven builds (FreeStyle and Pipeline job configurations)
+
+image::general-git-plugin-not-installed.png[Git Plugin is not installed, {thumbnail}]
+
+==== Gradle
+
+To enable the auto-injection for Gradle builds, set the desired https://docs.gradle.com/enterprise/gradle-plugin/[Develocity Gradle plugin] version in the `Develocity Gradle plugin version` field in the `Gradle settings` section of the configuration form.
+
+image::gradle-settings.png[Gradle settings,{thumbnail}]
+
+Optionally set the desired version of the https://github.com/gradle/common-custom-user-data-gradle-plugin[Common Custom User Data Gradle plugin] to be used.
+
+==== Maven
+
+To enable the auto-injection for Maven builds, set the desired https://docs.gradle.com/enterprise/maven-extension/[Develocity Maven extension] version in the `Develocity Maven extension version` field in the `Maven settings` section of the configuration form.
+
+image::maven-settings.png[Maven settings,{thumbnail}]
+
+Optionally set the desired version of the https://github.com/gradle/common-custom-user-data-maven-extension[Common Custom User Data Maven Extension] to be used.
+
+To see which versions are injected, refer to <<Auto-injection compatibility>>.
+
+> **Warning**
+> - Maven injection only works if `MAVEN_OPTS` is not configured as a global environment variable.
+
+=== Disable auto-injection
+
+Disabling the auto-injection requires that all Develocity resources are cleaned up from the agents.
+To achieve this, the Gradle or Maven injections must be disabled individually (see the following sections).
+This triggers a cleanup of the resources.
+If the auto-injection should be disabled globally, then uncheck the `Enable auto-injection` checkbox as well.
+
+==== Gradle
+
+To disable the auto-injection for Gradle builds, remove the `Develocity Gradle plugin version` in the `Gradle settings` section of the configuration form.
+
+==== Maven
+
+To disable the auto-injection for Maven builds, remove the `Develocity Maven extension version` in the `Maven settings` section of the configuration form.
+
+=== Control auto-injection based on node labels
+
+Auto-injection can be enabled or disabled based on specific node labels.
+To enable auto-injection only on specific nodes, add the desired labels to the `Gradle auto-injection enabled nodes` list for Gradle or `Maven auto-injection enabled nodes` for Maven.
+To disable auto-injection on specific nodes, add the desired labels to the `Gradle auto-injection disabled nodes` list for Gradle or `Maven auto-injection disabled nodes` for Maven.
+
+The disabled labels list will take precedence over the enabled labels list.
+
+=== Configuration options
+
+The following sections list all available configuration options which can be set via the configuration form.
+
+==== Common configuration options
+
+`Enable auto-injection` +
+Globally enable auto-injection.
+
+`Develocity server url` +
+The URL of the Develocity instance.
+
+`Allow untrusted server` +
+Whether to allow publishing to a server with a self-signed certificate.
+
+`Develocity Access Key credential ID` +
+The credential ID of the access key for authenticating with the Develocity server.
+During the job execution, the access key is used to get a short-lived token from the Develocity server.
+
+[#_short_lived_access_tokens]
+==== Short-lived access tokens
+Develocity access keys are long-lived, creating risks if they are leaked. To avoid this, users can use short-lived access tokens to authenticate with Develocity. Access tokens can be used wherever an access key would be used. Access tokens are only valid for the Develocity instance that created them.
+If a short-lived token fails to be retrieved (for example, if the Develocity server version is lower than `2024.1`), no access key will be set.
+In that case, Develocity authenticated operations like build cache read/write and build scan publication will fail without failing the build.
+For more information on short-lived tokens, see https://docs.gradle.com/develocity/api-manual/#short_lived_access_tokens[Develocity API documentation].
+
+==== Gradle specific configuration options
+
+`Develocity Gradle plugin version` +
+Enables auto-injection for Gradle builds and defines which version of the https://docs.gradle.com/enterprise/gradle-plugin/[Develocity Gradle plugin] to use.
+
+`Common Custom User Data Gradle plugin version` +
+Defines which version of the https://github.com/gradle/common-custom-user-data-gradle-plugin[Common Custom User Data Gradle plugin] to use.
+
+`Gradle plugin repository url` +
+The URL of the repository to use to resolve the Develocity Gradle plugin and the Common Custom User Data Gradle plugin.
+This is required if the Jenkins agents are not able to access the https://plugins.gradle.org[Gradle Plugin Portal].
+
+`Gradle plugin repository credential ID` +
+The credentials containing username and password for a custom Gradle Plugin repository.
+
+`Gradle auto-injection enabled nodes` +
+A list of node labels on which the Develocity Gradle plugin or Common Custom User Data Gradle plugin injection should be enabled.
+By default, all nodes are enabled.
+
+`Gradle auto-injection disabled nodes` +
+A list of node labels on which the Develocity Gradle plugin or Common Custom User Data Gradle plugin injection should be disabled.
+By default, all nodes are enabled.
+
+==== Maven specific configuration options
+
+`Develocity Maven extension version` +
+Enables auto-injection for Maven builds and defines which version of the https://docs.gradle.com/enterprise/maven-extension/[Develocity Maven extension] to use.
+
+`Common Custom User Data Maven extension version` +
+Defines which version of the https://github.com/gradle/common-custom-user-data-data-maven-extension[Common Custom User Data Maven extension].
+
+`Maven extension repository url` +
+The URL of the repository to use to resolve the Develocity Maven Extension and the Common Custom User Data Maven extension.
+This is required if the Jenkins agents are not able to access the https://repo1.maven.org/maven2[Maven Central].
+
+`Maven extension repository credential ID` +
+The credentials containing username and password for a custom Maven repository.
+
+`Maven auto-injection enabled nodes` +
+A list of node labels where the Develocity Maven extension or Common Custom User Data Maven extension injection should be enabled.
+By default, all nodes are enabled.
+
+`Maven auto-injection disabled nodes` +
+A list of node labels where the Develocity Maven extension or Common Custom User Data Maven extension injection should be disabled.
+By default, all nodes are enabled.
+
+=== Auto-injection compatibility
+The following sections list the compatibility of the plugin with the Develocity version based on the given build tool in use.
+
+==== For Gradle builds
+For Gradle builds the version used for the Develocity Gradle plugin is defined in the `Develocity Gradle plugin version` field in the `Gradle settings` section of the configuration form.
+See <<Enable auto-injection>> for details.
+The compatibility of the specified version with Develocity can be found https://docs.gradle.com/enterprise/compatibility/#gradle_enterprise_gradle_plugin[here].
+
+For the optional Common Custom User Data Gradle plugin which is defined the same form, you can see the compatibility of the specified version with the Develocity Gradle plugin https://github.com/gradle/common-custom-user-data-gradle-plugin#version-compatibility[here].
+
+==== For Maven builds
+For Maven builds the version used for the Develocity Maven extension is defined in the `Develocity Maven extension version` field in the `Maven settings` section of the configuration form.
+See <<Enable auto-injection>> for details.
+The compatibility of the specified version with Develocity can be found https://docs.gradle.com/enterprise/compatibility/#maven_extension[here].
+
+For the optional Common Custom User Data Maven extension which is defined the same form, you can see the compatibility of the specified version with the Develocity Maven extension https://github.com/gradle/common-custom-user-data-maven-extension#version-compatibility[here].
+
+For plugin version older that `2.13`, the Maven extension is bundled with the plugin and does not require a version configuration. Please refer to https://github.com/jenkinsci/gradle-plugin/tree/gradle-2.12.1?tab=readme-ov-file#for-maven-builds[this] README version for a compatibility matrix.
+
+== Disabling/uninstalling Gradle Jenkins plugin
+
+To ensure that all Develocity resources are cleaned up from the agents, before disabling/uninstalling the plugin the auto-injection has to be manually disabled. Please, refer to the <<Disable auto-injection>> section for details.
+
+== Upgrade notes
+
+=== 2.0
+
+> **Note**
+> - These upgrade notes only apply if you configured the Develocity auto-injection feature.
+
+A new form based configuration was introduced in this version, which replaces the configuration via environment variables. There is no automatic migration, therefore you need to manually migrate the already configured auto-injection via environment variables you'd need to follow these steps:
+
+1. Copy the values of the following environment variables and then remove them in the global configuration following environment variables from the global configuration:
+- `JENKINSGRADLEPLUGIN_GRADLE_ENTERPRISE_INJECTION`
+- `JENKINSGRADLEPLUGIN_GRADLE_ENTERPRISE_URL`
+- `JENKINSGRADLEPLUGIN_GRADLE_ENTERPRISE_ALLOW_UNTRUSTED_SERVER`
+- `GRADLE_ENTERPRISE_ACCESS_KEY`
+- `JENKINSGRADLEPLUGIN_GRADLE_ENTERPRISE_PLUGIN_VERSION`
+- `JENKINSGRADLEPLUGIN_CCUD_PLUGIN_VERSION`
+- `JENKINSGRADLEPLUGIN_GRADLE_PLUGIN_REPOSITORY_URL`
+- `JENKINSGRADLEPLUGIN_GRADLE_INJECTION_ENABLED_NODES`
+- `JENKINSGRADLEPLUGIN_GRADLE_INJECTION_DISABLED_NODES`
+- `JENKINSGRADLEPLUGIN_GRADLE_ENTERPRISE_EXTENSION_VERSION`
+- `JENKINSGRADLEPLUGIN_CCUD_EXTENSION_VERSION`
+- `JENKINSGRADLEPLUGIN_MAVEN_INJECTION_ENABLED_NODES`
+- `JENKINSGRADLEPLUGIN_MAVEN_INJECTION_DISABLED_NODES`
+2. Copy the previously saved values and enter them in the new form based configuration to have the same configuration as before.
+
+== Release Notes
+
+For the current release notes (`v1.34+`), please check the https://github.com/jenkinsci/gradle-plugin/releases[GitHub releases page].
+
+For the older releases `< v1.34` see this list:
+
+=== 1.33 (July 5th 2019)
+
+* Remove support for dry-run plugin https://github.com/jenkinsci/gradle-plugin/pull/72[#72]
+* Support detecting build scans in pipeline jobs (https://github.com/jenkinsci/gradle-plugin/pull/71[#71])
+* Increase required core version to 2.60.3 https://github.com/jenkinsci/gradle-plugin/pull/73[#73]
+* Use consistent file formatting for sources https://github.com/jenkinsci/gradle-plugin/pull/74[#74].
+Thanks @darxriggs.
+
+=== 1.32 (May 24th 2019)
+
+* Expose build scan action via Jenkins API (https://github.com/jenkinsci/gradle-plugin/pull/70[#70])
+
+=== 1.31 (Mar 16th 2019)
+
+* Support detecting build scans for non-Gradle build steps #66
+* Support for detecting Maven build scans #68
+
+=== 1.30 (Jan 11th 2019)
+
+* Fix configuration as code compatibility (https://issues.jenkins-ci.org/browse/JENKINS-53575[JENKINS-53575])
+
+=== 1.29 (Jul 3rd 2018)
+
+* Update licensing information in pom.xml.
+* Support console annotations for Gradle 4.7 and later.
+
+=== 1.28 (Oct 2 2017)
+
+* Empty job parameters are passed as empty (https://issues.jenkins-ci.org/browse/JENKINS-45300[JENKINS-45300])
+* Console annotator endless loop in combination with using the Ant plugin fixed (https://issues.jenkins-ci.org/browse/JENKINS-46051[JENKINS-46051])
+
+=== 1.27.1 (Jul 1 2017)
+
+* Increase required core version to 1.642.1
+* Make finding wrapper location more robust on Windows
+* Job parameters are now correctly quoted when passed as system properties (https://issues.jenkins-ci.org/browse/JENKINS-42573[JENKINS-42573] and https://issues.jenkins-ci.org/browse/JENKINS-20505[JENKINS-20505])
+* Do not pass all job parameters as (system) properties to Gradle by default
+* Include automated test for CLI command https://issues.jenkins-ci.org/browse/JENKINS-42847[JENKINS-42847]
+* Ensure that Gradle's bin directory is on the path for Pipeline tool steps https://issues.jenkins-ci.org/browse/JENKINS-42381[JENKINS-42381]
+* Add option to pass only selected system properties to Gradle
+* Add option to pass only selected project properties to Gradle
+* Progress status `FROM-CACHE` and `NO-SOURCE` are highlighted in the console, too.
+* Support build scan plugin 1.8
+
+=== 1.27 (Jun 23 2017)
+
+* DO NOT USE - PROBLEMS WITH RELEASING https://issues.jenkins-ci.org/browse/JENKINS-45126[JENKINS-45126]
+
+=== 1.26 (Feb 13 2016)
+
+* Use `@DataBoundSetter` instead of a (too) large `@DataBoundConstructor`
+* Add @Symbol annotations for step and tool https://issues.jenkins-ci.org/browse/JENKINS-37394[JENKINS-37394]
+* Make it possible to configure the wrapper location https://issues.jenkins-ci.org/browse/JENKINS-35029[JENKINS-35029]
+* Update icon for build scan integration
+* Remove description from build step
+
+=== Release 1.25
+
+* Update core dependency to 1.580.1 JENKINS-34790
+* Fix for Gradle wrapper not working when Gradle version was previously selected (JENKINS-24682)
+* Long task names in console outline should not overlap console output (JENKINS-26287)
+* It is now possible to pass Gradle build parameters as project properties (JENKINS-17523)
+* If a https://scans.gradle.com[Gradle Build Scan] is produced during the build then a link is added to the build page.
+
+=== Release 1.24
+
+* Fix JENKINS-18629 - Jenkins fails to save configuration when using Invoke Gradle script in Conditional Step (single).
+
+=== Release 1.23
+
+* Fix https://issues.jenkins-ci.org/browse/JENKINS-17386[issue #17386] - Gradle.properties ignored after 1.22 upgrade.
+GRADLE_USER_HOME is now no longer set to the workspace of the job by default.
+If you wish to have the workspace job as the GRADLE_USER_HOME, you will need to change the config to reflect this.
+
+=== Release 1.22
+
+* Fix JENKINS-17294 - mask sensitive variables (Password parameters)
+* Fix JENKINS-13412 - use hudson.util.ArgumentListBuilder#toWindowsCommand
+* Set GRADLE_USER_HOME all the time
+
+=== Release 1.21
+
+* Add the ability to allow gradlew to still be run from workspace top, but to also configure it so that gradlew is found in the root build script directory.
+* Fix JENKINS-12769 - Cannot specify location of gradle wrapper
+* Fix JENKINS-15406 - When using gradlew, root build script field is not used to locate gradlew
+
+=== Release 1.20
+
+* Fix JENKINS-15166 - Gradle plugin fails to save selected Gradle Version in Project configuration
+
+=== Release 1.19
+
+* Fix broken file permission introduced by JENKINS-14780
+
+=== Release 1.18
+
+* Fix JENKINS-14780 - make gradlew script executable
+
+=== Release 1.17
+
+* Merge pull request - Change Gradle Wrapper logic to use the launcher's OS type rather than master's OS type when determining Gradle Wrapper script name
+
+=== Release 1.16
+
+* Fix reopened JENKINS-9538 - hudson.model.FreeStyleBuild & GradleInstallation not serializable => Gradle build not working anymore
+
+=== Release 1.15
+
+* Fix reopened JENKINS-13412 - Gradle plugin fails to quote parameters without whitespace when containing input/output redirection symbols, e.g. in XML strings
+
+=== Release 1.14
+
+* Fix JENKINS-13412 - Gradle plugin fails to quote parameters without whitespace when containing input/output redirection symbols, e.g. in XML strings
+
+=== Release 1.13
+
+* Fix JENKINS-9538 - hudson.model.FreeStyleBuild & GradleInstallation not serializable => Gradle build not working anymore
+
+=== Release 1.12 (October 30, 2011)
+
+* Fix JENKINS-9553 - Gradle wrapper command fails on Windows
+
+=== Release 1.11 (October 02, 2011)
+
+* Coloring output log and Navigation executed tasks (from pull request of ikikko)
+
+=== Release 1.10 (September 07, 2011)
+
+* Provide dry-run option for the
+
+=== Release 1.9 (June 24, 2011)
+
+* Integrate pull request - Enable JAVA_OPTS
+
+=== Release 1.8 (April 01, 2011)
+
+* Add pull request 'Let users use the Gradle wrapper'
+
+=== Release 1.7.1 (March 24, 2011)
+
+* Fix 1.7 to properly set required Jenkins version.
+
+=== Release 1.7 (March 23, 2011)
+
+* Add automatic tool installer
+
+=== Release 1.6 (February 27, 2011)
+
+* Fix 1.5 to properly set required Jenkins version.
+
+=== Release 1.5 (February 19, 2011)
+
+* Update to Jenkins 1.397 API and metadata
+* Change UI labels from Hudson to Jenkins
+
+=== Release 1.4 (June, 09, 2010)
+
+* Fix help messages
+* Add technical internal behavior for a suitable Artifactory/Gradle integration (with the buildinfo)
+
+=== Release 1.3 (February 23, 2010)
+
+* Add a description message in the build step
+* The plugin makes it possible to extract a Gradle distribution from a shared location or from a command line, and uses this distribution for running the build.
+
+=== Release 1.2 (February 07, 2009)
+
+* Add a distinction between switches and tasks
+* The plugin makes its possible to specify the location of the build script if the workspace has a top-level build.gradle in somewhere other than the module root directory
+* Improve user help messages
+
+=== Release 1.1 (November 07, 2008)
+
+* Add the support of Gradle 0.5. Before the version 0.5, the gradle windows executable file was "gradle.exe", and you lost the ERRORLEVEL value.
+From Gradle 0.5, the window launcher is a .bat file that conserves the correct ERRORLEVEL value.
+
+=== Release 1.0 (October 04, 2008)
+
+* Initial release

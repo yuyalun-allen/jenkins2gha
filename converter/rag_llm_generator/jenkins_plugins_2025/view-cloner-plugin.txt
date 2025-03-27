@@ -1,0 +1,13 @@
+# View-cloner
+This plugin allows to copy and change view AND jobs assigned to it in a bulk.
+
+# Description
+Plugin adds a build step that allows to specify a view (Nested and Sectioned views are supported) and a replacement pattern to use when copying and reconfiguring the jobs.
+
+Expected result after the build step successfully executes are:
+* ** Original view and jobs assigned to it are left untouched **
+* New view is created _next_ to original view, structure of the view is preserved, assigned jobs are changed to the newly created ones.
+* Jobs assigned to the original view get copied after their names and configurations undergo a replacement.
+* If when creating a new job , job name is already taken, creation of that particular job is skipped.
+
+

@@ -1,0 +1,5 @@
+# Build Step Environment Filter Utilities
+
+This is a utility plugin without features immediately useful to Jenkins users.
+
+This plugin was created for [JENKINS-62014](https://issues.jenkins-ci.org/browse/JENKINS-62014).

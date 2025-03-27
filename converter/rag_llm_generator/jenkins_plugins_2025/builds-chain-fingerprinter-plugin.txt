@@ -1,0 +1,28 @@
+builds-chain-fingerprinter
+==========================
+
+ Useful for some plugins requiring fingerprinting to be setup among all jobs in dependency hierarchy. Allows to setup fingerprinting by single mouseclick.
+ 
+ For instance, we have such jenkins configuration
+- Job default
+- Job A
+- Job B
+- Unit Tests Job
+- UI Tests Job
+- Deployment Job
+
+
+
+[Job default], [Job A] and [Job B] are per-branch jobs of same project, they have similar configuration and are upstream to [Unit Tests Job], [UI Tests Job], [Deployment Job].
+
+To enable automatic fingerprinting with this plugin, just enable following property in root jobs in build workflow (Job A, Job B and Job default)
+
+![Jobs setup screenshot](https://github.com/downloads/advantiss/builds-chain-fingerprinter/automatic-fingerprinting.png)
+
+Fingerprint records will look like this. 
+
+![Fingerprint records screenshot](https://github.com/downloads/advantiss/builds-chain-fingerprinter/automatic-fingerprinting-recorded.png)
+
+Where (Job A) is per Job hierarchy fingerprint, and UUID token is builds hierarchy fingerprint. Note that fingerprint records are not points to files, they points only to dummy filenames.
+
+

@@ -1,0 +1,44 @@
+:tip-caption: :bulb:
+
+= jQuery 3 Jenkins Plugin
+
+image:https://ci.jenkins.io/job/Plugins/job/jquery3-api-plugin/job/main/badge/icon?subject=Jenkins%20CI[Jenkins, link=https://ci.jenkins.io/job/Plugins/job/jquery3-api-plugin/job/main/]
+image:https://github.com/jenkinsci/jquery3-api-plugin/workflows/GitHub%20CI/badge.svg[GitHub Actions, link=https://github.com/jenkinsci/jquery3-api-plugin/actions]
+image:https://img.shields.io/github/issues-pr/jenkinsci/jquery3-api-plugin.svg[GitHub pull requests, link=https://github.com/jenkinsci/jquery3-api-plugin/pulls]
+
+Provides https://jquery.com[jQuery 3] for Jenkins Plugins.
+jQuery is -- as described on their home page -- a fast, small, and feature-rich JavaScript library. It makes things
+like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API
+that works across a multitude of browsers. With a combination of versatility and extensibility, jQuery has changed the
+way that millions of people write JavaScript.
+
+This plugin contains the JS files of the latest https://jquery.com[jQuery 3] release.
+
+== How to use the plugin
+
+In order to use this JS library, add a maven dependency to your pom:
+
+[source,xml]
+----
+<dependency>
+  <groupId>io.jenkins.plugins</groupId>
+  <artifactId>jquery3-api</artifactId>
+  <version>[latest version]</version>
+</dependency>
+----
+
+Then you can use jQuery in your jelly files using the following snippet:
+
+[source,xml]
+----
+<st:adjunct includes="io.jenkins.plugins.jquery3"/>
+----
+
+[TIP]
+Since Jenkins uses jQuery 1.x as well make sure to use the global symbol `jQuery3` rather than `$` when
+accessing jQuery 3.x.
+
+You can find several examples of Jenkins views that use jQuery in the
+https://github.com/jenkinsci/warnings-ng-plugin[Warnings Next Generation plugin]
+and in the https://github.com/jenkinsci/forensics-api-plugin[Forensics plugin].
+

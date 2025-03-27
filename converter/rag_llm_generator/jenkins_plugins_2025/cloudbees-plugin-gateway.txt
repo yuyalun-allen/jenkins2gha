@@ -1,0 +1,13 @@
+# Deprecated: CloudBees Free Enterprise Plugins
+
+This plugin has been removed from the Jenkins Update Center
+
+The [Folders plugin](https://plugins.jenkins.io/cloudbees-folder/) was made Open Source. 
+The other plugins rely on the RUN@cloud service that CloudBees has shut down. As a result there is no requirement for this plugin to remain in existence.
+
+## Uninstallation
+
+To uninstall, simply disable or delete the CloudBees Free Enterprise Plugins plugin and an any of the proprietary plugins that you want.
+If you disable only the CloudBees Free Enterprise Plugins you will no longer be able to access the CloudBees proprietary update center.
+If you disable or delete only the CloudBees proprietary plugins,
+they will not be reinstalled unless you upgrade the CloudBees Free Enterprise Plugins plugin to a newer version.

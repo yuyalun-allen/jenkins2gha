@@ -1,0 +1,361 @@
+# Alibabacloud ECS plugin
+[![Jenkins](https://ci.jenkins.io/job/Plugins/job/alibabacloud-ecs-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/alibabacloud-ecs-plugin/job/master)
+[![Gitter](https://badges.gitter.im/alibabacloud-ecs-plugin/community.svg)](https://gitter.im/alibabacloud-ecs-plugin/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+See the [中文文档](README_ZH_CN.md) for Chinese readme.
+# Table of contents
+   * [Introduction](#introduction)
+   * [Usage](#usage)
+      * [Prerequisites](#Prerequisites)
+      * [Create a key pair](#SSHKey)
+      * [Download plugin](#downloadPlugin)
+      * [Configure clouds](#configureClouds)
+         * [Navigate to Configure Clouds Menu](#cloudsMenu)
+         * [Add New Cloud](#addNewCloud)
+         * [Tick Jenkins Master In Private Network](#privateNetwork)
+         * [Configure "Cloud Name"](#cloudsName)
+         * [Configure "Credentials"](#configurAkSK)
+            * [Add new credentials **-Required**](#addNewCredentials)
+            * [Select "Alibaba Cloud Credentials" **-Required**](#alibabaCloudCredentials)
+            * [Input "Access Key ID" & "Secret Access Key" **-Required**](#inputAkAndSk)
+            * [Configure "Credentials" **-Required**](#configureCredentials)
+         * [Configure "Region" **-Required**](#configureRegion)
+         * [Configure "Image" **-Required**](#configureImage)
+         * [Configure "VPC" **-Optional**](#configureVpc)
+         * [Configure "Security Group" **-Optional**](#securityGroup)
+         * [Configure "ECS SSH Key" **-Required**](#ecsSSHKey)
+         * ["Test Connection" **-Required**](#testConnection)
+         * [Configure "Available Zone" **-Optional**](#availableZone)
+         * [Configure "VSW" **-Optional**](#configureVSW)
+         * [Configure "Instance Type" **-Optional**](#instanceType)
+         * [Configure "Minimum number of instances" **-Optional**](#minimumNumberOfInstance)
+         * [Configure "Init Script" **-Optional**](#configureInitScript)
+         * [Configure "Labels" **-Optional**](#configureLabels)
+        * [Configure "Remote FS root" **-Optional**](#remoteFSRoot)
+        * [Configure "Remote user" **-Optional**](#remoteAdmin)
+        * [Configure System Disk Category **-Optional**](#systemDiskCategory)
+         * [Configure System Disk Size **-Optional**](#systemDiskSize)
+         * [Configure Assign Public Ip](#publicIp)
+      * [Provision Nodes ](#provisionNodes)
+   * [Trouble Shooting](#troubleShooting)
+   * [Change Log](#changeLog)
+   * [Contact us](#contactUs)
+
+# Introduction
+This plugin implements Jenkins slave node provision mechanism. In CI/CD scenario, if your Jenkins master node is under high workload, use this plugin to provision slave [ECS](https://help.aliyun.com/document_detail/25367.htm) node, offloading master's workloads.
+
+The graph below illustrate how the Jenkins Master & Slave mechanism works.
+
+![Master&Slave Mechanism](docs/images/jenkins_cloud_mechanism.png)
+
+# Usage
+
+## Prerequisites
+Before starting, please make sure you have met the following requirements:    
+1. [Alibaba Cloud Account](https://account.aliyun.com/login/qr_login.htm). For international user, please refer to [Alibaba Cloud Global Account](https://account.alibabacloud.com/login/login.htm)
+2. [Alibaba Cloud AccessKey/SecretKey](https://ram.console.aliyun.com/manage/ak) for API access.
+![](docs/images/alibabacloud_ak_sk.png)
+3. Jenkins Master: A running Jenkins master is necessary, this plugins only provision slave node, and DOES NOT provision master node. 
+
+## STEP 1: Create a key pair for ECS <a id="SSHKey"></a>
+A key pair is necessary for the provisioned node in order to communicate with master node using SSH tunnel.
+ 
+1.1 Login to [ECS Console](https://ecs.console.aliyun.com/)
+
+1.2. Navigate to "Network and Security" > "Key Pair" menu
+
+![](docs/images/alibabacloud.keypair.png)
+
+1.3. Generate a Key Pair 
+Click "Create SSH Key Pair" button, generate the key according to the prompt, and save the generated key pair in ".PEM" format
+
+![](docs/images/alibabacloud.keypairgene.png)
+
+## STEP 2: Search & Download Alibaba Cloud ECS plugin <a id="downloadPlugin"></a>
+2.1 Login to your own Jenkins console. Navigate to the "Manage Jenkins" > "Manage Plugins" > "Available" menu
+
+![](docs/images/jenkins.avail.png)
+
+2.2 Type and search "Alibaba Cloud ECS"
+
+![](docs/images/alibabacloud_plugin_market.png)
+
+2.3 Install the plugin
+
+[Alibaba Cloud Credentials Plugin](https://plugins.jenkins.io/alibabacloud-credentials/) is necessary and will also be installed. 
+
+## STEP 3: Configure Clouds <a id="configureClouds"></a>
+### 3.1 Navigate to Configure Clouds Menu <a id="cloudsMenu"></a>
+Once you have finished the installation of ECS plugin, navigate to "Manage Jenkins" > "Manage Node and Clouds" > "Configure Clouds" menu
+
+![](docs/images/jenkins_configure_clouds.png)
+
+### 3.2 Add New Cloud <a id="addNewCloud"></a>
+Select "Alibaba Cloud ECS"
+
+![](docs/images/jenkins.cloudsConfigure.png) 
+
+### 3.3 Configure "Cloud Name" <a id="cloudsName"></a>
+A name is mandatory to identify the clouds. 
+
+![](docs/images/jenkins_configure_name.png)
+
+### 3.4 Tick "Jenkins Master In Private Network" <a id="privateNetwork"></a>
+Whether the current Jenkins Master is deployed in the VPC intranet environment (that is, whether it has access to the public network). 
+If your Jenkins Master is deployed in the intranet environment (that is, does not have access to the public network), 
+please check this option, and follow-up plug-ins Calling the Alibaba Cloud SDK will use the VPC private network domain name to make requests. 
+If this option is not checked, the public network domain name will be used for access by default, which will lead to unreachable access, 
+so the subsequent use of the plug-in will result in a "ConnectTimeoutException" exception. 
+If you have access to the public network (that is, you have access to the public network),
+you do not need to check this option. Subsequent calls to the Alibaba Cloud SDK will use the public network domain name for requests.
+
+
+### 3.5 Configure "Credentials" <a id="configurAkSK"></a>
+An effective is necessary. Plugin uses the credential(aka ak/sk) to invoke Alibaba Cloud ECS OpenAPI in order to create ECS as slave node. 
+
+#### 3.5.1 Add new credentials **-Required** <a id="addNewCredentials"></a>
+
+![](docs/images/configure_credentials_1.png)
+
+#### 3.5.2 Select "Alibaba Cloud Credentials" **-Required** <a id="alibabaCloudCredentials"></a>
+
+![](docs/images/jenkins_credentials_kind.png)
+
+#### 3.5.3 Input "Access Key ID" & "Secret Access Key" **-Required** <a id="inputAkAndSk"></a>
+* Type in the ak/sk you've previously created in [Prerequisites](#Prerequisites) part
+* Please make sure you don't have any warnings listed below: 
+
+![](docs/images/jenkins.Credentials.png)
+
+![](docs/images/jenkins.Credentials.check.png)
+
+![](docs/images/jenkins.right.png)
+
+#### 3.5.4 Configure "Credentials" **-Required** <a id="configureCredentials"></a>
+Select the credentials you've just created 
+
+![](docs/images/jenkins.testCre.png)
+
+### 3.6 Configure "Region" **-Required** <a id="configureRegion"></a>
+Select the right region where the slave ECS node will be provisioned.
+
+![](docs/images/jenkins_configure_region.png)
+
+### 3.7 Configure "Image" **-Required** <a id="configureImage"></a>
+Select the right image type.
+
+![](docs/images/jenkins_configure_image.png)
+
+### 3.8 Configure "VPC" **-Optional** <a id="configureVpc"></a>
+If there is any VPCs in your selected region, they will be listed in the "VPC" drop down list. And if no VPC found, a default VPC will be created with 172.16.0.0/12 CIDR block
+
+![](docs/images/jenkins_configure_vpc.png)
+
+
+### 3.9 Configure "Security Group" **-Optional** <a id="securityGroup"></a>
+If there is any Security Groups in your selected region, they will be listed in the "Security Group" drop down list. And if no security group found, a default security will be created with "22/22" port range access.
+
+![](docs/images/jenkins_configure_sg.png)
+
+
+### 4.0 Configure "ECS SSH Key" **-Required** <a id="ecsSSHKey"></a>
+* Enter the SSH Key obtained in [STEP 1: Create a key pair for ECS](#SSHKey)
+* Currently, only "SSH username with private key" is supported.
+
+![](docs/images/jenkins_configure_ssh_key.png)
+
+![](docs/images/jenkins.SSH.png)
+
+### 4.10 "Test Connection" **-Required** <a id="testConnection"></a>
+Before going on, you should click "Test Connection" button to run a thoroughly check and make sure all the required items are successfully configured.  
+
+![](docs/images/jenkins.conn.png)
+
+### 4.11 Configure "Available Zone" **-Optional** <a id="availableZone"></a>
+Select the right available zone where the slave ECS node will be provisioned. And if no Available Zone selected, a random zone will be selected.
+
+![](docs/images/jenkins_configure_az.png)
+
+
+### 4.12 Configure "VSW" **-Optional** <a id="configureVSW"></a>
+Select the right vsw where the slave ECS node will be provisioned. And if no VSW selected, a random vsw that doesn't overlap with the existing vsws will be created.
+
+![](docs/images/jenkins_configure_vsw.png)
+
+### 4.13 Configure "Instance Type" **-Optional** <a id="instanceType"></a>
+Select the right instance type that the slave ECS node will be provisioned. And if no instance type selected, a random instance type will be selected.
+
+![](docs/images/jenkins_configure_flavor.png)
+
+### 4.14 Configure "Minimum number of instances" **-Optional** <a id="minimumNumberOfInstance"></a>
+Minimum number of instances is the number of follower nodes used to generate the follower. 
+This plugin will create the follower according to the number filled in. The number should be at least 1
+
+![](docs/images/jenkins_configure_instance_count.png)
+
+### 4.15 Configure "Init Script" **-Optional** <a id="configureInitScript"></a>
+
+Init script is the shell script to be run on the newly launched follower node instance, before Jenkins starts launching
+a follower node. This is also a good place to install additional packages that you need for your builds and tests.
+
+### 4.16 Configure "Labels" **-Optional** <a id="configureLabels"></a>
+
+### 4.17 Configure "Remote FS root" **-Optional** <a id="remoteFSRoot"></a>
+
+### 4.18 Configure "Remote user"" **-Optional** <a id="remoteAdmin"></a>
+
+### 4.18 Configure "System Disk Category" **-Optional** <a id="systemDiskCategory"></a>
+
+### 4.19 Configure "System Disk Size" **-Optional** <a id="systemDiskSize"></a>
+
+### 4.20 Configure "Assign Public Ip" <a id="publicIp"></a>
+
+Whether to set the public network ip
+
+## STEP 4: Provision Nodes <a id="provisionNodes"></a>
+
+* After saving successfully, enter new nodes to add nodes. The initialization status is as follows:
+
+![](docs/images/jenkins.nodes.png)
+
+* After clicking the instance of provision via pot, the follower node will be initialized as follows:
+
+![](docs/images/jenkins.spot.png)
+
+* After a while, the state will be restored after the connection.
+
+![](docs/images/jenkins.rightspot.png)
+
+* Click the node drop-down box to perform relevant operations on the follower node.
+
+![](docs/images/jenkins.configSpot.png)
+
+* Click Configure to view the follower node information
+
+![](docs/images/jenkins.detailFollower.png)
+
+# Configure plugin via Groovy script
+
+Either automatically upon [Jenkins
+post-initialization](https://wiki.jenkins.io/display/JENKINS/Post-initialization+script) or
+through [Jenkins script
+console](https://wiki.jenkins.io/display/JENKINS/Jenkins+Script+Console),
+example:
+
+```groovy
+import com.alibabacloud.credentials.plugin.auth.AlibabaCredentials
+import com.alibabacloud.jenkins.ecs.AlibabaCloud
+import com.alibabacloud.jenkins.ecs.AlibabaEcsFollowerTemplate
+import com.cloudbees.plugins.credentials.*
+import com.cloudbees.plugins.credentials.domains.Domain
+import hudson.model.*
+import jenkins.model.Jenkins
+
+def AlibabaCredentialsParameters = [
+        id         : 'alibabacloud-jenkins-key',
+        description: 'Jenkins Key For Alibaba Cloud',
+        accessKey  : '${your-alibaba-cloud-ak}',
+        secretKey  : '${your-alibaba-cloud-sk}'
+]
+
+def AlibabaCloudFollowerTemplateParameters = [
+        region                  : '${your-region-no}', // cn-qingdao
+        zone                    : '${your-zone-no}', // cn-qingdao-c
+        instanceType            : '${your-instance-type}', // ecs.sn2ne.2xlarge
+        minimumNumberOfInstances: 1,
+        vsw                     : '${your-vsw-id}',
+        initScript              : "",
+        labelString             : 'Jenkins Agent',
+        remoteFs                : "/root",
+        remoteAdmin             : "root"
+]
+
+def AlibabaCloudParameters = [
+        cloudName    : 'AlibabaCloudECS',
+        sshKeyId     : '${your-ssh-key-id}', // 请先在 Dashboard/Credentials 里配置好SSH Key, 这里放的是SSH Key的ID
+        image        : '${your-image-id}',
+        vpc          : '${your-vpc-id}',
+        securityGroup: '${your-sg-id}'
+]
+
+// https://github.com/jenkinsci/alibabacloud-credentials-plugin/blob/master/src/main/java/com/alibabacloud/credentials/plugin/auth/AlibabaCredentials.java
+AlibabaCredentials alibabaCredentials = new AlibabaCredentials(
+        CredentialsScope.GLOBAL,
+        AlibabaCredentialsParameters.id,
+        AlibabaCredentialsParameters.accessKey,
+        AlibabaCredentialsParameters.secretKey,
+        AlibabaCredentialsParameters.description
+)
+
+// get Jenkins instance
+Jenkins jenkins = Jenkins.getInstance()
+
+// get credentials domain
+def domain = Domain.global()
+
+// get credentials store
+def store = jenkins.getExtensionList('com.cloudbees.plugins.credentials.SystemCredentialsProvider')[0].getStore()
+
+// add credential to store
+store.addCredentials(domain, alibabaCredentials)
+
+// https://github.com/jenkinsci/alibabacloud-ecs-plugin/blob/master/src/main/java/com/alibabacloud/jenkins/ecs/AlibabaEcsFollowerTemplate.java
+AlibabaEcsFollowerTemplate slaveTemplateQingdao = new AlibabaEcsFollowerTemplate(
+        AlibabaCloudFollowerTemplateParameters.region,
+        AlibabaCloudFollowerTemplateParameters.zone,
+        AlibabaCloudFollowerTemplateParameters.instanceType,
+        AlibabaCloudFollowerTemplateParameters.minimumNumberOfInstances,
+        AlibabaCloudFollowerTemplateParameters.vsw,
+        AlibabaCloudFollowerTemplateParameters.initScript,
+        AlibabaCloudFollowerTemplateParameters.labelString,
+        AlibabaCloudFollowerTemplateParameters.remoteFs,
+)
+
+// https://github.com/jenkinsci/alibabacloud-ecs-plugin/blob/master/src/main/java/com/alibabacloud/jenkins/ecs/AlibabaCloud.java
+AlibabaCloud alibabaCloud = new AlibabaCloud(
+        AlibabaCloudParameters.cloudName,
+        AlibabaCredentialsParameters.id,
+        AlibabaCloudParameters.sshKeyId,
+        AlibabaCloudFollowerTemplateParameters.region,
+        AlibabaCloudParameters.image,
+        AlibabaCloudParameters.vpc,
+        AlibabaCloudParameters.securityGroup,
+        AlibabaCloudFollowerTemplateParameters.zone,
+        AlibabaCloudFollowerTemplateParameters.vsw,
+        AlibabaCloudFollowerTemplateParameters.instanceType,
+        AlibabaCloudFollowerTemplateParameters.minimumNumberOfInstances,
+        AlibabaCloudFollowerTemplateParameters.initScript,
+        AlibabaCloudFollowerTemplateParameters.labelString,
+        AlibabaCloudFollowerTemplateParameters.remoteFs
+)
+
+// add cloud configuration to Jenkins
+jenkins.clouds.add(alibabaCloud)
+
+// save current Jenkins state to disk
+jenkins.save()
+```
+
+# Add nodes via pipeline
+[AlibabaEcs Step pipeline](https://github.com/jenkinsci/alibabacloud-ecs-plugin/blob/master/PIPELINESTEP.md)
+
+# Trouble Shooting <a id="troubleShooting"></a>
+* When you click the Save button, if the "SSH username with private key" connection test fails, the save 
+will succeed, but "provision node" will report an error of "a problem occurred while processing the request". 
+Therefore, please ensure that the connection is successful before saving.
+
+* Examples are as follows:
+![](docs/images/jenkins.cloud.primaryKey.png)
+![](docs/images/jenkins.provision.png)
+![](docs/images/jenkins.error.png)
+
+# Change Log <a id="changeLog"></a>
+[changelog](https://github.com/jenkinsci/alibabacloud-ecs-plugin/blob/master/CHANGELOG.md)
+
+#Contact us <a id="contactUs"></a>
+* If you have any questions or requirements, please scan the following QR code with [DingTalk QRCode](https://www.dingtalk.com/en)
+* DingTalk Group Number：44723358
+* DingTalk Group QR code
+
+  ![](docs/images/qrcode.png)
+

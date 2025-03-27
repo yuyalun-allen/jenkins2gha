@@ -1,0 +1,20 @@
+= Email Extension Template Plugin
+
+link:https://ci.jenkins.io/job/Plugins/job/emailext-template-plugin/job/master/[image:https://ci.jenkins.io/job/Plugins/job/emailext-template-plugin/job/master/badge/icon[Build Status]]
+link:https://github.com/jenkinsci/emailext-template-plugin/graphs/contributors[image:https://img.shields.io/github/contributors/jenkinsci/emailext-template-plugin.svg[Contributors]]
+link:https://plugins.jenkins.io/emailext-template[image:https://img.shields.io/jenkins/plugin/v/emailext-template.svg[Jenkins Plugin]]
+link:https://github.com/jenkinsci/emailext-template-plugin/releases/latest[image:https://img.shields.io/github/release/jenkinsci/emailext-template-plugin.svg?label=changelog[GitHub release]]
+link:https://plugins.jenkins.io/emailext-template[image:https://img.shields.io/jenkins/plugin/i/emailext-template.svg?color=blue[Jenkins Plugin Installs]]
+
+== Introduction
+
+This plugin allows you to configure templates for link:https://github.com/jenkinsci/email-ext-plugin[Email Extension] that can be reused across multiple jobs.
+
+== Issues
+
+Report issues and enhancements in the link:https://www.jenkins.io/participate/report-issue/redirect/#18764[Jenkins issue tracker].
+Use the `emailext-template-plugin` component in the `JENKINS` project.
+
+== Contributing
+
+Refer to our link:https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md[contribution guidelines].

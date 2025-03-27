@@ -1,0 +1,24 @@
+# Gitlab Automatic Item Creator
+Using Gitlab System Hook to automatically create/destroy jobs without any configurations.
+Meaningful in Gitlab-Jenkins system with lots of Java developers.
+
+# Installation
+This Plugin relies on Gitlab Plugin, you need to install it first.
+
+# Quick Start
+1. Open system configuration page and input your Gitlab configurations and Jenkins URL
+2. Create new Maven item with name of [mavenTemplate](Just support maven project right now)
+3. Click 'OK' button and go into configuration page 
+4. In Source management area, select Git and input url of any one of your repositories
+5. In Trigger area, check [Build when a change is pushed to GitLab...]
+6. Click save button
+7. Create new repository in Gitlab and upload your resource and the Jenkins would create item 
+   and run the build automatically.
+
+# Development
+
+## Debug Args
+set MAVEN_OPTS=-Xms256m -Xmx768m -XX:PermSize=128m -XX:MaxPermSize=512M -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=n
+
+## JPI Run
+mvn clean hpi:run -Dmaven.test.skip=true -Djetty.port=8090

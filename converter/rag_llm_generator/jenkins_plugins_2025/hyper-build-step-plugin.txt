@@ -1,0 +1,117 @@
+hyper-build-step-plugin
+=======================
+
+[![Build Status](https://travis-ci.org/jenkinsci/hyper-build-step-plugin.svg?branch=master)](https://travis-ci.org/jenkinsci/hyper-build-step-plugin)
+
+Run some tasks of Jenkins job in [Hyper.sh](https://hyper.sh) container.
+This plugin allows to add "Execute shell in Hyper.sh" build step into your job.
+
+
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Use plugin](#use-plugin)
+	- [Prerequisites](#prerequisites)
+	- [Install plugin by manually](#install-plugin-by-manually)
+	- [Config Hyper.sh](#config-hyper)
+	- [Config job](#config-job)
+	- [View build result](#view-build-result)
+- [Build plugin](#build-plugin)
+	- [Prerequisites](#prerequisites)
+	- [Compile](#compile)
+	- [Test](#test)
+	- [Package](#package)
+	- [Install](#install)
+
+<!-- /TOC -->
+
+# Use plugin
+
+## Prerequisites
+
+- Jenkins
+- [hyper-commons-plugin](https://github.com/jenkinsci/hyper-commons-plugin)
+
+## Install plugin by manually
+
+open Jenkins Web UI in web browser
+
+```
+Manage Jenkins -> Manage Plugins -> Advanced -> Upload Plugin
+```
+
+![](images/upload-plugin.PNG)
+
+
+## Config Hyper.sh
+
+- install `hyper-commons-plugin` first
+- login https://console.hyper.sh, then create credentials.
+
+```
+Config -> Configure System
+  -> Hyper Config : set AccessKey and SecretKey
+  -> Test connection
+  -> Download Hypercli
+```
+
+![](images/config-hyper-commons-plugin.PNG)
+
+
+## Config job
+
+```
+Config -> Build -> Execute shell in Hyper.sh
+```
+![](images/config-job.PNG)
+
+## View build result
+
+- click `Build Now` to start build job by manually
+- click `Console Output` to view build result
+
+![](images/view-result.PNG)
+
+
+# Build plugin
+
+## Prerequisites
+
+- java 1.8+
+- maven 3+
+
+## Compile
+```
+$ mvn compile
+```
+
+## Test
+
+compile + test
+
+```
+$ mvn test
+```
+
+## Package
+
+> **output**: target/hyper-build-step.hpi
+
+compile + test + package
+
+```
+$ mvn package
+
+//skip test
+$ mvn package -DskipTests
+```
+
+## Install
+
+compile + test + package + install
+
+```
+$ mvn install
+
+//skip test
+$ mvn install -DskipTests
+```

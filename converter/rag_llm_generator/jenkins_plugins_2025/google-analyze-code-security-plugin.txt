@@ -1,0 +1,71 @@
+<!--
+Copyright 2024 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+Jenkins Google Analyze Code Security Plugin
+=====================
+
+
+## Description
+The Google Analyze Code Security plugin for Jenkins identifies insecure configurations in Infrastructure as Code (IaC) files for Google Cloud resources. This plugin requires Terraform plan files
+in JSON format for scanning.
+
+
+Use this plugin to detect and remediate issues in IaC files for Google Cloud before you deploy the resources.
+
+
+This plugin lets you:
+- Scan IaC template files (such as Terraform plan files).
+- Display issues with their severity as a HTML Report in the Jenkins console after a scan completes.
+- Define severity-based failure criteria for passing or failing the build.
+
+
+Note : This is a Security Command Center Premium tier offering for subscription customers only. You must activate the Security Command Center Premium tier in the Google Cloud organization to use this feature.
+
+
+
+
+## Documentation
+For more information,  see the [Google Analyze Code Security Plugin usage documentation](docs/home.md).
+
+
+## Installation
+1. In the Jenkins console, click **Manage Jenkins** > **Manage Plugins**.
+1. (Optional) To verify that the plugin manager has updated data, click **Check now**.
+1. In the Plugin Manager, click the **Available** tab and look for *Google Analyze Code Security*.
+1. Select the box in the **Install** column and click **Install without restart**.
+1. If the plugin doesn’t appear as **Available**, make sure it appears under **Installed** and is enabled.
+
+
+## Plugin Source Build Installation
+To build and install the plugin from source files, see [Plugin Source Build Installation](docs/source_build_installation.md).
+
+
+## Feature Requests and Bug Reports
+For feature requests and bug reports, file a [GitHub issue](https://github.com/jenkinsci/google-analyze-code-security-plugin/issues).
+
+
+## Community
+
+
+To access the Google Cloud community on Jenkins, use the **#gcp-jenkins** Slack channel on
+[https://googlecloud-community.slack.com](https://googlecloud-community.slack.com). You can  use this channel to ask questions and share feedback. For an invitation link, see [gcp-slack](https://cloud.google.com/community#home-support).
+
+
+## License
+See [LICENSE](LICENSE.md)
+
+
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md)

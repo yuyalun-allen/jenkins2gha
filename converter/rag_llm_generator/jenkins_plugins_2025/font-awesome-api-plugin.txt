@@ -1,0 +1,57 @@
+:tip-caption: :bulb:
+:imagesdir: etc/images
+
+= Font Awesome Jenkins Plugin
+
+image:https://ci.jenkins.io/job/Plugins/job/font-awesome-api-plugin/job/main/badge/icon?subject=Jenkins%20CI[Jenkins, link=https://ci.jenkins.io/job/Plugins/job/font-awesome-api-plugin/job/main/]
+image:https://github.com/jenkinsci/font-awesome-api-plugin/workflows/GitHub%20CI/badge.svg[GitHub Actions, link=https://github.com/jenkinsci/font-awesome-api-plugin/actions]
+image:https://img.shields.io/github/issues-pr/jenkinsci/font-awesome-api-plugin.svg[GitHub pull requests, link=https://github.com/jenkinsci/font-awesome-api-plugin/pulls]
+
+Provides https://fontawesome.com[Font Awesome] for Jenkins Plugins. Font Awesome has vector icons and social logos,
+according to their self-perception, it is the web's most popular icon set and toolkit. Currently, it contains more than
+1,700 free icons.
+
+This plugin contains the SVG sprites of the latest https://fontawesome.com[Font Awesome] 6.x release and corresponding
+Jenkins UI elements (model).
+
+== How to use the plugin
+
+Jenkins plugins typically do not use icons very frequently. Most plugins provide an icon for the actions and that's it.
+If you intend to use icons in other places, plugin authors are left on their own: the recommended Tango icon set is more
+than 10 years old and too limited nowadays. There are several options available, but the most popular is the
+https://fontawesome.com[Font Awesome Icon Set]. It provides more than 1700 free icons that follow the same
+design guidelines:
+
+.Font Awesome icons in Jenkins plugins
+[#img-font-awesome]
+image::font-awesome.png[Font Awesome icons]
+
+In order to use Font Awesome icons in a plugin you simply need add a dependency to the latest version of this plugin:
+
+[source,xml]
+----
+<dependency>
+  <groupId>io.jenkins.plugins</groupId>
+  <artifactId>font-awesome-api</artifactId>
+  <version>[latest version]</version>
+</dependency>
+----
+
+Then use the new tag `svg-icon` in your jelly view:
+
+[source,xml,linenums]
+.index.jelly
+----
+<j:jelly xmlns:j="jelly:core"  xmlns:fa="/font-awesome">
+
+  [...]
+  <fa:svg-icon name="check-double" class="no-issues-banner"/>
+  [...]
+
+</j:jelly>
+----
+
+If you are generating views using Java code, then you also can use the class `SvgTag` to generate the
+HTML markup for such an icon.
+
+

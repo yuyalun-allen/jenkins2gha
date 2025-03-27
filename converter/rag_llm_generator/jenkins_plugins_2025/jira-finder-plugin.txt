@@ -1,0 +1,45 @@
+# JiraFa
+
+JiraFa (derived from "Jira Finder") is a Jenkins plugin that is extension of JUnit Jenkins plugin. Its goal is to save you as much time as possible during evaluation of functional tests results.
+
+Features:
+* automatically search configured JIRA for every test failure
+* suggests the issues for test failure
+* link the test failure with JIRA issues to mark it as "known failure"
+* depending on the links, filters the known and unknown failures allowing you to not waste time on evaluating the known failures over and over again
+
+## How to configure
+
+JiraFa needs a persistent storage in Jenkins for storing the associations test failure <--> JIRA issue.
+It uses a database for it, hence you need to configure it in the main Jenkins configuration.
+
+ 1. Go to Jenkins global configuration
+ 2. Configure Per-job database and Global database. To make it as easy as possible, you can use
+ SQLite Database plugin (https://wiki.jenkins-ci.org/display/JENKINS/SQLite+Database+Plugin)
+ 
+Now that you have global configuration done, you need to enable and configure JiraFa for the job,
+that you want to use it with. 
+
+ 1. Go to job configuration
+ 2. Add post-build action "Public JUnit test result report" from JUnit plugin
+ 3. In the post-build action, click "Add" at "	Additional test report features" and select "Jirafa extension"
+ 4. Configure the JIRA that you want to search
+ 
+Now you're ready to start working with JiraFa.
+ 
+## How does it work
+
+When executed a job, tests produce JUnit report, which you can see in "Test result" windows
+on build detail page. JiraFa will automatically mark test failures either known or unknown, meaning
+"known" are those failures that have no issue linked to it.
+
+If you click the "+" sign next to test failure, JiraFa will show you "Found issues" that it found in the JIRA related 
+to this test failure. You can link the JIRA to the failure making it known and it will appear next time it fails as known failure.
+ 
+JiraFa searches for package.test_name.method_name, package.test_name and test_name.method_name. If JiraFa is not able to find corresponding JIRA,
+just edit the description of the JIRA or add a comment to it with the test failure, JIRA will be then able to find it.
+
+
+
+
+

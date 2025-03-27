@@ -1,0 +1,3 @@
+# blueocean-test-ssh-server
+
+SSH Server for use in JUnit tests with Jenkins Plugins, since Jenkins bundles a very old version of SSHD.

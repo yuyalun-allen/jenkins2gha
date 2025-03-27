@@ -1,0 +1,4 @@
+project-build-times
+===================
+
+Jenkins Plugin for extended Dashboard View Plugin functionality. Adds trend graphs for build times.

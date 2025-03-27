@@ -1,0 +1,35 @@
+# Mend Cloud Native Security Scanner
+
+<img src="images/mend-new.png">
+
+
+[![Build Status](https://ci.jenkins.io/job/Plugins/job/mend-cloud-native-security-scanner-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/mend-cloud-native-security-scanner-plugin/job/master/)
+[![Contributors](https://img.shields.io/github/contributors/jenkinsci/mend-cloud-native-security-scanner-plugin.svg)](https://github.com/jenkinsci/mend-cloud-native-security-scanner-plugin/graphs/contributors)
+[![Jenkins Plugin](https://img.shields.io/jenkins/plugin/v/mend-cloud-native-security-scanner.svg)](https://plugins.jenkins.io/mend-cloud-native-security-scanner)
+[![GitHub release](https://img.shields.io/github/release/jenkinsci/mend-cloud-native-security-scanner-plugin.svg?label=changelog)](https://github.com/jenkinsci/mend-cloud-native-security-scanner-plugin/releases/latest)
+[![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/mend-cloud-native-security-scanner.svg?color=blue)](https://plugins.jenkins.io/mend-cloud-native-security-scanner)
+
+## Introduction
+This plugin downloads Mend.io Scanner CLI and performs image scan to detect vulnerabilities and other security risks.
+
+
+
+## Initial Configuration
+
+Scanner requires 4 variables to be configured:
+ ```
+ User Email - user email
+ User Key -  mend user key
+ Mend URL - mend application environment
+ Repositories - list of image repositories to scan from (separated by comma)
+ ```
+
+##
+
+This plugin is defined to be run (as a build step) after a new image creation on the jenkins machine:   
+According to the given repositories, for each repository the latest created image will be scanned and a summary table will be displayed. 
+This table consists of vulnerabilities data with their risk and fix version (if exists).     
+Also, other security risks, such as secrets detection will be presented.
+
+* The plugin assumed the local latest image was created and still exists on the jenkins machine.
+* The plugin download a dedicated scanner CLI according to the OS and the machine architecture

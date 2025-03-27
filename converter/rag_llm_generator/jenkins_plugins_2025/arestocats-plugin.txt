@@ -1,0 +1,30 @@
+# arestocats-plugin
+Jenkins-Plugin for tracking results metrics created with the
+aRESTocats REST API testing toolkit available at
+https://github.com/aixigo/arestocats.
+
+The plugin supports regular projects and pipelines.
+
+
+![](images/example.png?raw=true)
+![](images/pipeline.png?raw=true)
+![](images/metrics.png?raw=true)
+![](images/results.png?raw=true)
+
+## Plugin Configuration for regular projects
+
+See the help given when configuring it.
+Unless configured differently, arestocats will save reports to a directory reports.
+The results path is then reports/csv/*.csv
+and the metrics path is reports/metrics/*.json
+
+## Plugin Configuration for pipelines
+
+Configure the plugin in a Jenkinsfile post step:
+```
+post {
+        always {
+            arestocats resultsDatafilesPattern: "results/csv/*.csv", metricsDatafilesPattern: "results/metrics/*.json", numBuilds: 15
+        }
+    }
+```

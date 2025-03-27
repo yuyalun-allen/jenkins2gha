@@ -1,0 +1,65 @@
+selenium-axis-plugin
+
+This plugin creates an axis based on the Selenium grid capabilities.
+It will also build against the SauceLabs Selenium capability at the same time.
+
+So you can have an axis with both capabilities
+
+It does this by creating four environment variables to pass to the build phase. 
+
+<ul>
+<li> LABEL_URL for either the local Selenium or SauceLabs</li>
+<li> LABEL_BROWSER for the browser (e.g. chrome, firefox)</li>
+<li> LABEL_PLATFORM for the platform (e.g. LINUX, VISTA)</li>
+<li> LABEL_VERSION for the browser version
+</ul>
+
+You can use any label you want for the axis, so long as all the axes are unique
+
+This is an example test in Perl which can be run as a build step
+
+```perl
+
+use Test::More tests=>8;
+use_ok 'Selenium::Remote::Driver';
+
+ok $ENV{TEST_BROWSER}, "Browser name set";
+ok $ENV{TEST_PLATFORM}, "Platform name set";
+ok $ENV{TEST_VERSION}, "Version name set";
+ok $ENV{TEST_URL}, "URL set";
+
+my $browser  = $ENV{TEST_BROWSER};
+my $platform = $ENV{TEST_PLATFORM};
+my $version  = $ENV{TEST_VERSION};
+my $url      = $ENV{TEST_URL};
+
+#so perl likes the selenium url not to have http:// on the front
+#for SauceLabs this will be user:password@ which is set in the global config
+$url =~ s|^http://||;
+
+my $parms = [remote_server_addr=>$url ];
+
+push @$parms, (platform => $platform) unless $platform eq 'Any';
+push @$parms, (browser_name => $browser) unless $browser eq 'Any';
+push @$parms, (version => $version) unless $version eq 'Any';
+
+push @$parms, (extra_capabilities => {name => $ENV{BUILD_TAG}||$0 });
+
+use Data::Dumper;
+print Dumper ($parms);
+
+my $driver = new_ok('Selenium::Remote::Driver' => $parms);
+
+ok $driver->get('http://www.google.com');
+is $driver->get_title(), 'Google';
+$driver->quit();
+
+```
+
+For Selenium it will detect the capabilities and display them.
+For SauceLabs it will pick some at random from the available.
+Both will be rebuilt ar build time so new capabilities are incorporated without revisiting the project.
+
+I would advise using the <a href='https://wiki.jenkins-ci.org/display/JENKINS/Mask+Passwords+Plugin'>Mask Password Plugin</a> to mask passwords in the console log.
+
+You will need a SauceLabs account to use the SauceLabs part. If you don't want this then you can turn it off in the global config.

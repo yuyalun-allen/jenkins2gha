@@ -1,0 +1,21 @@
+Mogotest Jenkins Plugin
+=======================
+
+This plugin allows you to trigger a test run on the [Mogotest](http://mogotest.com/) [Web Consistency Testing](http://webconsistencytesting.com/)
+service.  It will be triggered as a post-build test and you will be notified by results via email.
+
+The primary goal of the plugin is to test any changes you've made to your web site or app after you've deployed
+the changes out to either production or a staging environment.  This plugin is most valuable as an aide in continuous
+deployment.
+
+Requirements
+------------
+
+* An active Mogotest account
+* A Jenkins installation
+
+Usage
+-----
+
+There is no global configuration for the plugin.  Its entire configuration is done per-job and is available as a post-build
+action.

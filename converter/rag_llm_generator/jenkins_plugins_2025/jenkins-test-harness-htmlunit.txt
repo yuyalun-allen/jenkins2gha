@@ -1,0 +1,2 @@
+# jenkins-test-harness-htmlunit
+HtmlUnit dependency to use in the Jenkins Test Harness

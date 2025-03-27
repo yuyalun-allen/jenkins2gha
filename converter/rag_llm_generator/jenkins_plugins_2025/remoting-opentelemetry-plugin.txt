@@ -1,0 +1,292 @@
+[[remoting-opentelemetry-plugin]]
+= Jenkins Remoting monitoring with OpenTelemetry Plugin
+:toc: macro
+:toclevels: 1
+:toc-title:
+
+image::https://img.shields.io/badge/chat-on%20slack-yellow?logo=slack[link="https://cdeliveryfdn.slack.com/archives/C023E83AMAL"]
+
+toc::[]
+
+[#introduction]
+== Introduction
+
+=== Goal
+
+image:./doc/image/goal.png[Goal of Remoting Monitoring with OpenTelemetry, align="center", width=700]
+
+*The goal of this project:*
+
+* collect telemetry data(metrics, traces, logs) of remoting module with
+OpenTelemetry.
+* send the telemetry data to OpenTelemetry Protocol endpoint
+
+Which OpenTelemetry endpoint to use and how to visualize the data are up to
+users.
+Collect telemetry data of Jenkins Remoting using OpenTelemetry.
+
+=== OpenTelemetry
+
+image:https://cncf-branding.netlify.app/img/projects/opentelemetry/horizontal/color/opentelemetry-horizontal-color.png[OpenTelemetry Logo, link=https://opentelemetry.io/, width=300]
+
+*An observability framework for cloud-native software*
+
+____
+OpenTelemetry is a collection of tools, APIs, and SDKs.
+You can use it to instrument, generate, collect, and export telemetry
+data(metrics, logs, and traces) for analysis in order to understand your
+software's performance and behavior.
+____
+
+[#quick-demo]
+== Quick Demo
+
+=== Using Minikube and Kubernetes plugins
+
+Visit https://github.com/Aki-7/remoting-opentelemetry-kubernetes-demo
+
+=== Using Docker compose
+
+Clone our link:https://github.com/jenkinsci/remoting-opentelemetry-plugin[repository], and then,
+
+[source,console]
+....
+$ cd example
+$ docker-compose up # it may take few minutes
+....
+
+This will set up
+
+* Jenkins controller
+** preconfigured with JCasC
+* Jenkins inbound agents
+** instrumented with our monitoring engine
+* OpenTelemetry Collector
+* Loki for Log aggregation
+* Prometheus for metric backend
+* Grafana for log and metric visualization
+** datasource is already configured
+
+Open Grafana: http://localhost:3000/explore
+
+You can see agents' log in Loki datasource and agents' metrics in Prometheus datasource.
+
+[#getting-started]
+== Getting started with Inbound Agent
+
+==== 1. Install Remoting monitoring with OpenTelemetry Plugin
+
+Please install Remoting monitoring with OpenTelemetry Plugin into your Jenkins controller.
+
+If you want, you can set up Jenkins controller with this plugin installed using Docker Compose.
+Please <<2. Setup OpenTelemetry protocol endpoint and monitoring backends, the next section>> for details.
+
+Plugin page: https://plugins.jenkins.io/remoting-opentelemetry
+
+==== 2. Setup OpenTelemetry protocol endpoint and monitoring backends
+
+We prepare docker-compose.yaml to set up them.
+Use it if you just want to try.
+
+Clone our link:https://github.com/jenkinsci/remoting-opentelemetry-plugin[repository], and then
+
+[source,console]
+....
+$ cd example
+$ docker-compose up otel_collector loki prometheus grafana jenkins_blueocean
+# or if you use your own Jenkins controller,
+$ docker-compose up otel_collector loki prometheus grafana
+....
+
+This will set up
+
+* OpenTelemetry Collector
+* Loki for Log aggregation
+* Prometheus for metric backend
+* Grafana for log and metric visualization
+** datasource is already configured
+* Jenkins Controller
+** Remoting monitoring with OpenTelemetry Plugin is preinstalled.
+
+==== 3. Download monitoring-engine
+
+Download `remoting-opentelemetry-engine.jar` from Jenkins maven repository.
+
+[source,console,subs="attributes"]
+....
+$ curl "https://repo.jenkins-ci.org/artifactory/releases/io/jenkins/plugins/remoting-opentelemetry-engine/[RELEASE]/remoting-opentelemetry-engine-[RELEASE].jar" -o remoting-opentelemetry-engine.jar
+....
+:!version:
+
+We will use this JAR as java agent when launching agent.
+
+==== 4. Create `logging.properties` file.
+
+Use `io.jenkins.plugins.remotingopentelemetry.engine.log.OpenTelemetryLogHandler` for handler.
+
+.logging.properties
+[source,properties]
+....
+handlers=io.jenkins.plugins.remotingopentelemetry.engine.log.OpenTelemetryLogHandler,java.util.logging.ConsoleHandler
+.level=INFO
+....
+
+==== 5. Launch Jenkins agent
+
+Setup jenkins controller and launch agent with `-javaagent` and `-loggingConfig` option.
+
+[source,console]
+....
+$ export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:55680
+$ java \
+-javaagent:remoting-opentelemetry-engine.jar \
+-jar agent.jar \
+-jnlpUrl <jnlp url> \
+-loggingConfig logging.properties
+....
+
+==== 6. Explore logs and metrics
+
+Open Grafana: http://localhost:3000/explore
+
+== Configuration options
+
+We can configure the monitoring engine via environment variables.
+
+|===
+|environment variable|require|example / description
+
+.2+|OTEL_EXPORTER_OTLP_ENDPOINT .2+|true|`http://localhost:55680`
+|Target to which the exporter is going to send spans, metrics or logs.
+.2+|SERVICE_INSTANCE_ID .2+|false|90caeb02-a5ba-4827-bb3e-63babecfa893
+|The string ID of the service instance. If not provided, UUID will be generated every time the agent launches.
+Note: If you don't set this value, the service instance id will be changed everytime the agent restarts.
+.2+|REMOTING_OTEL_METRIC_FILTER .2+|false|"system\.cpu\..*"
+|Set regex filter for metrics. The metrics whose name match the regex will be collected.
+The default value is ".*" and collect all the metrics.
+|===
+
+== Specification
+
+=== Resource
+
+Following resource attributes will be provided.
+
+|===
+|key|value|description
+
+|service_namespace|"jenkins"|This value will be configurable in the future.
+|service_namespace|"jenkins-agent"|This value will be configurable in the future.
+|service_instance_id|Node name|
+|===
+
+=== Logs
+
+Only logs emitted via `java.util.logging` will be collected for now.
+
+Following attributes will be provided.
+
+|===
+|key|example|description
+
+|log.level|INFO|Log level name. See `java.util.logging.Level.getName`.
+|code.namespace|hudson.remoting.jnlp.Main$CuiListener|The name of the class that (allegedly) issued the logging request.
+|code.function|status|The name of the method that (allegedly) issued the logging request.
+|exception.type|java.io.IOException|The class name of the throwable associated with the log record.
+|exception.message|Broken pipe|The detail message string of the throwable associated with the log record.
+|exception.stacktrace|java.io.IOException: Broken pipe at hudson.remoting.Engine.innerRun(Engine.java:784) at hudson.remoting.Engine.run(Engine.java:575)
+|The stacktrace the throwable associated with the log record.
+
+|===
+
+=== Spans
+
+TBD
+
+=== Metrics
+
+Following metrics will be collected.
+
+|===
+|metrics|unit| label key | label value | description
+|jenkins.agent.connection.establishments.count|1||
+|The count of connection establishments. The value will be reset when the agent restarts.
+
+|system.cpu.load|1||
+|System CPU load. See `com.sun.management.OperatingSystemMXBean.getSystemCpuLoad`
+
+|system.cpu.load.average.1m|||
+|System CPU load average 1 minute See `java.lang.management.OperatingSystemMXBean.getSystemLoadAverage`
+
+|system.memory.usage|byte|state|`used`, `free`
+|
+see `com.sun.management.OperatingSystemMXBean.getTotalPhysicalMemorySize`
+and `com.sun.management.OperatingSystemMXBean.getFreePhysicalMemorySize`
+
+|system.memory.utilization|1||
+|
+System memory utilization,
+see `com.sun.management.OperatingSystemMXBean.getTotalPhysicalMemorySize`
+and `com.sun.management.OperatingSystemMXBean.getFreePhysicalMemorySize`.
+Report 0% if no physical memory is discovered by the JVM.
+
+|system.paging.usage|byte|state|`used`, `free`
+|
+see `com.sun.management.OperatingSystemMXBean.getFreeSwapSpaceSize`
+and `com.sun.management.OperatingSystemMXBean.getTotalSwapSpaceSize`.
+
+|system.paging.utilization|1||
+|
+see `com.sun.management.OperatingSystemMXBean.getFreeSwapSpaceSize`
+and `com.sun.management.OperatingSystemMXBean.getTotalSwapSpaceSize`.
+Report 0% if no swap memory is discovered by the JVM.
+
+.5+|system.filesystem.usage .5+|byte|device|(identifier)
+.5+|System level filesystem usage. Linux only (get mount data from /proc/mounts).
+|state| `used`, `free`
+|type| `ext4`, `tmpfs`, etc.
+|mode| `rw`,`ro`,etc.
+|mountpoint| (path)
+
+.5+|system.filesystem.utilization .5+|1|device|(identifier)
+.5+|System level filesystem utilization (0.0 to 1.0). Linux only (get mount data from /proc/mounts).
+|state| `used`, `free`
+|type| `ext4`, `tmpfs`, etc.
+|mode| `rw`,`ro`,etc.
+|mountpoint| (path)
+
+|process.cpu.load|%||
+|Process CPU load. See `com.sun.management.OperatingSystemMXBean.getProcessCpuLoad`.
+
+|process.cpu.time|ns||
+|Process CPU time. See `com.sun.management.OperatingSystemMXBean.getProcessCpuTime`.
+
+.2+|runtime.jvm.memory.area .2+|bytes|type|`used`, `committed`, `max`
+.2+|see link:https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html[MemoryUsage]
+|area|`heap`, `non_heap`
+
+.2+|runtime.jvm.memory.pool .2+|bytes|type|`used`, `committed`, `max`
+.2+|see link:https://docs.oracle.com/en/java/javase/11/docs/api/java.management/java/lang/management/MemoryUsage.html[MemoryUsage]
+|pool|`PS Eden Space`, `G1 Old Gen`...
+
+|runtime.jvm.gc.time|ms|gc| `G1 Young Generation`, `G1 Old Generation`, ...
+|see link:https://docs.oracle.com/en/java/javase/11/docs/api/jdk.management/com/sun/management/GarbageCollectorMXBean.html[GarbageCollectorMXBean]
+
+|runtime.jvm.gc.count|1|gc| `G1 Young Generation`, `G1 Old Generation`, ...
+|see link:https://docs.oracle.com/en/java/javase/11/docs/api/jdk.management/com/sun/management/GarbageCollectorMXBean.html[GarbageCollectorMXBean]
+
+|===
+
+[#contributing]
+== Contributing
+
+Refer to our link:CONTRIBUTING.adoc[contribution guidelines].
+
+[#license]
+== LICENSE
+
+Licensed under MIT, see link:LICENSE[LICENSE]
+
+[#links]
+== Links
+* link:https://www.jenkins.io/projects/gsoc/2021/projects/remoting-monitoring/[Jenkins.io project page]

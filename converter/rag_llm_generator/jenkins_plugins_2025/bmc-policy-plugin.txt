@@ -1,0 +1,105 @@
+# Jenkins Plugin for Poliy Service Connectors
+
+## Synopsis
+The connector Plugin integrates Jenkins with BMC Policy Service connectors. This plugin adds a build step and a post-build action that can be configured to invoke the policy connectors
+
+## Motivation
+It is desirable to perform some of the policy checks during the devops cycle. Jenkins being the popular tool that is used by many for build/CI integraion, it makes sense to add hooks to jenkins for invoking BMC policy service checks.
+
+## Getting Started
+To get started you can clone the bmc-connector-jenkins-plugin repository and build with maven.
+
+### Prerequisites
+* Java 8
+* [Apache Maven][maven] 3.3.9 or later
+
+### Build and Run
+
+#### Build Instructions
+```
+* git clone https://github.com/jenkinsci/bmc-policy-plugin.git
+* cd bmc-connector-jenkins-plugin
+* mvn package
+```
+This command will build the jenkins plugin hpi file for you.
+
+#### Installing 
+1.	Go to Manage Jenkins >  Manage Plugins > Advanced
+2. 	Scroll down to 'Upload Plugin' section
+	Click on 'Choose File' to select the 'bmc-policy-connector.hpi' file
+        Click on 'Upload' to install the plugin
+   You can verify the successful installation by checking the plugin status at
+                   Manage Jenkins > Manage Plugins > Installed. You will see 'BMC Policy Service Plugin' in the list. The plugin is ready for use now.
+ 
+ 
+
+### Artifacts
+
+The mvn package command will generate the artifact **bmc-policy-connector.hpi**.
+
+### Tests
+Tests use junit and mockito framework. Tests are run as part of the build. 
+#### Code Coverage report
+If code coverage report is needed run 'mvn cobertura:cobertura' to generate the report.
+
+## Usage of BMC Policy Service Plugin 
+
+The plugin needs to be configured before being available for use. There is a global configuration and a Job level configuration that is needed.
+
+### Global configuration of the Plugin:
+1.	Go to Manage Jenkins > Configure System.
+2.	In the BMC Policy Policy Service Configuration section, click 'Add Connector', and provide the following information:
+	*	Name: Name for the policy service plugin connector
+	* 	Path to the executable: Executable name with complete path. For e.g. /opt/connector/test/run.sh	
+	* 	Arguments: Arguments to pass to the connector if any.	
+	*	Connector resides in remote system: Check this option if the connector is running on remote system
+	*	Hostname: Remote system hsotname/ip
+	*	Port: SSH port (defaults to 22)	
+ 	*	Username: username to use to login by ssh	
+ 	*	Password: Password to use to login by ssh	
+3.	Click Save
+        You can add any number of connectors. If remote connector option is choosen then the plugin will use SSH to execute the connector on the remote system. All arguments are passed to the connector invocation.
+
+### Job Configuration
+#### To use the configured policy service connectors in build step:
+1.	Click on a Job.
+2.	Click on configure.
+3.	In the Build section, from the Add build step list, select 'Invoke BMC Policy Service'
+4.	In the Invoke BMC Policy Service section, provide the following information:
+	*	Select the Connector: Selecte a previously configured connector from the dropdown list.
+	*	Policy Name: Type in a policy name that this connector can evaluate.	
+	*	Connector arguments(optional): Any optional arguments from the job that you need to pass in to the connector. 	
+5.	Click Save.
+
+#### To use the configured policy service connectors in post build step:
+1.	Click on a Job.
+2.	Click on configure.
+3.	In the Post-build Action section, from the Add post-build action list, select 'Invoke BMC Policy Service'
+4.	In the Invoke BMC Policy Service section, provide the following information:
+	*	Select the Connector: Selecte a previously configured connector from the dropdown list.
+	*	Policy Name: Type in a policy name that this connector can evaluate.	
+	*	Connector arguments(optional): Any optional arguments from the job that you need to pass in to the connector. 	
+5.	Click Save.
+
+
+### Code example
+N.A.
+
+### API Reference
+N.A.
+
+## Contributors
+So you want to contribute to this repository?  Great!
+
+### Filing an issue
+Should you find problems, please create an [issue](https://github.com/jenkinsci/bmc-policy-plugin/issues/new).  Otherwise, you can mail [Sudesh Kodialbail ](mailto:sudesh_kodialbail@bmc.com) for questions or comments.  
+
+### Contributions
+In order to make contributions, please follow these steps
+  1.  Submit an issue describing your proposed changes
+  2.  The repo owner will respond to your issue promptly
+  3.  If your proposed change is accepted, fork the repo, develop and test your changes
+  4.  Submit a pull request
+
+## License
+Jenkins Plugin for Policy Service Connector is under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.

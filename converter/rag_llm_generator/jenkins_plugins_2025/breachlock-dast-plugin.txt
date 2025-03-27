@@ -1,0 +1,69 @@
+# Breachlock DAST Jenkins Plugin
+
+
+This is a fully integrated Jenkins plugin for Breachlock's Dynamic Application Scanner (DAST).
+
+Our DAST supports, but is not limited to the following:
+
+ 1. AI-enabled deep web scans.
+ 2. OWASP Top 10 Coverage.
+ 3. Authenticated Scans.
+ 4. A fast and accurate crawler.
+ 5. API Security Scanning.
+ 6. Online Support by Security Experts.
+
+## Requirements
+
+### Prerequisite
+To use the DAST-plugin the following requirements needs to be satisfied:
+ 1. You will need an account with our [SaaS solution](https://app.breachlock.com/).
+ 2. After onboarding you will need to supply us with your online assets.
+ 3. Obtain the Jenkins integration API key unique to your company.
+
+### Obtaining your API key
+After logging in your API key can be found on the Breachlock Platform under:
+
+`Organization settings > Integrations > Jenkins`
+
+![](images/connect.jpg)
+
+Choose **Connect with Jenkins** and you will be met with a new window displaying your API key.
+
+![](images/api-key.jpg)
+
+Should you in the future wish to review your API key or decide you no longer want the integration with Jenkins to be active you can always revisit the panel.
+
+![](images/manage-key.jpg)
+
+## Setting up the plugin
+
+After installing the plugin you can now add the DAST functionality to **freestyle projects**.
+
+Go to the `configuration options` of your desired project and as a build step add the **Breachlock DAST scan** plugin.
+
+![](images/build-step.png)
+
+Provide any email-address from that has access to SaaS platform that is mapped under your organization and follow the steps described in *Obtaining your API key* to get your organization wide API key.
+
+![](images/build-step-end.png)
+
+If both fields are validated by our platform we will supply you with a list of registered assets from our platform.
+
+If the asset you are looking for is missing:
+
+ 1. Make sure it's registered on the Breachlock Platform.
+ 2. Check if your Jenkins installation can connect to https://app.breachlock.com/.
+ 3. Contact support if the problem keeps persisting.
+
+  Finally use "Register to Breachlock" to ensure that your Jenkins installation can communicate freely with our SaaS platform.
+
+## Starting a scan
+An automated scan will start every time a project with the DAST plugin is build. You control when a project is build, so you control when a scan is performed.
+
+Make sure the selected asset is **publicly available** before engaging in a DAST scan.
+
+On each stage of the scan you will be notified by email on the e-mail address provided in the project setup. After completion you can log in to the Breachlock platform to download the full report.
+
+## Support
+
+For support and further questions you can open a [Support ticket](https://app.breachlock.com/tickets) after logging in to [our platform](https://app.breachlock.com).

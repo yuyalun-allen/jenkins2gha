@@ -1,0 +1,4 @@
+mail-reminder-plugin
+====================
+
+Send Email to user when build success, fail, or result changed

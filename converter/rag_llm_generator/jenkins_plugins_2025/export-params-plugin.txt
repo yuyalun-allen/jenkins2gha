@@ -1,0 +1,91 @@
+export-params-plugin: Export Parameters Plugin for Jenkins
+==============================
+
+* Author: rinrinne a.k.a. rin_ne
+* Repository: http://github.com/jenkinsci/export-params-plugin
+* Plugin Information: https://wiki.jenkins-ci.org/display/JENKINS/Export+Parameters+Plugin
+
+Synopsis
+----------------
+
+This is a [Jenkins][jenkins] plugin.
+This can export [Jenkins][jenkins] provided parameters to file with various formats.
+
+Usage
+----------------
+
+If you install this plugin, you can select **Export parameters to file** item from `Add build step` dropdown list in job configuration.
+
+
+Example for exported file
+--------------------------
+
+* Parameters
+  * PARAM_STRING `foobar`
+  * PARAM_BOOL *checked*
+  * PARAM_TEXT
+```
+orange
+apple
+grape
+```
+
+* Properties
+
+```properties
+#Mon Apr 03 23:00:00 JST 2014
+PARAM_TEXT=orange\napple\ngrape
+PARAM_BOOL=true
+PARAM_STRING=foobar
+```
+
+* XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="PARAM_TEXT">orange
+apple
+grape</entry>
+<entry key="PARAM_BOOL">true</entry>
+<entry key="PARAM_STRING">foobar</entry>
+</properties>
+```
+
+* JSON
+
+```json
+[{"key":"PARAM_BOOL","value":"true"},{"key":"PARAM_STRING","value":"foobar"},{"key":"PARAM_TEXT","value":"orange\napple\ngrape"}]
+```
+
+* YAML
+
+```yaml
+- key: PARAM_BOOL
+  value: 'true'
+- key: PARAM_STRING
+  value: foobar
+- key: PARAM_TEXT
+  value: |-
+    orange
+    apple
+    grape
+```
+
+Material
+----------------
+
+* [Jenkins][jenkins]
+
+[jenkins]: http://jenkins-ci.org/
+
+License
+----------------
+
+MIT License
+
+Copyright
+----------------
+
+Copyright (c) 2014-2016 rinrinne a.k.a. rin_ne

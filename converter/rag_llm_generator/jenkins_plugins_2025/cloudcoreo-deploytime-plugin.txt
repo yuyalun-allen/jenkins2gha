@@ -1,0 +1,6 @@
+# CloudCoreo DeployTime Plugin for Jenkins
+
+Allows for inspection of cloud objects at time of deploy against contexts on the CloudCoreo platform.
+
+For more information, visit the wiki page:
+<https://wiki.jenkins-ci.org/display/JENKINS/CloudCoreo+DeployTime+Plugin>

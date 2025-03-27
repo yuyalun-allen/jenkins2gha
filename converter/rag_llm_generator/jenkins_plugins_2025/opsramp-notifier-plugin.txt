@@ -1,0 +1,53 @@
+# opsramp-jenkins-plugin
+A Jenkins plugin to receive build status events as OpsRamp alerts
+
+Requirements
+============
+
+* An account at **[OpsRamp][]**
+* ** Jenkins** integration should install
+* **Jenkins 1.605** or newer
+
+Usage
+=====
+
+Use the OpsRamp Notifier to get build status events as OpsRamp alerts.
+
+1. In your Jenkins, define configuration details in global and use these details to invoke build notification statues. 
+ a. Go to *Manage Jenkins* section
+ b. Click on *Configure System*. At bottom, you will find *OpsRamp Notifier* section.
+ c. Enter required details  (*Client ID, API Key and API Secret*).
+2. In job configuration go to the *Post-build Actions* section, click on *Add post-build action* and select *OpsRamp  notification*
+
+If you have configured everything correctly, Jenkins will notify you build status events as alerts.
+
+Maintainers
+===========
+
+* Srini T
+
+License
+-------
+
+	(The MIT License)
+
+	Copyright  2018 OpsRamp, Inc. All Rights Reserved.
+
+	Permission is hereby granted, free of charge, to any person obtaining
+	a copy of this software and associated documentation files (the
+	'Software'), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish,
+	distribute, sublicense, and/or sell copies of the Software, and to
+	permit persons to whom the Software is furnished to do so, subject to
+	the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

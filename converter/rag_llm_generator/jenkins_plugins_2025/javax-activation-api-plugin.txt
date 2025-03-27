@@ -1,0 +1,3 @@
+# JavaBeans Activation Framework (JAF) API Plugin
+
+This plugin provides the [JavaBeans Activation Framework (JAF)](https://github.com/javaee/activation) API for other plugins.

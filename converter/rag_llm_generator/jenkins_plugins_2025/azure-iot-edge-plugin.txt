@@ -1,0 +1,130 @@
+# Azure IoT Edge Plugin is deprecated and up for adoption. We are looking for new maintainers. 
+- Please refer to [original plugin readme for instructions](readme.old.md) if you are still using the Jenkins plugin.
+- Please find detailed instructions below to learn how to use [Azure IoT Edge Dev Tool](https://github.com/Azure/iotedgedev) to set up your Jenkins pipeline while this plugin is deprecated.
+
+# Deploy to Azure IoT Edge solution using Jenkins with Azure IoT Edge Dev Tool
+
+Azure IoT Edge is a fully managed service built on Azure IoT Hub. Deploy your cloud workloads—artificial intelligence, Azure and third-party services, or your own business logic—to run on Internet of Things (IoT) edge devices via standard containers. This tutorial shows how to build and deploy your IoT Edge modules to Azure IoT Edge devices with Jenkins.
+
+## Prerequisites
+
+- **Azure subscription** : If you don&#39;t have an Azure subscription, create a [free account](https://azure.microsoft.com/free/?ref=microsoft.com&amp;utm_source=microsoft.com&amp;utm_medium=docs&amp;utm_campaign=visualstudio) before you begin.
+- **Azure IoT Hub and Azure IoT Edge device:** If you don&#39;t have them created, follow the [Quickstart create an Azure IoT Edge device on Linux](https://docs.microsoft.com/en-us/azure/iot-edge/quickstart-linux?view=iotedge-2018-06)
+- **Azure Container Registry:** if you don&#39;t have one, follow the [Quickstart - Create registry in portal - Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/container-registry-get-started-portal)
+- **Jenkins server** : If you don&#39;t have a Jenkins server installed, refer to the article, [Create a Jenkins server on Azure](https://docs.microsoft.com/en-us/azure/developer/jenkins/configure-on-linux-vm).
+
+## View the source code
+
+The IoT Edge solution sample code for this tutorial is located in [Azure-Samples/azure-iot-edge-devops-sample-dotnet: Azure IoT Edge sample project for .NET (github.com)](https://github.com/Azure-Samples/azure-iot-edge-devops-sample-dotnet).
+
+## Prepare Jenkins server
+
+The following steps explain how to prepare the Jenkins server:
+
+1. Deploy a [Jenkins server](https://azuremarketplace.microsoft.com/marketplace/apps/bitnami.production-jenkins) on Azure. If you don&#39;t already have an instance of the Jenkins server installed, the article, [Create a Jenkins server on Azure](https://docs.microsoft.com/en-us/azure/developer/jenkins/configure-on-linux-vm) guides you through the process.
+2. Sign in to the Jenkins instance with SSH.
+3. Switch to `jenkins` user by running command `su jenkins`
+4. Install the following tools with jenkins user
+   1. [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt) and [Azure IoT extension for Azure CLI](https://github.com/Azure/azure-iot-cli-extension/#installation)
+   2. [Python 3.6](https://www.python.org/downloads/) or higher
+   3. [Pip 21.0](https://pip.pypa.io/en/stable/installing/) or higher
+   4. [Docker enginer](https://docs.docker.com/engine/install/ubuntu/) and [add `jenkins` user to the docker group](https://docs.docker.com/engine/install/linux-postinstall/).
+   5. [Iotedgedev CLI](https://github.com/Azure/iotedgedev/wiki/manual-dev-machine-setup)
+   6. The corresponding language runtime and build tools. In this tutorial, you will start with IoT Edge C# module sample project, make sure you [Install .NET](https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu). If you are building IoT Edge modules in other language, make sure you have the corresponding tools.
+
+The following steps show how to specify your Azure credential for your IoT Edge solution:
+
+1. Within the Jenkins dashboard, select **Manage Jenkins -\&gt; Manage Plugins -\&gt; Installed** , make sure the [Credentials plug-in](https://plugins.jenkins.io/credentials/) is installed.
+2. Jenkins needs an Azure service principal to authenticate and access Azure resources. Follow the steps below to add a [Microsoft Azure service principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?toc=%252fazure%252fazure-resource-manager%252ftoc.json) into Jenkins credentials. Within the Jenkins dashboard, select **Manage Jenkins -\&gt; Manage Credentials -\&gt; Global credentials (unrestricted).** Click **Add Credentials**  to add a [Microsoft Azure service principal](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?toc=%252fazure%252fazure-resource-manager%252ftoc.json). Make sure that the credential kind is _ **Username with password** _ and enter the following items then select **OK** :
+   - **Username** : Service principal _appId_
+   - **Password** : Service principal _password_
+   - **ID** : Credential identifier (such as _AzureServicePrincipal_)
+
+   Also take a note of the Tenant ID, you will use that in the Jenkins pipeline.
+
+3. In the Jenkins pipeline, IoT Hub Connection String is needed to manage IoT devices and create IoT Edge deployment. Click **Add Credentials**  to add your IoT Hub Connection String. Make sure that the credential kind is _ **Secret text** _ and enter the following items then select **OK** :
+   1. **Secret** : your IoT Hub connection string
+   2. **ID** : Credential identifier (such as _IotHubConnectionString_)
+4. In the Jenkins pipeline, IoT Edge Device Connection String is needed to create IoT Edge deployment. Click **Add Credentials**  to add your IoT Edge Device Connection String String. Make sure that the credential kind is _ **Secret text** _ and enter the following items then select **OK** :
+   1. **Secret** : your IoT Edge device connection string
+   2. **ID** : Credential identifier (such as _DeviceConnectionString_)
+
+    ![](doc/cred.png)
+
+# Fork the sample GitHub repo
+
+1. Sign in to the GitHub repo for [Azure IoT Edge DevOps sample project](https://github.com/Azure-Samples/azure-iot-edge-devops-sample-dotnet).
+2. In the upper-right corner in GitHub, choose  **Fork**.
+3. Follow the prompts to select your GitHub account and finish forking.
+
+# Create a Jenkins Pipeline
+
+In this section, you create the [Jenkins Pipeline](https://jenkins.io/doc/book/pipeline/).
+
+1. In your forked repo, add a new _JenkinsFile_ in the root folder with the content below. Make sure you put your subscription id, your tenant id and your ACR address in the withEnv section.
+
+    ```groovy
+    node {
+        withEnv(["AZURE_SUBSCRIPTION_ID={YOUR_SUB_ID}",
+                "AZURE_TENANT_ID={YOUR_TENANT_ID}",
+                "ACR_ADDRESS={YOUR_ACR_ADDRESS} ",
+                "BUILD_BUILDID=${env.BUILD_NUMBER}",
+                "PATH+EXTRA=/var/lib/jenkins/.local/bin/"]) {
+            stage('Init') {
+                cleanWs()
+                checkout scm
+            }
+
+            stage('Build IoT Edge Modules') {
+                sh 'iotedgedev build'
+            }
+
+            stage('Publish IoT Edge Modules') {
+                // login Azure
+                withCredentials([usernamePassword(credentialsId: 'AzureServicePrincipal', passwordVariable: 'AZURE_CLIENT_SECRET', usernameVariable: 'AZURE_CLIENT_ID')]) {
+                sh '''
+                    az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET -t $AZURE_TENANT_ID
+                    az account set -s $AZURE_SUBSCRIPTION_ID
+                    az acr login -n $ACR_ADDRESS -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET
+                '''
+                }
+                sh 'iotedgedev push'
+            }
+            
+            stage('Create IoT Edge Deployment') {
+                withCredentials([string(credentialsId: 'IotHubConnectionString', variable: 'IOTHUB_CONNECTION_STRING'), string(credentialsId: 'DeviceConnectionString', variable: 'DEVICE_CONNECTION_STRING')]) {
+                sh 'iotedgedev deploy'
+                }
+            }
+        }
+    }
+
+    ```
+
+2. Within the Jenkins dashboard, select **New Item** , specify your item name, then click **Pipeline**.
+3. In the **Pipeline** section, choose **Pipeline script from SCM,**
+  1. Select **Git** for SCM, and copy paste your forked repository URL into **Respiratory URL.**
+  2. Use _JenkinsFile_ as **Script Path**
+4. Click **Save**.
+
+# Build and deploy
+
+It&#39;s now time to run the Jenkins job.
+
+1. Navigate to your Jenkins project and click **Build Now**
+2. Check the stage view with a successful build and deploy
+
+   ![](doc/dashboard.png)
+
+3. Navigate to your Azure Container Registry, select **Repositories -\&gt;**  **f**** iltermodule** to check published IoT Edge module images.
+
+   ![](doc/module.png)
+
+4. Navigate to your Azure IoT Hub, select **IoT Edge -\&gt; your device ID** to check the modules running on the Edge device.
+
+   ![](doc/device.png)
+
+# Next Steps
+
+Learn more about [Azure IoT Edge](https://docs.microsoft.com/en-us/azure/iot-edge/?view=iotedge-2018-06)
+

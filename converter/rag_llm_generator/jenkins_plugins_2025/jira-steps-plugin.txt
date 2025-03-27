@@ -1,0 +1,41 @@
+= JIRA Pipeline Steps
+
+image::hugo/static/images/jira_steps.png[JIRA Steps,300]
+
+link:https://ci.jenkins.io/job/Plugins/job/jira-steps-plugin/job/master/[image:https://ci.jenkins.io/job/Plugins/job/jira-steps-plugin/job/master/badge/icon[Build]] image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[License] link:https://plugins.jenkins.io/jira-steps[image:https://img.shields.io/badge/JIRA%20Steps-WIKI-blue.svg[Wiki]] image:https://badges.gitter.im/jenkinsci/jira-steps-plugin.svg[link="https://gitter.im/jenkinsci/jira-steps-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
+
+
+Jenkins Pipeline Steps for integraton with https://www.atlassian.com/software/jira[JIRA]
+
+Documentation for this plugin is at https://jenkinsci.github.io/jira-steps-plugin[Jira Steps].
+
+Quick links:
+
+* https://jenkinsci.github.io/jira-steps-plugin/getting-started/[Get Started]
+* https://jenkinsci.github.io/jira-steps-plugin/getting-started/install/[Installation]
+* https://jenkinsci.github.io/jira-steps-plugin/getting-started/config/[Configuration]
+* https://jenkinsci.github.io/jira-steps-plugin/steps/[Pipeline Steps]
+* https://jenkinsci.github.io/jira-steps-plugin/contributing/[Contributing Guide]
+* https://jenkinsci.github.io/jira-steps-plugin/changelog/[Release Notes]
+
+== Maintainers
+
+* https://github.com/nrayapati[Naresh Rayapati]
+
+== Disclaimer
+
+Please don't hesitate to log a http://issues.jenkins-ci.org/secure/IssueNavigator.jspa?mode=hide&reset=true&jqlQuery=project+%3D+JENKINS+AND+status+in+%28Open%2C+%22In+Progress%22%2C+Reopened%29+AND+component+%3D+%27jira-steps-plugin%27[JIRA] or github pull request if you need any help or if you can be of help with this plugin :).
+Refer to the https://jenkinsci.github.io/jira-steps-plugin/contributing[contribution guide] for more information.
+
+Developed by https://github.com/nrayapati[Naresh Rayapati], this repo was initially cloned from https://github.com/ThoughtsLive/jira-steps[ThoughtsLive]
+
+== License
+-------
+Licensed under the Apache License, Version 2.0 (the “License”); you may not use this file except in compliance with the
+License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an
+“AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
+ language governing permissions and limitations under the License.

@@ -1,0 +1,4429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins到GitHub Actions转换验证报告</title>
+    <style>
+        :root {
+            --primary: #4285f4;
+            --primary-light: #e8f1fd;
+            --primary-dark: #3367d6;
+            --success: #0f9d58;
+            --warning: #f4b400;
+            --danger: #db4437;
+            --very-high: #00c853;
+            --high: #64dd17;
+            --medium-high: #aeea00;
+            --medium: #ffd600;
+            --medium-low: #ffab00;
+            --low: #ff6d00;
+            --very-low: #dd2c00;
+            --gray-light: #f5f7fa;
+            --gray: #e0e0e0;
+            --gray-dark: #757575;
+            --text: #202124;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+            background-color: var(--gray-light);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4285f4 0%, #7b5eda 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            padding: 0 1rem;
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-top: 1rem;
+        }
+
+        .description {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .summary-box {
+            background-color: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--gray-dark);
+            font-size: 0.9rem;
+        }
+
+        .panel {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .similarity-distribution {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: nowrap;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .distribution-bar {
+            flex: 1;
+            min-width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bar-container {
+            width: 90%;
+            height: 200px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            margin-bottom: 0.5rem;
+        }
+
+        .bar {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+        }
+
+        .bar-label {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--gray-dark);
+            white-space: nowrap;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: 0%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: bold;
+            opacity: 0;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .bar:hover .bar-value {
+            opacity: 1;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray);
+        }
+
+        th {
+            background-color: var(--gray-light);
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tbody tr:hover {
+            background-color: var(--gray-light);
+        }
+
+        .similarity-cell {
+            font-weight: 600;
+        }
+
+        .similarity-very-high {
+            color: var(--very-high);
+        }
+
+        .similarity-high {
+            color: var(--high);
+        }
+
+        .similarity-medium-high {
+            color: var(--medium-high);
+        }
+
+        .similarity-medium {
+            color: var(--medium);
+        }
+
+        .similarity-medium-low {
+            color: var(--medium-low);
+        }
+
+        .similarity-low {
+            color: var(--low);
+        }
+
+        .similarity-very-low {
+            color: var(--very-low);
+        }
+
+        .progress-bar {
+            height: 8px;
+            width: 100%;
+            background-color: var(--gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-value {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .page-btn:hover, .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .detailed-view {
+            margin-top: 2rem;
+        }
+
+        .accordion {
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 1rem;
+            background-color: var(--gray-light);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content {
+            padding: 1rem;
+            display: none;
+        }
+
+        .accordion.active .accordion-content {
+            display: block;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .feature-item {
+            background: var(--gray-light);
+            padding: 0.75rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .feature-name {
+            font-size: 0.8rem;
+            color: var(--gray-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-value {
+            font-weight: 600;
+        }
+
+        .job-match {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid var(--primary);
+            background: var(--gray-light);
+        }
+
+        .job-match-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-paths {
+            font-weight: 600;
+        }
+
+        .job-similarity {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .detail-table th, .detail-table td {
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid var(--gray);
+        }
+
+        .detail-table th {
+            background-color: var(--gray-light);
+        }
+
+        /* Making sure distribution bars fit on one row */
+        @media (min-width: 992px) {
+            .distribution-bar {
+                min-width: 66px;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .distribution-bar {
+                min-width: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .similarity-distribution {
+                padding-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tooltip style */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>Jenkins到GitHub Actions转换验证报告</h1>
+                <p class="description">基于35对Jenkins和GitHub Actions工作流配置文件的功能等价性分析</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="summary-box">
+            本报告展示了Jenkins到GitHub Actions转换工具的验证结果，通过对Jenkins文件和生成的GitHub Actions文件进行详细比较，评估了功能等价性和转换质量。
+        </div>
+
+        <h2>总体表现</h2>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">35</div>
+                <div class="metric-label">分析的配置文件对</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">57.12%</div>
+                <div class="metric-label">平均相似度</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">81.37%</div>
+                <div class="metric-label">最高相似度</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-value">35.37%</div>
+                <div class="metric-label">最低相似度</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>相似度分布</h2>
+            <div class="similarity-distribution">
+    
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 0.0%; background-color: #b71c1c;">
+                            <div class="bar-value">0 (0.0%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.0-0.1</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 0.0%; background-color: #bf360c;">
+                            <div class="bar-value">0 (0.0%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.1-0.2</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 0.0%; background-color: #dd2c00;">
+                            <div class="bar-value">0 (0.0%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.2-0.3</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 18.181818181818183%; background-color: #ff3d00;">
+                            <div class="bar-value">2 (5.7%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.3-0.4</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 63.63636363636363%; background-color: #ff6d00;">
+                            <div class="bar-value">7 (20.0%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.4-0.5</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 100.0%; background-color: #ffab00;">
+                            <div class="bar-value">11 (31.4%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.5-0.6</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 90.9090909090909%; background-color: #ffd600;">
+                            <div class="bar-value">10 (28.6%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.6-0.7</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 36.36363636363637%; background-color: #aeea00;">
+                            <div class="bar-value">4 (11.4%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.7-0.8</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 9.090909090909092%; background-color: #64dd17;">
+                            <div class="bar-value">1 (2.9%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.8-0.9</div>
+                </div>
+        
+                <div class="distribution-bar">
+                    <div class="bar-container">
+                        <div class="bar" style="height: 0.0%; background-color: #00c853;">
+                            <div class="bar-value">0 (0.0%)</div>
+                        </div>
+                    </div>
+                    <div class="bar-label">0.9-1.0</div>
+                </div>
+        
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>文件相似度排名</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>文件编号</th>
+                            <th>CI文件</th>
+                            <th>转换文件</th>
+                            <th>相似度</th>
+                            <th>相似度评级</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+    
+                        <tr class="table-row page-1" >
+                            <td>1</td>
+                            <td>40</td>
+                            <td>ci40.yaml</td>
+                            <td>jenkins40.yaml</td>
+                            <td class="similarity-cell similarity-high">81.37%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 81.37%; background-color: #64dd17;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>2</td>
+                            <td>10</td>
+                            <td>ci10.yaml</td>
+                            <td>jenkins10.yaml</td>
+                            <td class="similarity-cell similarity-medium-high">77.43%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 77.42999999999999%; background-color: #aeea00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>3</td>
+                            <td>67</td>
+                            <td>ci67.yaml</td>
+                            <td>jenkins67.yaml</td>
+                            <td class="similarity-cell similarity-medium-high">75.40%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 75.4%; background-color: #aeea00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>4</td>
+                            <td>37</td>
+                            <td>ci37.yaml</td>
+                            <td>jenkins37.yaml</td>
+                            <td class="similarity-cell similarity-medium-high">73.47%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 73.47%; background-color: #aeea00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>5</td>
+                            <td>12</td>
+                            <td>ci12.yaml</td>
+                            <td>jenkins12.yaml</td>
+                            <td class="similarity-cell similarity-medium-high">70.41%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 70.41%; background-color: #aeea00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>6</td>
+                            <td>8</td>
+                            <td>ci8.yaml</td>
+                            <td>jenkins8.yaml</td>
+                            <td class="similarity-cell similarity-medium">69.54%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 69.54%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>7</td>
+                            <td>4</td>
+                            <td>ci4.yaml</td>
+                            <td>jenkins4.yaml</td>
+                            <td class="similarity-cell similarity-medium">65.13%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 65.13%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>8</td>
+                            <td>6</td>
+                            <td>ci6.yaml</td>
+                            <td>jenkins6.yaml</td>
+                            <td class="similarity-cell similarity-medium">65.13%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 65.13%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>9</td>
+                            <td>9</td>
+                            <td>ci9.yaml</td>
+                            <td>jenkins9.yaml</td>
+                            <td class="similarity-cell similarity-medium">65.13%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 65.13%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-1" >
+                            <td>10</td>
+                            <td>5</td>
+                            <td>ci5.yaml</td>
+                            <td>jenkins5.yaml</td>
+                            <td class="similarity-cell similarity-medium">64.86%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 64.86%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>11</td>
+                            <td>7</td>
+                            <td>ci7.yaml</td>
+                            <td>jenkins7.yaml</td>
+                            <td class="similarity-cell similarity-medium">64.86%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 64.86%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>12</td>
+                            <td>11</td>
+                            <td>ci11.yaml</td>
+                            <td>jenkins11.yaml</td>
+                            <td class="similarity-cell similarity-medium">64.86%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 64.86%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>13</td>
+                            <td>66</td>
+                            <td>ci66.yaml</td>
+                            <td>jenkins66.yaml</td>
+                            <td class="similarity-cell similarity-medium">62.15%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 62.150000000000006%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>14</td>
+                            <td>41</td>
+                            <td>ci41.yaml</td>
+                            <td>jenkins41.yaml</td>
+                            <td class="similarity-cell similarity-medium">60.75%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 60.75000000000001%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>15</td>
+                            <td>51</td>
+                            <td>ci51.yaml</td>
+                            <td>jenkins51.yaml</td>
+                            <td class="similarity-cell similarity-medium">60.75%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 60.75000000000001%; background-color: #ffd600;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>16</td>
+                            <td>62</td>
+                            <td>ci62.yaml</td>
+                            <td>jenkins62.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">58.94%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 58.940000000000005%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>17</td>
+                            <td>63</td>
+                            <td>ci63.yaml</td>
+                            <td>jenkins63.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">56.87%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 56.87%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>18</td>
+                            <td>46</td>
+                            <td>ci46.yaml</td>
+                            <td>jenkins46.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">56.80%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 56.8%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>19</td>
+                            <td>60</td>
+                            <td>ci60.yaml</td>
+                            <td>jenkins60.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">55.95%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 55.95%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-2" style='display: none;'>
+                            <td>20</td>
+                            <td>29</td>
+                            <td>ci29.yaml</td>
+                            <td>jenkins29.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">53.07%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 53.06999999999999%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>21</td>
+                            <td>39</td>
+                            <td>ci39.yaml</td>
+                            <td>jenkins39.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">52.56%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 52.559999999999995%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>22</td>
+                            <td>18</td>
+                            <td>ci18.yaml</td>
+                            <td>jenkins18.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">52.20%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 52.2%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>23</td>
+                            <td>52</td>
+                            <td>ci52.yaml</td>
+                            <td>jenkins52.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">50.90%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 50.9%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>24</td>
+                            <td>28</td>
+                            <td>ci28.yaml</td>
+                            <td>jenkins28.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">50.69%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 50.690000000000005%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>25</td>
+                            <td>1</td>
+                            <td>ci1.yaml</td>
+                            <td>jenkins1.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">50.24%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 50.239999999999995%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>26</td>
+                            <td>2</td>
+                            <td>ci2.yaml</td>
+                            <td>jenkins2.yaml</td>
+                            <td class="similarity-cell similarity-medium-low">50.18%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 50.18%; background-color: #ffab00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>27</td>
+                            <td>65</td>
+                            <td>ci65.yaml</td>
+                            <td>jenkins65.yaml</td>
+                            <td class="similarity-cell similarity-low">48.84%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 48.84%; background-color: #ff6d00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>28</td>
+                            <td>38</td>
+                            <td>ci38.yaml</td>
+                            <td>jenkins38.yaml</td>
+                            <td class="similarity-cell similarity-low">48.54%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 48.54%; background-color: #ff6d00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>29</td>
+                            <td>31</td>
+                            <td>ci31.yaml</td>
+                            <td>jenkins31.yaml</td>
+                            <td class="similarity-cell similarity-low">46.42%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 46.42%; background-color: #ff6d00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-3" style='display: none;'>
+                            <td>30</td>
+                            <td>26</td>
+                            <td>ci26.yaml</td>
+                            <td>jenkins26.yaml</td>
+                            <td class="similarity-cell similarity-low">45.91%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 45.910000000000004%; background-color: #ff6d00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-4" style='display: none;'>
+                            <td>31</td>
+                            <td>33</td>
+                            <td>ci33.yaml</td>
+                            <td>jenkins33.yaml</td>
+                            <td class="similarity-cell similarity-low">45.80%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 45.800000000000004%; background-color: #ff6d00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-4" style='display: none;'>
+                            <td>32</td>
+                            <td>3</td>
+                            <td>ci3.yaml</td>
+                            <td>jenkins3.yaml</td>
+                            <td class="similarity-cell similarity-low">41.08%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 41.08%; background-color: #ff6d00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-4" style='display: none;'>
+                            <td>33</td>
+                            <td>16</td>
+                            <td>ci16.yaml</td>
+                            <td>jenkins16.yaml</td>
+                            <td class="similarity-cell similarity-low">40.57%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 40.57%; background-color: #ff6d00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-4" style='display: none;'>
+                            <td>34</td>
+                            <td>32</td>
+                            <td>ci32.yaml</td>
+                            <td>jenkins32.yaml</td>
+                            <td class="similarity-cell similarity-very-low">37.19%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 37.19%; background-color: #dd2c00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                        <tr class="table-row page-4" style='display: none;'>
+                            <td>35</td>
+                            <td>43</td>
+                            <td>ci43.yaml</td>
+                            <td>jenkins43.yaml</td>
+                            <td class="similarity-cell similarity-very-low">35.37%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-value" style="width: 35.370000000000005%; background-color: #dd2c00;"></div>
+                                </div>
+                            </td>
+                        </tr>
+        
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+    
+                <button class="page-btn active" data-page="1">1</button>
+        
+                <button class="page-btn " data-page="2">2</button>
+        
+                <button class="page-btn " data-page="3">3</button>
+        
+                <button class="page-btn " data-page="4">4</button>
+        
+            </div>
+        </div>
+
+        <div class="panel detailed-view">
+            <h2>详细比较结果</h2>
+    
+            <div class="accordion active">
+                <div class="accordion-header">
+                    <div>文件对 #40: ci40.yaml vs jenkins40.yaml (相似度: 81.37%)</div>
+                    <div>▼</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">49.83%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.4983
+  env: 0.0000
+  job数量比率: 1.0000
+
+  maven <-> Maven_Clean_Build_Deploy</div>
+                            <div class="job-similarity">90.81%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>86.87%</td>
+                <td>85.00%</td><td>61.36%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #10: ci10.yaml vs jenkins10.yaml (相似度: 77.43%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">60.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.6000
+  env: 1.0000
+  job数量比率: 1.0000
+
+  build <-> Build</div>
+                            <div class="job-similarity">78.54%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>69.35%</td>
+                <td>85.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #67: ci67.yaml vs jenkins67.yaml (相似度: 75.40%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">97.50%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 1.0000
+
+  windows_test <-> Test_Windows</div>
+                            <div class="job-similarity">75.48%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>100.00%</td>
+                                <td>86.40%</td>
+                <td>85.00%</td><td>92.62%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #37: ci37.yaml vs jenkins37.yaml (相似度: 73.47%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">67.50%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.6750
+  env: 1.0000
+  job数量比率: 1.0000
+
+  build <-> Build</div>
+                            <div class="job-similarity">78.00%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>100.00%</td>
+                                <td>90.00%</td>
+                <td>81.64%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #12: ci12.yaml vs jenkins12.yaml (相似度: 70.41%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  tests <-> Build</div>
+                            <div class="job-similarity">72.50%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>60.71%</td>
+                <td>74.85%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #8: ci8.yaml vs jenkins8.yaml (相似度: 69.54%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  tests <-> Build_Project</div>
+                            <div class="job-similarity">71.19%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>58.84%</td>
+                <td>74.85%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #4: ci4.yaml vs jenkins4.yaml (相似度: 65.13%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  test <-> Build_Project</div>
+                            <div class="job-similarity">64.55%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>49.36%</td>
+                <td>57.50%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #6: ci6.yaml vs jenkins6.yaml (相似度: 65.13%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  tests <-> Build_Project</div>
+                            <div class="job-similarity">64.55%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>49.36%</td>
+                <td>57.50%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #9: ci9.yaml vs jenkins9.yaml (相似度: 65.13%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  build <-> Build</div>
+                            <div class="job-similarity">64.55%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>49.36%</td>
+                <td>57.50%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #5: ci5.yaml vs jenkins5.yaml (相似度: 64.86%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  tests <-> Build_Project</div>
+                            <div class="job-similarity">64.15%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>48.78%</td>
+                <td>57.50%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #7: ci7.yaml vs jenkins7.yaml (相似度: 64.86%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  test <-> Build_Project</div>
+                            <div class="job-similarity">64.15%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>48.78%</td>
+                <td>57.50%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #11: ci11.yaml vs jenkins11.yaml (相似度: 64.86%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">35.00%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+
+  build <-> Build</div>
+                            <div class="job-similarity">64.15%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>48.78%</td>
+                <td>57.50%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #66: ci66.yaml vs jenkins66.yaml (相似度: 62.15%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">52.01%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5201
+  env: 1.0000
+  job数量比率: 1.0000
+
+  decrypt <-> Decrypt_secrets</div>
+                            <div class="job-similarity">78.54%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>69.35%</td>
+                <td>85.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">test <-> Remove_local_docker_image</div>
+                            <div class="job-similarity">78.00%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>90.00%</td>
+                <td>85.00%</td><td>69.47%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">build <-> Run_tests</div>
+                            <div class="job-similarity">63.54%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>69.35%</td>
+                <td>85.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">deploy <-> Build_image</div>
+                            <div class="job-similarity">63.54%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>69.35%</td>
+                <td>85.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">push <-> Push_image_to_image_registry</div>
+                            <div class="job-similarity">51.85%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>52.64%</td>
+                <td>61.36%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">cleanup <-> Launch_server</div>
+                            <div class="job-similarity">47.20%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>46.00%</td>
+                <td>40.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #41: ci41.yaml vs jenkins41.yaml (相似度: 60.75%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">80.63%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8063
+  env: 1.0000
+  job数量比率: 1.0000
+
+  create-docker-container <-> Create_docker_container</div>
+                            <div class="job-similarity">78.00%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>100.00%</td>
+                                <td>90.00%</td>
+                <td>85.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #51: ci51.yaml vs jenkins51.yaml (相似度: 60.75%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">80.63%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8063
+  env: 1.0000
+  job数量比率: 1.0000
+
+  create-docker-container <-> Create_docker_container</div>
+                            <div class="job-similarity">78.00%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>100.00%</td>
+                                <td>90.00%</td>
+                <td>85.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #62: ci62.yaml vs jenkins62.yaml (相似度: 58.94%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">40.70%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4070
+  env: 1.0000
+  job数量比率: 1.0000
+
+  check-signoffs <-> Check_for_Signed_Off_Commits</div>
+                            <div class="job-similarity">67.89%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>75.55%</td>
+                <td>40.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">lint <-> Lint_website</div>
+                            <div class="job-similarity">67.89%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>75.55%</td>
+                <td>40.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">build <-> Check_Whitelist</div>
+                            <div class="job-similarity">67.89%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>75.55%</td>
+                <td>40.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">cleanup <-> Post-Build</div>
+                            <div class="job-similarity">67.89%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>75.55%</td>
+                <td>40.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">publish <-> Publish_docker_image</div>
+                            <div class="job-similarity">43.98%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>41.40%</td>
+                <td>40.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #63: ci63.yaml vs jenkins63.yaml (相似度: 56.87%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">97.50%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">16.67%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.1667
+
+  build <-> Compile</div>
+                            <div class="job-similarity">81.63%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>73.76%</td>
+                <td>85.00%</td><td>59.56%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #46: ci46.yaml vs jenkins46.yaml (相似度: 56.80%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">97.50%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">16.67%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.1667
+
+  build <-> Build_Tools</div>
+                            <div class="job-similarity">81.46%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>73.51%</td>
+                <td>85.00%</td><td>58.95%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #60: ci60.yaml vs jenkins60.yaml (相似度: 55.95%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">69.46%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">69.23%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.6946
+  env: 1.0000
+  job数量比率: 0.6923
+
+  setup <-> Setup_Setup_Docker</div>
+                            <div class="job-similarity">83.26%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>76.09%</td>
+                <td>85.00%</td><td>52.30%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">testing <-> Testing_Unit_Tests</div>
+                            <div class="job-similarity">78.00%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>90.00%</td>
+                <td>85.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">build <-> Build</div>
+                            <div class="job-similarity">76.89%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>88.42%</td>
+                <td>85.00%</td><td>86.08%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">publish <-> Save_and_Publish_Publish_specs_to_npm</div>
+                            <div class="job-similarity">72.54%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>82.20%</td>
+                <td>67.41%</td><td>77.58%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">github_release <-> Github_tagged_release</div>
+                            <div class="job-similarity">70.14%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>78.77%</td>
+                <td>85.00%</td><td>67.08%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">deploy_dev <-> Save_and_Publish_Store_in_S3</div>
+                            <div class="job-similarity">68.91%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>77.01%</td>
+                <td>85.00%</td><td>51.87%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">preview_pr <-> Preview_PR_dev_and_Automation_Tests</div>
+                            <div class="job-similarity">67.97%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>75.67%</td>
+                <td>67.41%</td><td>77.69%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">cleanup <-> Post-Build</div>
+                            <div class="job-similarity">65.93%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>72.76%</td>
+                <td>40.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">deploy_s3 <-> Create_dev_build</div>
+                            <div class="job-similarity">57.95%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>61.35%</td>
+                <td>67.41%</td><td>39.29%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #29: ci29.yaml vs jenkins29.yaml (相似度: 53.07%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">80.83%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">33.33%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8083
+  env: 1.0000
+  job数量比率: 0.3333
+
+  build <-> Build</div>
+                            <div class="job-similarity">67.37%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>74.81%</td>
+                <td>57.14%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #39: ci39.yaml vs jenkins39.yaml (相似度: 52.56%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">87.79%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">25.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8779
+  env: 0.0000
+  job数量比率: 0.2500
+
+  build <-> Test</div>
+                            <div class="job-similarity">75.84%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>65.49%</td>
+                <td>85.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #18: ci18.yaml vs jenkins18.yaml (相似度: 52.20%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">71.02%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">25.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7102
+  env: 1.0000
+  job数量比率: 0.2500
+
+  build-and-deploy <-> Build</div>
+                            <div class="job-similarity">72.60%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>60.86%</td>
+                <td>63.32%</td><td>55.35%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #52: ci52.yaml vs jenkins52.yaml (相似度: 50.90%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">33.33%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">89.12%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">75.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.3333
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8912
+  env: 1.0000
+  job数量比率: 0.7500
+
+  prepare_environment <-> Prepare_Environment</div>
+                            <div class="job-similarity">73.21%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>50.00%</td>
+                                <td>100.00%</td>
+                                <td>72.45%</td>
+                <td>85.00%</td><td>30.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">ansible_slave <-> Spin_up_shared_ansible_slave_Merge_PR</div>
+                            <div class="job-similarity">66.18%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>33.33%</td>
+                                <td>0.00%</td>
+                                <td>87.40%</td>
+                <td>85.00%</td><td>62.50%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">clear_projects <-> Spin_up_shared_ansible_slave_Apply_ci_for_ci_Inventory</div>
+                            <div class="job-similarity">56.86%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>50.00%</td>
+                                <td>0.00%</td>
+                                <td>70.52%</td>
+                <td>40.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">final_cleanup <-> Clear_Existing_Projects</div>
+                            <div class="job-similarity">43.00%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>50.00%</td>
+                                <td>0.00%</td>
+                                <td>50.71%</td>
+                <td>40.00%</td><td>55.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">verify_builds <-> Post-Build</div>
+                            <div class="job-similarity">34.87%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>50.00%</td>
+                                <td>0.00%</td>
+                                <td>39.10%</td>
+                <td>40.00%</td><td>30.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">verify_deploys <-> Verifying_CI_Builds</div>
+                            <div class="job-similarity">32.13%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>50.00%</td>
+                                <td>0.00%</td>
+                                <td>35.19%</td>
+                <td>40.00%</td><td>30.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #28: ci28.yaml vs jenkins28.yaml (相似度: 50.69%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">63.92%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">33.33%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6392
+  env: 1.0000
+  job数量比率: 0.3333
+
+  test <-> Checkout</div>
+                            <div class="job-similarity">66.59%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>52.27%</td>
+                <td>57.50%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #1: ci1.yaml vs jenkins1.yaml (相似度: 50.24%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">44.51%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">25.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4451
+  env: 1.0000
+  job数量比率: 0.2500
+
+  build <-> Build</div>
+                            <div class="job-similarity">75.55%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>65.08%</td>
+                <td>73.06%</td><td>37.78%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #2: ci2.yaml vs jenkins2.yaml (相似度: 50.18%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">36.98%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">50.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.3698
+  env: 1.0000
+  job数量比率: 0.5000
+
+  build <-> Checkout</div>
+                            <div class="job-similarity">73.35%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>61.93%</td>
+                <td>73.06%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">deploy <-> Build_Test</div>
+                            <div class="job-similarity">55.94%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>58.49%</td>
+                <td>73.06%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #65: ci65.yaml vs jenkins65.yaml (相似度: 48.84%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">82.18%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">20.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8218
+  env: 0.0000
+  job数量比率: 0.2000
+
+  build <-> Checkout</div>
+                            <div class="job-similarity">71.39%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>59.12%</td>
+                <td>70.71%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #38: ci38.yaml vs jenkins38.yaml (相似度: 48.54%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">33.33%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">89.55%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">8.33%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.3333
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8955
+  env: 1.0000
+  job数量比率: 0.0833
+
+  build <-> Pre_build_ccache_stats</div>
+                            <div class="job-similarity">75.77%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>65.39%</td>
+                <td>85.00%</td><td>43.08%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #31: ci31.yaml vs jenkins31.yaml (相似度: 46.42%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">25.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">55.34%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">87.50%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.2500
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5534
+  env: 1.0000
+  job数量比率: 0.8750
+
+  prepare-environment <-> Post-Build</div>
+                            <div class="job-similarity">67.89%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>0.00%</td>
+                                <td>75.55%</td>
+                <td>40.00%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #26: ci26.yaml vs jenkins26.yaml (相似度: 45.91%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">26.67%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">33.33%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.2667
+  env: 1.0000
+  job数量比率: 0.3333
+
+  build-and-push <-> Test</div>
+                            <div class="job-similarity">65.88%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>51.26%</td>
+                <td>62.47%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #33: ci33.yaml vs jenkins33.yaml (相似度: 45.80%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">53.81%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">80.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.5381
+  env: 0.0000
+  job数量比率: 0.8000
+
+  install-dependencies <-> Install_Composer</div>
+                            <div class="job-similarity">77.18%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>100.00%</td>
+                                <td>100.00%</td>
+                                <td>67.40%</td>
+                <td>66.63%</td><td>62.86%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #3: ci3.yaml vs jenkins3.yaml (相似度: 41.08%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">84.62%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">11.11%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8462
+  env: 1.0000
+  job数量比率: 0.1111
+
+  lint <-> Checkout</div>
+                            <div class="job-similarity">59.35%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>100.00%</td>
+                                <td>63.35%</td>
+                <td>85.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #16: ci16.yaml vs jenkins16.yaml (相似度: 40.57%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">72.50%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">33.33%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7250
+  env: 0.0000
+  job数量比率: 0.3333
+
+  build <-> TestUnit</div>
+                            <div class="job-similarity">58.36%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>0.00%</td>
+                                <td>83.37%</td>
+                <td>57.50%</td><td>95.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #32: ci32.yaml vs jenkins32.yaml (相似度: 37.19%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">100.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">33.16%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">50.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.3316
+  env: 0.0000
+  job数量比率: 0.5000
+
+  molecule-test <-> Setup</div>
+                            <div class="job-similarity">54.57%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>100.00%</td>
+                                <td>56.52%</td>
+                <td>61.28%</td><td>53.60%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+            <div class="accordion ">
+                <div class="accordion-header">
+                    <div>文件对 #43: ci43.yaml vs jenkins43.yaml (相似度: 35.37%)</div>
+                    <div>▶</div>
+                </div>
+                <div class="accordion-content">
+                    <h4>特征相似度</h4>
+                    <div class="feature-grid">
+            
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">runs-on</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">运行环境匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">needs</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">依赖关系匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">strategy</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">策略配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">steps</div>
+                            <div class="feature-value">68.48%</div>
+                            <span class="tooltiptext">步骤配置匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">env</div>
+                            <div class="feature-value">0.00%</div>
+                            <span class="tooltiptext">环境变量匹配程度</span>
+                        </div>
+                
+                        <div class="feature-item tooltip">
+                            <div class="feature-name">job数量比率</div>
+                            <div class="feature-value">50.00%</div>
+                            <span class="tooltiptext">作业数量匹配程度</span>
+                        </div>
+                
+                    </div>
+
+                    <h4>最佳匹配的Jobs</h4>
+            
+                    <div class="job-match">
+                        <div class="job-match-header">
+                            <div class="job-paths">特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.6848
+  env: 0.0000
+  job数量比率: 0.5000
+
+  deploy <-> deploy</div>
+                            <div class="job-similarity">48.54%</div>
+                        </div>
+                        <table class="detail-table">
+                            <tr>
+                                <th>runs-on</th>
+                                <th>needs</th>
+                                <th>steps</th>
+                <th>uses</th><th>run</th>
+                            </tr>
+                            <tr>
+                                <td>0.00%</td>
+                                <td>0.00%</td>
+                                <td>69.35%</td>
+                <td>85.00%</td><td>40.00%</td>
+                            </tr>
+                        </table>
+                    </div>
+                
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // 折叠面板交互
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordion = header.parentElement;
+                accordion.classList.toggle('active');
+
+                // 更新折叠图标
+                const iconElement = header.querySelector('div:last-child');
+                if (accordion.classList.contains('active')) {
+                    iconElement.textContent = '▼';
+                } else {
+                    iconElement.textContent = '▶';
+                }
+            });
+        });
+
+        // 分页功能
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 移除所有活跃页按钮
+                document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+                // 添加活跃类到当前按钮
+                btn.classList.add('active');
+
+                const page = btn.getAttribute('data-page');
+
+                // 隐藏所有行
+                document.querySelectorAll('.table-row').forEach(row => {
+                    row.style.display = 'none';
+                });
+
+                // 显示当前页的行
+                document.querySelectorAll(`.page-${page}`).forEach(row => {
+                    row.style.display = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+    

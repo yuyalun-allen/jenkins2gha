@@ -1,0 +1,89 @@
+# Stackify Deployment Recorder
+
+[![Jenkins Plugins](https://img.shields.io/jenkins/plugin/v/stackify-deployment-recorder.svg)](https://plugins.jenkins.io/stackify-deployment-recorder)
+[![Build Status](https://travis-ci.org/jenkinsci/stackify-deployment-recorder-plugin.svg?branch=master)](https://travis-ci.org/jenkinsci/stackify-deployment-recorder-plugin)
+[![Coverage Status](https://coveralls.io/repos/github/jenkinsci/stackify-deployment-recorder-plugin/badge.svg?branch=master)](https://coveralls.io/github/jenkinsci/stackify-deployment-recorder-plugin?branch=master)
+
+Jenkins Plugin to Record Deployments in Stackify Retrace
+
+Deployment Tracking Overview:
+
+https://support.stackify.com/deployment-tracking-overview/
+
+Sign Up for a Trial:
+
+http://www.stackify.com/sign-up/
+
+### Installation
+
+Manage Jenkins / Manage Plugins / Available
+
+Search for 'Stackify' and install the 'Stackify Deployment Recorder' plugin. 
+
+![picture](images/install.png)
+
+### Usage
+
+Jenkins Job / Configure
+
+Add the 'Record Deployment in Stackify Retrace' Post Build Action
+
+![picture](images/postbuildaction.png)
+
+Fill in your Stackify API key first. You will then get a drop down list of applications to pick from. 
+
+![picture](images/blankconfig.png)
+
+The configuration defaults should be fine for a Git + Maven Java project. 
+
+![picture](images/config.png)
+
+Save your job configuration changes.
+
+### Troubleshooting
+
+##### Job Log
+
+Jenkins Job / Console Output
+
+![picture](images/joblog.png)
+
+##### System Log
+
+Manage Jenkins / System Log / Add new log recorder
+
+Name: Stackify
+
+Logger: com.stackify
+
+Logger: org.jenkinsci.plugins.stackify
+
+![picture](images/systemlogrecorder.png)
+
+Then you can view log messages from the Stackify plugin.
+
+![picture](images/systemlog.png)
+
+### License
+
+MIT License
+
+Copyright (c) 2018 Stackify LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

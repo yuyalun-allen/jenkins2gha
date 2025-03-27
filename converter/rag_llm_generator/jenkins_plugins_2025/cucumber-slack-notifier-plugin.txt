@@ -1,0 +1,28 @@
+# Cucumber Slack Notifier plugin
+Jenkins plugin to push summarised Cucumber reports to Slack
+
+## Jenkins Pipeline Usage
+
+Use within a node block as the example below shows:
+
+``` syntaxhighlighter-pre
+node {
+    stage 'Cucumber Reports'
+ 
+    // process cucumber reports
+    step([$class: 'CucumberReportPublisher', jsonReportDirectory: 'target/', fileIncludePattern: '*.json'])
+
+    // send report to slack
+    cucumberSendSlack: channel: 'test-results-channel', json: 'target/test-results.json' 
+}
+```
+
+## Installation Instructions
+
+### Global Configuration
+
+![](docs/images/global_config.png)
+
+### Job Configuration
+
+![](docs/images/job_config.png)

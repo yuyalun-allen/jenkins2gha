@@ -1,0 +1,1 @@
+This plugin prevents the [ProcessTreeKiller](https://wiki.jenkins.io/display/JENKINS/ProcessTreeKiller) from killing the Gradle daemon.

@@ -1,0 +1,74 @@
+CA-APM Jenkins Plugin 2.0
+====================
+
+ca-apm jenkins plugin 2.0
+---------------------
+Developed by Srikant , Pramod Anarase & Srilatha Vanga @ CA Inc Dec 2018
+<br>This is NOT an officially supported CA product but is provided on an as is basis. 
+Please collaborate and improve the project.
+
+Plugin Setup
+---------------
+Follows the standard Jenkins plugin process.
+<br>You will need easy XL tool kit - an EM side plugin - for this plugin to work (please talk to your sales team)
+
+Description
+-----------------
+This plugin allows Jenkins users to collect [CA-APM](http://www.ca.com/us/products/ca-application-performance-management.html) performance data from EM.
+
+Here is the list of features ( see the configuration section below for details)
+
+* ability to fetch multiple metrics using regex as KPI for tracking.
+* Ability to configure multiple fail conditions
+    * Metric A less than or greater than a constant value OR
+    * Metric A in comparison to Metric B
+* Ability to send notification via Email (if smtp server is configured)
+* Ability to view KPI's per build or cross build dashboard in Jenkins
+* Ability to decorate ATC 10.1 nodes using custom attributes like build status, number and date 
+* Ability to just notify via email: If "justEmail" is checked the build will NOT be marked as fail even if the conditions are met but only a notification will be sent
+* Ability Jump to Webview in context (for both metric and time range) from build or x-build dashboard
+
+
+To Run
+-------
+Clone the project and run mvn compile. Read up the wiki for more info
+Restart tomcat.
+
+
+# ca-apm jenkins plugin 2.0
+Code base Set up
+1. Check-out the code and run mvn clean install on the root folder
+2. On successful build, in ca-apm-dist/target, tar and zip files are present
+3. It contains two folders repo and properties files
+4. Repo folder contains the following:
+   a. The ca-apm.hpi file, which acts as a plugin file for installing on Jenkins instance
+   b. ca-apm-api jar file is the core library, which contain the interfaces and entities
+   c. ca-apm-core jar file contains the helper classes and the comparison and output-handler executors
+   d. ca-apm-default-strategy file contain the basic/default implementations of comparison-strategies and output-handlers
+      for their reusable or reference purpose
+ 5. Properties folder contain the sample four configurations required to run the plugin
+    a. apm.properties contain APM connection details required to fetch metric data
+    b. configuration.properties contain the input and output configurations required
+    c. strategies.properties contain the strategies and output-handler configurations required. For basic implmentation provided by us,
+       the configurations are already present.
+    d. loadrunner.properties file contain the load-runner configuration required to define the metric-data query for APM
+
+ Installation:
+ 1. Follow standard process to install the hpi file on the Jenkins instance
+ 2. Configure the properties as appropriate, mentioned in step 5 before
+ 3. In case any extension comparison-strategies and/or output-handlers are created, prepare the jar file and place then in a folder,
+    Provide the complete path for folder against extensions.directory property in config.properties
+ 4. If you specify output.directory in same config file, that location will be used by the plugin to flush your output to (in case of any output file)
+     This value will be provided to you in the output-handler phase where you implement OutputHandler interface
+ 5. This runs as a pipeline job in jenkins.
+    a. Create a pipeline job in jenkins where this plugin is installed
+    b. Sample command is shared in the detailed documentation
+
+     Implementing the strategies:
+     1. You can refer to java-doc of the interfaces and available helper class to achieve your goal of having your own custom comparison-strategies and output-handler
+
+
+List of Helper Provided
+1. EmailHelper : Helper to allow you to send mail with attachments
+2. FormulaHelper : Helper provides you some reusable formula of calculating average, min, max, count of your inputs
+3. DataFormatHelper : utility provides you to get JSON, XML representation of your custom created data-format.

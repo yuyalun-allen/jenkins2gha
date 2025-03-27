@@ -1,0 +1,224 @@
+# Flexible Publish
+
+## Features
+
+-   Use a publisher more than once within a build
+-   Select the execution order of the publishers
+-   Use [Run
+    Conditions](https://plugins.jenkins.io/run-condition/)
+    to decide whether to publish
+-   Use Builders as actions by installing the [Any Build Step
+    Plugin](https://plugins.jenkins.io/any-buildstep/)
+    (which will also install the [Conditional BuildStep
+    Plugin](https://plugins.jenkins.io/conditional-buildstep/))
+
+Always use Always
+
+If you always add your Post-build Actions to Flexible publish, then not
+only will you be able to change the execution order afterwards, but you
+will have the ability to temporarily disable a publisher without losing
+the publishers' configuration.  
+You can just switch between the Always and the Never run conditions.
+
+## Install
+
+This plugin can be installed from the Update Center (Manage Jenkins >
+Manage Plugins)
+
+## Import existing publishers
+
+In Manage Jenkins/ Script console, copy the following to see which
+publishers can be moved (for a job named 'My Job')
+
+``` syntaxhighlighter-pre
+import static org.jenkins_ci.plugins.flexible_publish.JobUpdater.*
+
+def job = Jenkins.instance.getItem('My Job')
+list job
+```
+
+Or, if you like doing it the hard way ...
+
+``` syntaxhighlighter-pre
+org.jenkins_ci.plugins.flexible_publish.JobUpdater.list(hudson.model.Hudson.instance.getItem('My Job'))
+```
+
+You should see a list something like this
+
+``` syntaxhighlighter-pre
+Result: Enabled publishers that can be moved:
+    [Publish Checkstyle analysis results]
+    [Publish FindBugs analysis results]
+    [Publish PMD analysis results]
+    [Publish duplicate code analysis results]
+    [Scan for compiler warnings]
+    [Scan workspace for open tasks]
+    [Publish combined analysis results]
+    [Archive the artifacts]
+    [Publish JUnit test result report]
+    [Publish Javadoc]
+    [Record fingerprints of files to track usage]
+    [Git Publisher]
+    [Send build artifacts over FTP]
+    [Send build artifacts over SSH]
+    [Send build artifacts to a windows share]
+
+Enabled publishers that cannot be moved:
+    [Aggregate downstream test results]
+    [Build other projects]
+    [Record Emma coverage report]
+    [Report Violations]
+    [E-mail Notification]
+```
+
+You can move a publisher into Flexible publish
+
+``` syntaxhighlighter-pre
+import static org.jenkins_ci.plugins.flexible_publish.JobUpdater.*
+
+def job = hudson.model.Hudson.instance.getItem('My Job')
+movePublisher job, 'Publish JUnit test result report'
+```
+
+**After moving one or more publishers, go to the configure page, check
+everything looks ok, then save the configuration.**
+
+If you like to live on the edge, and would like to move all of the
+publishers in one go, then ...
+
+``` syntaxhighlighter-pre
+import static org.jenkins_ci.plugins.flexible_publish.JobUpdater.*
+
+def job = hudson.model.Hudson.instance.getItem('My Job')
+moveAllPublishers job
+```
+
+## Used with multi-configuration projects
+
+When you use Flexible Publish Plugin with multi-configuration projects
+(aka. matrix projects), you should know followings:
+
+Generally, publishers run in two phase for multi-configuration projects.
+
+1.  Run for each combination of axes. It works just like in Free Style
+    Projects.
+2.  Run for whole the multi-configuration project. This is what is
+    called aggregation.
+
+For example, "Publish JUnit test result report" works:
+
+1.  see test results in each combination of axes
+2.  sum up the results of all of the combinations.
+
+You can specify conditions both for each combination and the
+aggregation.  
+If you want to separate condition for them, check "Condition for Matrix
+Aggregation" (This appears only in multi-configuration projects).  
+![](docs/images/matrixaggregation.png)
+
+This is especially useful for the case you want control the execution of
+the publisher depends on combination of axes.  
+Be careful to specify the condition, for inconsistent execution causes
+the build fails.
+
+## How flexible publish works when a publisher fails
+
+-   Available since flexible-publish-0.15.
+-   You can specify "Execution Strategy" with which flexible publish
+    decides how to work when a publisher fails.
+
+    | Execution Strategy | Behavior on a failure of a publisher                                                                       |
+    |--------------------|------------------------------------------------------------------------------------------------------------|
+    | Fail at end        | Continues to run following publishers. The default behavior in flexible-publish 0.15 and later.            |
+    | Fail fast          | Doesn't run following publishers. The default behavior for flexible-publish configured in 0.13 and 0.14.1. |
+
+-   This works as followings:
+    -   Example configuration
+
+            Flexible Publish
+                Condition 1
+                    Publisher 1
+                    Publisher 2
+                Condition 2
+                    Publisher 3
+
+    -   When Publisher 1 fails, following publishers are handled as:
+
+        | Execution Strategy for Condition 1 | Publisher 2   | Publisher 3 |
+        |------------------------------------|---------------|-------------|
+        | Fail at end                        | Performed     | Performed   |
+        | Fail fast                          | Not performed | Performed   |
+
+        -   Following conditions are always performed even prior
+            publishers failed.
+        -   Following publishers in a same condition is performed when
+            the execution strategy is "Fail at end".
+
+## Limitations
+
+### Some publishers may not work with Flexible Publish.
+
+-   Some publishers **may** not be prepared to run more than once during
+    a build
+-   Some publishers need to find themselves configured in the projects,
+    but fail to do that when included in Flexible Publish.
+
+### Known plugins that doesn't work with Flexible Publish
+
+| Plugin                                                                                           | Details                                                                                            | Issue                                                               |
+|--------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------|
+| [Coverity Plugin](https://wiki.jenkins.io/display/JENKINS/Coverity+Plugin)                       | Causes NPE on execution                                                                            | [JENKINS-20632](https://issues.jenkins-ci.org/browse/JENKINS-20632) |
+| [Post build task](https://wiki.jenkins.io/display/JENKINS/Post+build+task)                       | Tasks will be duplicated if a project contains multiple Post build task                            | [JENKINS-23952](https://issues.jenkins-ci.org/browse/JENKINS-23952) |
+| [Build Pipeline Plugin](https://wiki.jenkins.io/display/JENKINS/Build+Pipeline+Plugin)           | "Manually Execute Downstream Project" always triggers downstream projects automatically            | [JENKINS-30272](https://issues.jenkins-ci.org/browse/JENKINS-30272) |
+| [Clone Workspace SCM Plugin](https://wiki.jenkins.io/display/JENKINS/Clone+Workspace+SCM+Plugin) | Doesn't show up the configured project in the list of options for selection on a consuming project | [JENKINS-30567](https://issues.jenkins-ci.org/browse/JENKINS-30567) |
+
+## Side links are duplicated
+
+-   Some publishers display side links in project status pages and build
+    status pages.
+-   Configuring multiple publishers of a same kind results duplicated
+    side links like this (this is a case with [Email-ext
+    plugin](https://wiki.jenkins.io/display/JENKINS/Email-ext+plugin)):  
+    ![](docs/images/duplicated-sidelink.png)
+-   There's no proper and general way to fix this, and this isn't
+    planned to be fixed as it's harmless.
+
+### Known plugins that duplicates site links in project pages with Flexible Publish
+
+-   [Email-ext
+    plugin](https://wiki.jenkins.io/display/JENKINS/Email-ext+plugin)
+-   [DocLinks
+    Plugin](https://wiki.jenkins.io/display/JENKINS/DocLinks+Plugin)
+-   [testng-plugin](https://wiki.jenkins.io/display/JENKINS/testng-plugin)
+
+### Known plugins that duplicates site links in build pages with Flexible Publish
+
+-   [Warnings
+    Plugin](https://wiki.jenkins.io/display/JENKINS/Warnings+Plugin)
+-   [Static Code Analysis
+    Plug-ins](https://wiki.jenkins.io/display/JENKINS/Static+Code+Analysis+Plug-ins)
+-   [testng-plugin](https://wiki.jenkins.io/display/JENKINS/testng-plugin)
+
+## Why named "Flexible Publish" ?
+
+-   It's often accused that "Flexible Publish plugin should have been
+    named Conditional Publisher plugin"
+-   You couldn't reorder publishers with old Jenkins (Jenkins \< 1.463).
+    Also see
+    https://groups.google.com/forum/?fromgroups\#\\!topic/jenkinsci-dev/UQLvxQclyb4
+-   A feature to reorder publishers was as important as a feature to
+    launch publishers conditionally. So named "Flexible Publish".
+
+## Issues
+
+To report a bug or request an enhancement to this plugin please create a
+ticket in JIRA (you need to login or to sign up for an account). Also
+have a look on [How to report an
+issue](https://wiki.jenkins.io/display/JENKINS/How+to+report+an+issue)
+
+-   [Bug
+    report](https://issues.jenkins.io/secure/CreateIssueDetails!init.jspa?pid=10172&issuetype=1&components=16130&priority=4&assignee=ikedam)
+-   [Request or propose an improvement of existing
+    feature](https://issues.jenkins.io/secure/CreateIssueDetails!init.jspa?pid=10172&issuetype=4&components=16130&priority=4)
+-   [Request or propose a new
+    feature](https://issues.jenkins.io/secure/CreateIssueDetails!init.jspa?pid=10172&issuetype=2&components=16130&priority=4)

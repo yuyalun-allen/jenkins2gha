@@ -1,0 +1,31 @@
+DaticalDB4Jenkins
+=================
+
+This plugin permits Jenkins to run Datical DB build steps.
+
+See [DaticalDB4Jenkins](https://wiki.jenkins-ci.org/display/JENKINS/DaticalDB4Jenkins) for more information.
+
+[![Build Status](https://jenkins.ci.cloudbees.com/job/plugins/job/datical-db-plugin/badge/icon)](https://jenkins.ci.cloudbees.com/job/plugins/job/datical-db-plugin/)
+
+
+
+Release Notes:
+
+Make sure you've run "ssh-add ~/.ssh/id_rsa"
+
+Edit pom.xml to bump the release number and add -SNAPSHOT
+
+git commit -a pom.xml
+
+(NOTE: make sure Jenkins is not running.)
+
+mvn release:prepare release:perform
+
+git push (should your git status still be "dirty")
+
+Select the defaults
+
+Verify release at https://wiki.jenkins-ci.org/display/JENKINS/DaticalDB4Jenkins after a day or so
+
+
+

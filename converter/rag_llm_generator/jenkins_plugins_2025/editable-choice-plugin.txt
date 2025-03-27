@@ -1,0 +1,94 @@
+= Editable Choice plugin
+
+:sectanchors:
+
+:toc:
+
+== Introduction
+
+Editable Choice plugin is a https://www.jenkins.io/[Jenkins] plugin providing editable choice parameter feature,
+that is, you can select a value from choices or you can input any value even not in choices.
+
+== Getting started
+
+You can use Editable Choice in your job just like built-in choice paraemters:
+
+[source,groovy]
+----
+pipeline {
+  agent any
+  parameters {
+    editableChoice(
+      name: 'PARAM1',
+      choices: ['Apple', 'Grape', 'Orange'],
+    )
+  }
+  stages {
+    stage('build') {
+      steps {
+        echo "PARAM1=${params.PARAM1}"
+       }
+    }
+  }
+}
+----
+
+You can enter a parameter value in a build page:
+
+#image:images/buildpage.png[Build page]#
+
+You can also configure it for GUI-based jobs like freestyle projects:
+
+#image:images/jobconfiguration.png[Job configuration]#
+
+== Pipeline syntaxes
+
+Full pipeline example:
+
+```
+editableChoice(
+  name: 'PARAM1',
+  description: 'Choose your favorite fruit`
+  choices: ['Apple', 'Grape', 'Orange'],
+  defaultValue: 'Grape',
+  restrict: true,
+  filterConfig: filterConfig(prefix: true, caseInsensitive: true),
+)
+
+```
+
+[cols=",,,",options="header",]
+|===
+|parameter   |type            |required|description
+|name        |string          |yes     |The name of the parameter
+|description |string          |        |The description for the parameter
+|choices     |list of strings |yes     |Choices
+|defaultValue|string          |        |The initial value. Uses the top most value if not specified.
+|restrict    |boolean         |        |Restrict the input value to be a value in choices. Otherwise, you cannot submit the build.
+|filterConfig|filterConfig    |        |Display only choices matching with current input. The choice behaves like suggestions.
+|===
+
+parameters for `+filterConfig+`:
+
+[cols=",,,",options="header",]
+|===
+|parameter      |type   |required|description
+|prefix         |boolean|        |Match the input only with prefix of choices
+|caseInsensitive|boolean|        |Match in case insensitive
+|===
+
+== Issues
+
+Report issues and enhancements in the https://issues.jenkins-ci.org/[Jenkins issue tracker].
+
+== Changelog
+
+Available in https://github.com/jenkinsci/editable-choice-plugin/releases[GitHub Release page].
+
+== Contributing
+
+Refer to our https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md[contribution guidelines].
+
+== LICENSE
+
+Licensed under MIT, see link:LICENSE.md[LICENSE].

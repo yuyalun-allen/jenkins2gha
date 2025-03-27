@@ -1,0 +1,4 @@
+Adds a new parameter type called Choice From File Parameter that 
+loads values for choice parameter from a text file.
+
+See http://wiki.jenkins-ci.org/display/JENKINS/Choice+From+File+Parameter+Plugin

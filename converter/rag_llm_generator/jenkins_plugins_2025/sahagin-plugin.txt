@@ -1,0 +1,3 @@
+# sahagin-plugin
+
+Sahagin Jenkins plugin. This plugin generates Sahagin HTML report from Sahagin test output data and attaches it to Jenkins build.

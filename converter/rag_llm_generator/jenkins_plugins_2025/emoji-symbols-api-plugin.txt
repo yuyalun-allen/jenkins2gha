@@ -1,0 +1,130 @@
+[[emoji-symbols-api-plugin]]
+= Emoji Symbols API Plugin
+:toc: macro
+:toclevels: 3
+:toc-title:
+
+image:https://ci.jenkins.io/job/Plugins/job/emoji-symbols-api-plugin/job/main/badge/icon[link="https://ci.jenkins.io/job/Plugins/job/emoji-symbols-api-plugin/job/main/"]
+image:https://codecov.io/gh/jenkinsci/emoji-symbols-api-plugin/branch/main/graph/badge.svg[link="https://codecov.io/gh/jenkinsci/emoji-symbols-api-plugin"]
+image:https://github.com/jenkinsci/emoji-symbols-api-plugin/actions/workflows/jenkins-security-scan.yml/badge.svg[link="https://github.com/jenkinsci/emoji-symbols-api-plugin/actions/workflows/jenkins-security-scan.yml"]
+
+image:https://img.shields.io/github/directory-file-count/jenkinsci/emoji-symbols-api-plugin%2Fsrc%2Fmain%2Fresources%2Fimages%2Fsymbols?type=file&style=flat&label=emojis[link="src/main/resources/images/symbols"]
+image:https://img.shields.io/jenkins/plugin/i/emoji-symbols-api.svg?color=blue&label=installations[link="https://stats.jenkins.io/pluginversions/emoji-symbols-api.html"]
+image:https://img.shields.io/github/contributors/jenkinsci/emoji-symbols-api-plugin.svg?color=blue[link="https://github.com/jenkinsci/emoji-symbols-api-plugin/graphs/contributors"]
+image:https://img.shields.io/github/release/jenkinsci/emoji-symbols-api-plugin.svg?label=changelog[link="https://github.com/jenkinsci/emoji-symbols-api-plugin/releases/latest"]
+
+== Introduction
+
+This plugin provides https://unicode.org/emoji/charts/full-emoji-list.html[Unicode Emojis] as symbols to be used by other plugins.
+
+The SVG files bundled by the plugin render the emojis as `text` rather than `path`.
+This allows emojis to be interpreted by the browser being used.
+
+toc::[]
+
+== Usage
+
+The symbol names follow the pattern of `symbol-emoji___NAME__ plugin-emoji-symbols-api`.
+
+Helper methods such as `io.jenkins.plugins.emoji.symbols.Emojis.getIconClassName` are provided by the plugin for easier generation of symbol identifiers.
+
+For a list of all available emojis and their names click link:src/main/resources/io/jenkins/plugins/emoji/symbols/Emojis/emojis.list[here].
+
+=== Jelly
+
+Simply define the icon by using
+
+[source,xml]
+----
+<l:icon src="symbol-emoji_sloth plugin-emoji-symbols-api" />
+----
+
+or use the helper methods to generate the icon class name for you
+
+[source,xml]
+----
+<j:invokeStatic var="emoji" method="getIconClassName" className="io.jenkins.plugins.emoji.symbols.Emojis">
+    <j:arg value="sloth"/>
+</j:invokeStatic>
+
+<l:icon src="${emoji}" />
+----
+
+=== Groovy
+
+Simply define the icon by using
+
+[source,groovy]
+----
+l.icon(src: "symbol-emoji_sloth plugin-emoji-symbols-api")
+----
+
+or use the helper methods to generate the icon class name for you
+
+[source,groovy]
+----
+import io.jenkins.plugins.emoji.symbols.Emojis
+
+def emoji = Emojis.getIconClassName("sloth")
+l.icon(src: emoji)
+----
+
+=== Java
+
+Simply define the icon by using
+
+[source,java]
+----
+public String getIconClassName() {
+    return "symbol-emoji_sloth plugin-emoji-symbols-api";
+}
+----
+
+or use the helper methods to generate the icon class name for you
+
+[source,java]
+----
+import io.jenkins.plugins.emoji.symbols.Emojis;
+
+public String getIconClassName() {
+    return Emojis.getIconClassName("sloth");
+}
+----
+
+=== Plugins
+
+Simply define the icon by using
+
+[source,groovy]
+----
+node {
+    // usage in the badge-plugin
+    addBadge(icon: "symbol-emoji_sloth plugin-emoji-symbols-api")
+}
+----
+
+or use the helper methods to generate the icon class name for you
+
+[source,groovy]
+----
+import io.jenkins.plugins.emoji.symbols.Emojis
+
+node {
+    // usage in the badge-plugin
+    def emoji = Emojis.getIconClassName("sloth")
+    addBadge(icon: emoji)
+}
+----
+
+== Versioning
+
+Version follows the pattern of `<unicode emojis version>-<plugin version>`.
+This way it is clear what upstream dependency is offered and allows patch releases for the plugin itself if required.
+
+== Release Notes
+
+Release notes are recorded in https://github.com/jenkinsci/emoji-symbols-api-plugin/releases[GitHub Releases].
+
+== License
+
+* Plugin source and documentation - https://opensource.org/licenses/MIT[MIT License]

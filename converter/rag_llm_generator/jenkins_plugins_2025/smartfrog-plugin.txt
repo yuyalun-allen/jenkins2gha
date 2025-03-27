@@ -1,0 +1,5 @@
+# SmartFrog Plugin for Jenkins
+
+https://www.jenkins.io/
+
+https://sourceforge.net/projects/smartfrog/

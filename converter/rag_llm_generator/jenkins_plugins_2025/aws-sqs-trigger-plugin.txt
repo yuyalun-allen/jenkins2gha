@@ -1,0 +1,90 @@
+# aws-sqs-trigger
+
+## Introduction
+
+This is a "simple" SQS trigger plugin to watch the AWS SQS queues.
+Once there are messages delivered to the watched SQS queues, the jobs are triggered by this plugin.  
+
+## Getting started
+### Enable the trigger
+You need to create an SQS queue and grant the sqs:ReceiveMessage and sqs:DeleteMessage to the Jenkins instance.
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "sqs:DeleteMessage",
+                "sqs:ReceiveMessage"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+The queue must enable the [long polling](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-short-and-long-polling.html#sqs-long-polling)
+whose "Receive message wait time" is 20.
+This plugin support [AWS Credentials](https://plugins.jenkins.io/aws-credentials/) 
+or retrieve from environment variables, ec2 instance profile, EKS irsa.  
+
+Enable the trigger at job config page and input the SQS queue name to watch.
+Select the AWS credentials or leave the credentials filed blank to use the default credentials from environment variables, instance profile or EKS irsa.
+![trigger](doc/trigger.png)
+
+
+### Retrieve the message properties in the job
+SQS message properties are sent to the build by parameters. Because of the [SECURITY-170](https://support.cloudbees.com/hc/en-us/articles/223718807-SECURITY-170-Advisory),
+the job must explicitly define the parameters to used in the job. 
+All parameters are sent by this plugin as string parameters which starts with "sqs_".    
+| Parameter Name | Value  |
+| ------------- | ------------- |
+| sqs_body  | The message body  |
+| sqs_message_id  | The message id  |
+| sqs_\<MessageAttributeKey\>  | The message attributes string value |
+
+![parameters](doc/parameters.png)
+### Disable Concurrent Builds Triggered by Message(s)
+There are some use cases, for example a long time CD build to install a full application,
+which don't want to run builds concurrently.  
+Enable this option to prevent concurrently build triggered by the SMS messages.  
+When the option is checked and there's a running job whatever caused, build will be ignored when receive messages.
+When the option is checked and multiple messages are received,
+at most one build will be triggered if there's no running job.
+
+## Trigger multiple job from one queue messages
+This plugin deletes the messages immediately after receiving.
+So it's not possible to tigger multiple jobs from one queue by watch a single queue.
+To trigger multiple jobs, use an upstream job to watch and use [Build Step](https://www.jenkins.io/doc/pipeline/steps/pipeline-build-step/)
+to trigger a new build for a given job.
+
+## Why another SQS plugin?
+You can find several [SQS plugins](https://plugins.jenkins.io/ui/search?query=sqs). So why another one?  
+In my organization, we have many jenkins instance running in everywhere. Some are in AWS vpcs,
+and some are in on-premises data centers. We need to trigger a full CI/CD build stream to cross several Jenkins instances.  
+The most difference is that this plugin just watches the SQS queues without any other dependencies.  
+So we can simplify publish a message to AWS SNS by [AWS Steps plugin](https://plugins.jenkins.io/pipeline-aws/)  and trigger builds by this plugin.
+
+## AWS Cost
+This plugin calls aws SQS ReceiveMessage in 20s long polling per queue per minute. If there are messages received,
+it calls additional DeleteMessageBatch API. Suppose there's a message per 20 min, it calls around 45000 APIs per month.
+```
+(60+60/20)*24*30=45360
+```
+The data transfer out is charged also.  
+AWS gives free [First 1 Million Requests/Month](https://aws.amazon.com/sqs/pricing/).  
+If you choose to use Server Side Encryption by AWS Key Management Service (SSE-KMS),
+[additional cost](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-key-management.html#sqs-estimate-kms-usage-costs) is charged by KMS service.
+
+## Contributing
+
+[CONTRIBUTING](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md) 
+
+Refer to our [contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
+
+## LICENSE
+
+Licensed under MIT, see [LICENSE](LICENSE.md)
+

@@ -1,0 +1,3 @@
+This plugin allows you to safety builds for job, when multi-people approved
+
+See http://wiki.jenkins-ci.org/display/JENKINS/Job+StrongAuthSimple+Plugin

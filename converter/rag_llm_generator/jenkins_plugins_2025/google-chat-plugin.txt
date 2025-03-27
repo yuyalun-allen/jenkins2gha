@@ -1,0 +1,9 @@
+Google chat Plugin 
+
+->Create a webhook URL of google chat group
+
+->Go to the post build section in the job configuration page 
+
+->Paste the URL into that field 
+
+->Save the configuration

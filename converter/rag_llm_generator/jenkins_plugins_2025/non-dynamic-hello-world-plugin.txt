@@ -1,0 +1,14 @@
+= Non Dynamic Hello World Plugin: *TESTING* plugin
+
+TIP: if unsure, you probably do not want to install that plugin.
+It is exclusively designed to be useful to Jenkins developers and offers no useful feature to end-users.
+
+This plugin contains a non-dynamically loadable extension.
+It is expected to be used for example in functional tests like the link:https://github.com/jenkinsci/acceptance-test-harness[Jenkins Acceptance Test Harness], especially to check `hudson.model.UpdateCenter.isRestartRequiredForCompletion()` for instance.
+
+== Use case
+Imagine you have some automated tooling designed to install an arbitrary list of plugins.
+Some plugins may require a Jenkins restart to work correctly.
+
+To test this, you would need such a plugin.
+This testing plugin contains the standard hello-world, just modified so that its `@Extension` is marked `dynamicLoadable = YesNoMaybe.NO`.

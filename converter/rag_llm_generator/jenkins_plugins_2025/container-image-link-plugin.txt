@@ -1,0 +1,38 @@
+# Container Image Link Plugin
+
+## Introduction
+
+this plugin allow to add a badge and a permalink in the graphic interface of the build upon a successful run or invocation
+
+![Alt text](image-01.JPG "image-01")
+
+![Alt text](image-02.JPG "image-02")
+
+## Getting started
+
+you can invoke this step on a scripted pipeline with the following command plus an arguments
+, the badge can live with other badges like artifactory badge or sonarqube badge which appears at 
+the same location when others plugins are installed
+```
+containerImageLink "URL"
+```
+## Issues
+
+Report issues and enhancements in the [Jenkins issue tracker](https://issues.jenkins-ci.org/).
+
+## Contributing
+
+TODO review the default [CONTRIBUTING](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md) file and make sure it is appropriate for your plugin, if not then add your own one adapted from the base file
+
+Refer to our [contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
+
+## LICENSE
+
+Licensed under MIT, see [LICENSE](LICENSE.md)
+
+##  BUILD WITH
+```
+Apache Maven 3.8.1 (05c21c65bdfed0f71a2f2ada8b84da59348c4c5d)
+Java version: 11.0.11, vendor: AdoptOpenJDK
+```
+

@@ -1,0 +1,22 @@
+# Scoverage Jenkins Plugin
+
+This plugin allows you to publish [scoverage](https://github.com/scoverage) results in Jenkins as a trend graph.
+
+## Configuration
+
+### Freestyle
+
+1. Enable "Publish Scoverage Report" in Post-build Actions.
+2. Specify the location where the `scoverage.xml` report is generated (e.g. `target/scala-2.10/scoverage-report`, `scoverage.xml`).
+
+![](docs/images/t.png)
+
+### Pipeline
+
+```groovy
+step([$class: 'ScoveragePublisher', reportDir: 'target/scala-2.11/scoverage-report', reportFile: 'scoverage.xml'])
+```
+
+## Example
+
+![](docs/images/1.png)

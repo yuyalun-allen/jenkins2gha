@@ -1,0 +1,16 @@
+# EasyQA_Jenkins_Plugin
+===============
+
+# License #
+EasyQA_Jenkins_Plugin is released under the MIT License. See the bundled LICENSE file for details.
+
+# About #
+This is a plugin for Jenkins_ that aims for providing support for [EasyQA](https://geteasyqa.com/) inside [Jenkins](http://jenkins-ci.org).
+
+
+# Usage #
+
+EasyQA projects can be set up under global configuration in Jenkins Settings. For each job a separate project can be selected, and specific options can be
+set.
+
+There is also a build step to create an issue on EasyQA when build is failed.

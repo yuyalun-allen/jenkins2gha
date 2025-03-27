@@ -1,0 +1,41 @@
+[Build Pipeline Plugin] Extension Layout supporting build-flow jobs.
+
+=====================
+
+User Guide
+--------------------
+After installation this extension, you can see the new option ("Based on build-flow plugin layout") for the "Layout" listbox on Build Pipeline configuration page. And you have to install [graphviz] on the machine on which Jenins running.
+
+Building the Project
+--------------------
+
+### Dependencies
+* [Apache Maven][maven]
+* build-pipeline-plugin
+* build-flow-plugin
+* buildgraph-view
+* [graphviz]
+
+### Targets
+```shell
+  $ mvn clean install
+  $ mvn clean install -DskipTests -Dcheckstyle.skip -Dfindbugs.skip
+  $ mvn hpi:run
+  $ mvnDebug hpi:run
+```
+
+Installing Plugin Locally
+-------------------------
+1. Install [graphviz] on Linux or Windows and make sure the path of "dot" cmd added into the environment variable: "Path"
+2. Build the project to produce `target/build-pipeline-extension-layout.hpi`
+3. Remove any installation of the build-pipeline-extension-layout in `$user.home/.jenkins/plugins/`
+4. Copy `target/build-pipeline-extension-layout.hpi` to `$user.home/.jenkins/plugins/`
+5. Start/Restart Jenkins
+
+An Example View
+------------------------
+![image](Example.png)
+
+[Build Pipeline Plugin]: https://wiki.jenkins-ci.org/display/JENKINS/Build+Pipeline+Plugin
+[maven]: https://maven.apache.org/
+[graphviz]: http://www.graphviz.org/

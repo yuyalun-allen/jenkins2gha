@@ -1,0 +1,100 @@
+# ES Extensions
+
+> This repository provides a collection of packages to aid with runtime ES5+ extensibility.
+
+-   [ES Extensions](#es-extensions)
+-   [Usage](#usage)
+    -   [Install](#install)
+    -   [Header Navbar extension](#header-navbar-extension)
+    -   [Creating an ExtensionPoint](#creating-an-extensionpoint)
+    -   [Implementing an extension](#implementing-an-extension)
+    -   [Using the Extension](#using-the-extension)
+-   [Building](#building)
+    -   [Test](#test)
+    -   [Meta](#meta)
+
+# Usage
+
+There are 2 parts to providing runtime extenibility with es-extensions. An `ExtensionPoint` is created which defines the contract which plugins can use to implement `Extensions` with.
+
+## Install
+
+```sh
+npm install -S @jenkins-cd/es-extensions
+```
+
+## Header Navbar extension
+
+All following examples are properly type checked when using typescript.
+
+## Creating an ExtensionPoint
+
+```ts
+import { createExtensionPoint } from '@jenkins-cd/es-extensions';
+
+interface HeaderNavLink {
+    label: string;
+    uri: string;
+
+    /* use history api or browser for link */
+    linkType: 'html5history' | 'browser';
+}
+export const headerNavLinkExtensionPoint = createExtensionPoint<HeaderLink>('header.link');
+```
+
+The `ExtensionPoint` can be exported in an NPM package so that implementors can can access to type information
+
+## Implementing an extension
+
+```ts
+import { headerNavLinkExtensionPoint } from 'my-extension-points';
+
+headerNavLinkExtensionPoint.register({
+    label: 'Github',
+    uri: 'https://github.com',
+    linkType: 'browser'
+});
+```
+
+## Using the Extension
+
+```tsx
+import { headerNavLinkExtensionPoint } from 'my-extension-points';
+
+const navLinkExtensions = headerNavExtensionPoint.get();
+
+navLinkExtensions.map((extension, index) => {
+    if (extension.linkType === 'browser') {
+        return (
+            <a key={index} href={extension.uri}>
+                {label}
+            </a>
+        );
+    } else {
+        return (
+            <Link key={index} to={extension.uri}>
+                {label}
+            </Link>
+        );
+    }
+});
+```
+
+# Building
+
+This repository is managed with [lerna](https://github.com/lerna/lerna). To build:
+
+```sh
+yarn install
+yarn run bootstrap
+```
+
+## Test
+
+```sh
+yarn test
+```
+
+## Meta
+
+Distributed under the MIT license. See `LICENSE` for more information.

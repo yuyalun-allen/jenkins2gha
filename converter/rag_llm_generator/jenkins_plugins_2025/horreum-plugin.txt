@@ -1,0 +1,131 @@
+[[horreum-plugin]]
+= Horreum Plugin
+:toc: macro
+:toc-title: Horreum Plugin ToC
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+toc::[]
+
+[abstract]
+.Overview
+This plugin sends a JSON result object to a Horreum instance secured by Keycloak. The request is made as a job
+execution in Jenkins and if the upload is unsuccessful, the job can be marked as failed
+(configurable).
+
+== Features
+
+The following features are available in both Pipeline and traditional project types:
+
+* Upload JSON result object to Horruem
+* Supports Keycloak Authentication
+
+=== Basic plugin features
+
+=== Pipeline features
+
+Example upload of `output.json` to Horreum instance
+
+[source,groovy]
+----
+horreumUpload (
+    credentials: 'dev-ci',
+    test: 'Dummy Test',
+    owner: 'dev-team',
+    access: 'PUBLIC',
+    start: '$.build-timestamp',
+    stop: '$.build-timestamp',
+    jsonFile: 'run/localhost/output.json'
+)
+
+----
+
+You can access the response within a groovy script:
+
+[source,groovy]
+----
+def response = horreumUpload (
+    credentials: 'dev-ci',
+    test: 'Dummy Test',
+    owner: 'dev-team',
+    access: 'PUBLIC',
+    start: '$.build-timestamp',
+    stop: '$.build-timestamp',
+    jsonFile: 'run/localhost/output.json',
+    abortOnfailure: false,
+    quiet: false
+)
+println("Response: "+response)
+----
+
+The created Run ID by Horreum is provided in the response.
+
+== Building
+
+The plugin can be built using Maven
+
+[source, bash]
+----
+mvn package -DskipTests=true
+----
+
+== Testing
+
+Testing using Maven and JUnit:
+
+[source, bash]
+----
+mvn test
+----
+
+== Stand up Jenkins server instance
+
+The [Maven HPI plugin](https://jenkinsci.github.io/maven-hpi-plugin/) is used for standing up a Jenkins instance.
+
+[source, bash]
+----
+mvn hpi:run
+----
+
+== Configure Global Settings
+
+This plugin adds global settings for the Horreum URL and retry strategy.
+
+image::docs/images/configure-horreum-global.png[]
+
+== Configure Credentials
+
+The login details for Horreum are stored in credentials.
+
+`HTTP Basic` and `Open ID Connect` methods use credentials stored as `Username with Password`.
+
+image::docs/images/configure-credentials-username-password.png[]
+
+Horreum `API Key` authentication method use credentials stored as `Secret Text`.
+
+image::docs/images/configure-credentials-apikey.png[]
+
+Here is an example where credentials of both types are stored in Jenkins.
+
+image::docs/images/configure-credentials.png[]
+
+== Setup Authentication
+
+Both `Horreum Expect` and `Horreum Upload` build steps require authentication.
+
+For deployment where Horreum is configured without a Keycloak (or other OIDC provider), choose `HTTP Basic` as the authentication type and pick a `Username with Password` credential.
+
+image::docs/images/setup-basic-authentication.png[]
+
+If the Horreum instance is setup with Keycloak (or other OIDC provider) choose the `Open ID Connect` authentication type and pick a `Username with Password` credential.
+
+image::docs/images/setup-oidc-authentication.png[]
+
+If `API Key` is the desired authentication method (available whether Horreum is deployed with or without Keycloak / OIDC) choose a `Secret Text` credential .
+
+image::docs/images/setup-apikey-authentication.png[]

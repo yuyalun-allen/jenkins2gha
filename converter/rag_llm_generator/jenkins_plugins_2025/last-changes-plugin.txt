@@ -1,0 +1,350 @@
+= Last Changes Plugin
+:toc: preamble
+:sectanchors:
+:sectlink:
+:numbered:
+:imagesdir: images
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+
+[quote]
+____
+The simplest way to know what has changed on your Jenkins builds!
+____
+
+image:https://travis-ci.org/jenkinsci/last-changes-plugin.svg[Build Status (Travis CI), link=https://travis-ci.org/jenkinsci/last-changes-plugin]
+image:https://img.shields.io/jenkins/plugin/i/last-changes.svg?color=blue[link="https://plugins.jenkins.io/last-changes"]
+
+
+Last Changes is a *Jenkin plugin* that shows _rich VCS diffs_ between builds.
+
+IMPORTANT: Only `Git` and `Svn` based projects are supported.
+
+== Introduction
+
+The plugin uses https://diff2html.rtfpessoa.xyz/[diff2html^] to show last changes of a given build, example:
+
+image::last-changes03.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes03.png]
+
+Or using side-by-side configuration:
+
+image::last-changes05.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes05.png]
+
+
+NOTE: Last changes means `compare current repository revision with an old revision`. By default the plugin will diff current and previous revision.
+
+== Objectives
+
+The main objective of this plugin is to have _fast_ access to what has changed on a Jenkins build.
+
+Another interesting aspect is that it can easily help to find the `root cause` of a `failing build` by highlighting what has changed.
+
+And finally the plugin _shines_ in a https://en.wikipedia.org/wiki/Continuous_delivery[*continuous delivery*^] environment, where each _commit_ generates a release candidate.
+
+
+== How it works?
+
+. This plugin expects `.git` or `.svn` folders present on your build workspace and will use it to retrieve repository information .
+. While your job runs the plugin reads your build workspace to retrieve the current VCS revision;
+. The diff between `actual` and a `previous` revision will be stored; Note that the `previous revision` can be:
++
+* A provided revision id;
+* Revision of `Last successful build`;
+* Revision of an specific build;
+* Revision of `Last tag`;
++
+NOTE: By default previous revision is `current revision -1`.
++
+TIP: You can use https://wiki.jenkins.io/display/JENKINS/Parameterized+Build[parameters] in `specificRevision` parameter. In case of git, expressions like `HEAD^{tree}` or `HEAD^^` can be used.
+. The `diff` for each build can be viewed later in html format.
+
+IMPORTANT: To get most from this plugin use `periodically SCM polling` to trigger your builds, http://www.nailedtothex.org/roller/kyle/entry/articles-jenkins-poll[more details here^].
+
+
+== Usage
+
+After installation just activate the post build action named *Publish Last Changes*.
+
+. Activate build action
++
+image:last-changes-activation.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes-activation.png]
+. Last changes menu should be available
++
+image:last-changes01.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes01.png]
+. Build changes history
++
+image:last-changes02.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes02.png]
+. Last changes menu is available for builds that published changes
++
+image:last-changes04.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes-config.png]
+
+
+[TIP]
+====
+Since version `2.3` the *commits between revisions* are listed as below:
+
+image:commits.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/commits.png]
+
+You can also see what has changed on a specific commit by clicking on it:
+
+image:commit-changes.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/commit-changes.png]
+
+====
+
+== Configuration
+
+The setup is done via `build configuration`:
+
+image:last-changes-config.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes-config.png]
+
+The possible values for *Since* attribute is `Previous revision` (the default), `Last successful build` and `Last tag`.
+
+IMPORTANT: If *SpecificRevision* parameter is provided then *Since* configuration will be ignored and the diff will be done with provided revision id.
+
+Advanced configuration reflects https://github.com/rtfpessoa/diff2html#diff2html-configuration[diff2html options^]:
+
+image:last-changes-config2.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes-config2.png]
+
+
+== Jenkins pipeline step
+
+Following is an example of pipeline step using this plugin:
+
+----
+node {
+      stage ('Build') {
+           svn 'https://subversion.assembla.com/svn/cucumber-json-files/trunk/'
+           step([$class: 'LastChangesPublisher', since:'PREVIOUS_REVISION',specificRevision: '', format: 'LINE', matchWordsThreshold: '0.25', matching: 'NONE', matchingMaxComparisons: '1000', showFiles: true, synchronisedScroll: true])
+
+      }
+
+}
+----
+
+
+=== Pipeline DSL
+
+Since version `1.0.10` it is possible to use the _lastChanges()_ shortcut in pipeline DSL:
+
+----
+node {
+     git 'https://github.com/jenkinsci/last-changes-plugin.git'
+     lastChanges() //will use defaults
+}
+----
+
+Parameters should be declared as `key: 'value'` as example below:
+
+----
+node {
+     git 'https://github.com/jenkinsci/last-changes-plugin.git'
+     lastChanges format:'SIDE', matching: 'WORD', specificRevision: '156e2508a31d8835ec4e5ba7e206ecd2e406f202'
+}
+----
+
+Or using https://jenkins.io/doc/book/pipeline/syntax/[declarative pipeline^]:
+
+----
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/jenkinsci/last-changes-plugin.git'
+                lastChanges since: 'LAST_SUCCESSFUL_BUILD', format:'SIDE', matching: 'LINE'
+            }
+        }
+    }
+}
+----
+
+Or using build params for `specificRevision`:
+
+----
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/jenkinsci/last-changes-plugin.git'
+                lastChanges format:'SIDE', matching: 'WORD', specificRevision: "${REV}"
+            }
+        }
+    }
+}
+----
+
+TIP: Refer to https://wiki.jenkins.io/display/JENKINS/Parameterized+Build[parameterized builds^] to use parameters.
+
+=== Pipeline scripting
+
+Since https://github.com/jenkinsci/last-changes-plugin/releases/tag/2.5[v2.5^] is possible to invoke LastChanges inside groovy script, instead of just declaring it <<Pipeline DSL, as we saw above>>. See example below:
+
+```
+node {
+      stage("checkout") {
+        git url: 'https://github.com/jenkinsci/last-changes-plugin.git'
+      }
+
+      stage("last-changes") {
+        def publisher = LastChanges.getLastChangesPublisher "PREVIOUS_REVISION", "SIDE", "LINE", true, true, "", "", "", "", ""
+              publisher.publishLastChanges()
+              def changes = publisher.getLastChanges()
+              println(changes.getEscapedDiff())
+              for (commit in changes.getCommits()) {
+                  println(commit)
+                  def commitInfo = commit.getCommitInfo()
+                  println(commitInfo)
+                  println(commitInfo.getCommitMessage())
+                  println(commit.getChanges())
+              }
+      }
+
+}
+```
+
+NOTE: See https://github.com/jenkinsci/last-changes-plugin/blob/master/src/main/java/com/github/jenkins/lastchanges/model[model classes^] to know what can be accessed in pipeline script. Note that only attributes https://github.com/jenkinsci/last-changes-plugin/blob/master/src/main/java/com/github/jenkins/lastchanges/model/LastChanges.java#L48[annotated with @Whitelisted^] are visible to be accessed in pipeline script.
+
+TIP: If you use declarative pipeline you can use https://jenkins.io/doc/book/pipeline/syntax/#script[script section^].
+
+
+== Download the diff
+
+You can also download the diff as `DIFF` or `HTML`. The download links are on the `bottom right` corner of the page:
+
+image::diff-download.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/diff-download.png]
+
+
+== Sending the diff as email
+
+Using https://wiki.jenkins.io/display/JENKINS/Email-ext+plugin[email ext plugin^] and <<Pipeline scripting>> we can send the diff as an email attachment, see example below:
+
+. Diff in *plain text*
++
+----
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/jenkinsci/last-changes-plugin'
+            }
+        }
+        stage("send diff") {
+            steps {
+                script {
+                    def publisher = LastChanges.getLastChangesPublisher null, "SIDE", "LINE", true, true, "", "", "", "", ""
+                    publisher.publishLastChanges()
+                    def diff = publisher.getDiff()
+                    writeFile file: 'build.diff', text: diff
+                    emailext (
+                      subject: "Jenkins - changes of ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                      attachmentsPattern: '**/*.diff',
+                      mimeType: 'text/html',
+                      body: """<p>See attached diff of <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b>.</p>
+                        <p>Check build changes on Jenkins <b><a href="${env.BUILD_URL}/last-changes">here</a></b>.</p>""",
+                      to: "YOUR-EMAIL@gmail.com"
+                    )
+
+               }
+
+            }
+        }
+    }
+}
+----
+. Diff in *Html format*
++
+----
+pipeline {
+    agent any
+    stages {
+        stage('Send html diff') {
+            steps {
+                git 'https://github.com/jenkinsci/last-changes-plugin.git'
+                script {
+                  def publisher = LastChanges.getLastChangesPublisher "PREVIOUS_REVISION", "SIDE", "LINE", true, true, "", "", "", "", ""
+                  publisher.publishLastChanges()
+                  def htmlDiff = publisher.getHtmlDiff()
+                  writeFile file: 'build-diff.html', text: htmlDiff
+                    emailext (
+                      subject: "Jenkins - changes of ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                      attachmentsPattern: '**/*build-diff.html',
+                      mimeType: 'text/html',
+                      body: """<p>See attached diff of build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b>.</p>
+                        <p>Check build changes on Jenkins <b><a href="${env.BUILD_URL}/last-changes">here</a></b>.</p>""",
+                      to: "YOUR-EMAIL@gmail.com" )
+                } //end script
+            }
+        }
+    }
+}
+----
+
+
+== Docker
+
+An easy way to test this plugin is using a docker container, here are the steps (assuming you have docker installed):
+
+. Run the image:
++
+----
+docker run -it -p 8080:8080 rmpestano/jenkins-last-changes
+----
++
+. Access localhost:8080/ and create a job
+. Configure this svn repository: https://subversion.assembla.com/svn/cucumber-json-files/trunk/
+. Add the *Publish last changes* _post build action_;
+. Just run the job
+
+
+Job output should look like:
+
+image:last-changes-docker.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes-docker.png]
+
+
+== Running it locally
+
+Following are the steps to `run, debug and test` this plugin on your machine:
+
+. Clone this repository
++
+----
+
+git clone http://github.com/jenkinsci/last-changes-plugin
+----
+. Import it on your IDE
+. Run the command *mvnDebug hpi:run -DskipTests*
+. Configure the remote debugging on your IDE to use port 8000, as in image below:
++
+image:last-changes-debug.png[link=https://raw.githubusercontent.com/jenkinsci/last-changes-plugin/master/images/last-changes-debug.png]
+
+. Access `http://localhost:8080/jenkins`
+
+Now create jobs using last-changes and debug them.
+
+For testing run any class on `src/test/java` folder as JUnit test.
+
+NOTE: Tests with `IT` suffix will start a Jenkins instance before the test.
+
+[TIP]
+====
+To generate the binary of the plugin run:
+
+----
+mvn clean package -DskipTests
+----
+
+It will generate `last-changes.hpi` in target folder. You can install it on jenkins via upload in `jenkins/pluginManager`.
+====
+
+== Contributing
+
+See https://github.com/jenkinsci/last-changes-plugin/wiki/Contributors-guide[contributors guide^].
+
+== Change Log
+
+Please follow https://github.com/jenkinsci/last-changes-plugin/releases[releases page^] for details of each release.

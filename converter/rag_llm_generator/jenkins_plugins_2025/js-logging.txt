@@ -1,0 +1,17 @@
+# Jenkins client-side Logging
+
+Client-side Logging APIs for Jenkins.
+ 
+## Installation
+
+```
+npm install --save @jenkins-cd/logging
+```
+
+## API Documentation
+
+See [API Documentation](https://tfennelly.github.io/jenkins-js-logging/).
+
+## Browser Configuration
+
+All `ERROR` logs are printed to the browser console by default. All other log configurations needs to be done through the Browser Developer Tools. For more on that, [see the following documentation](https://tfennelly.github.io/jenkins-js-logging/index.html#browser-config).

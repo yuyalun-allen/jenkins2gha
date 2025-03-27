@@ -1,0 +1,122 @@
+# Xray – Test Management for Jira
+
+## Continuous Integration using Jenkins and Xray
+  
+This plugin enables continuous integration using Jenkins and Xray Test
+Management. In a nutshell, this connector provides tasks to publish test
+results from Jenkins to Xray.  
+
+![](https://user-images.githubusercontent.com/11166836/72537100-68457b80-3873-11ea-97a9-7c3b1025362d.png)
+
+Xray is the leading Quality Assurance and Test Management app for Jira. More than 4.5 million testers, developers and QA managers trust Xray to manage 100+ million test cases each month. Xray is a mission-critical tool at over 5,000 companies in 70+ countries, including 137 of the Global 500.
+
+**Full Documentation**
+
+The guide below it's a "Quick Start" version of our full documentation available in Xray official page:
+
+-   Xray Cloud integration with Jenkins: <https://docs.getxray.app/display/XRAYCLOUD/Integration+with+Jenkins>
+-   Xray Server/DC integration with Jenkins: <https://docs.getxray.app/display/XRAY/Integration+with+Jenkins>
+
+You can also check the source code of the plugin here: <https://github.com/jenkinsci/xray-connector-plugin>
+  
+
+### Features
+
+-   Integration with both Xray in Jira Cloud and Jira Server/Data Center
+-   Export Cucumber features files from Xray
+-   Import Cucumber feature files to Xray
+-   Import your test results in any format supported by Xray
+
+### Requirements
+
+-   Jenkins 2.138.4 or above
+-   At least one Jira instance (Server, Data Center and/or Cloud) with
+    the
+    [Xray](https://marketplace.atlassian.com/apps/1211769/xray-test-management-for-jira)
+    installed.
+
+### Configuration
+
+Xray for Jenkins is configured in the global settings configuration page:
+
+**Manage Jenkins** \> **Configure System \> Xray configuration**.
+<br/><br/>
+
+To add a new Jira instance connection, you need to specify some
+properties:
+
+1.  **Configuration alias:** the name you want to give to this
+    configuration
+2.  **Hosting:** Hosting (instance type) in this case Cloud/Server/Data
+    Center
+3.  **(Server/Data Center only) Server Address**: The address of the
+    Jira Server where Xray is running
+4.  Credentials:  
+    1.  Use the **Jenkins Credentials Plugin** to set the
+        username/password (if you are using a Server/Data Center
+        instance) or an API key/secret (if you are using an Cloud
+        instance)
+    2.  Make sure that the user you are using have the following
+        permissions in the projects where you want to import the results
+        and import/export feature files: **View, Edit, Create**
+
+Note: the Configuration ID is not editable. This value can be used in
+the pipelines scripts.
+<br/><br/>
+After setting the instances, you can test your connection to Jira, by
+using the and ***Test Connection*** button.
+When you are done configuring your Jira instances, don't forget to
+save the changes.
+![](https://user-images.githubusercontent.com/11166836/72537278-c1151400-3873-11ea-80df-f10b2d993305.png)
+
+### Job Tasks
+
+Currently, we support **Freestyle**, **Pipeline**, **Multi-configuration
+Projects** and **Maven projects**.
+
+This plugin provides 2 new Build tasks:
+
+The ***Xray: Cucumber Features Export Task*** and the ***Xray: Cucumber
+Features Import Task***
+
+Both tasks can be used while executing Cucumber tests: In a
+typical [Cucumber Workflow](https://docs.getxray.app/display/XRAY/Integration+with+Jenkins#IntegrationwithJenkins-Cucumber(%22standard%22workflow)),
+after having created a Cucumber project and the Cucumber tests specified
+in Jira, you may want to have a project that **exports** the features
+from Jira, executes the automated tests on a CI environment and then
+**imports** back its results.
+
+For this scenario, the Jenkins project would be configured with a set of
+tasks responsible for:
+
+1.  Pulling the Cucumber project
+2.  **Exporting Cucumber features from Jira to your Cucumber project**
+3.  Executing the tests in the CI environment
+4.  **Importing the execution results back to Jira** ([see section below](#import-results))
+
+Alternatively, you can also use Cucumber features that are hosted outside Xray and import them to Jira by using our **Cucumber Features Import Task**.
+  
+![](https://user-images.githubusercontent.com/11166836/72537276-c1151400-3873-11ea-8cc0-c26a5af113de.png)
+
+#### Import Results
+
+In the **Post-build Actions**, you can add the ***Xray: Results Import
+Task***, in order to import your Test Results in the following formats:
+
+-   Xray JSON & Xray JSON Multipart
+-   Cucumber JSON & Cucumber JSON Multipart
+-   Behave JSON & Behave JSON Multipart (Xray Server/Data Center only)
+-   JUnit XML & JUnit XML Multipart
+-   NUnit XML & NUnit XML Multipart
+-   Robot XML & Robot XML Multipart
+-   TestNG XML & TestNG XML Multipart
+-   xUnit XML & xUnit XML Multipart
+
+![](https://user-images.githubusercontent.com/11166836/72537277-c1151400-3873-11ea-9a1b-f3baebc2c33f.png)
+
+  
+### Want to learn more?
+
+Check out [Xray Test Management website](https://getxray.app?utm_source=jenkins-connector&utm_medium=github&utm_campaign=jenkins-connector) to understand how to leverage Jira for Test Management and [start a free trial](https://marketplace.atlassian.com/apps/1211769/xray-test-management-for-jira?utm_source=jenkins-connector&utm_medium=github&utm_campaign=jenkins-connector).
+
+If you need any help using in Xray or this plugin, you can contact us by using our [Support System](https://xraysupport.xpand-it.com/).

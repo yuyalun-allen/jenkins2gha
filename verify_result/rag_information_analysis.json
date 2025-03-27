@@ -1,0 +1,721 @@
+{
+  "summary": {
+    "file": "rag_information.json",
+    "entries": 315,
+    "unique_steps": 129,
+    "unique_docs": 138,
+    "multi_rank_docs": 22
+  },
+  "steps": {
+    "types": {
+      "archiveArtifacts": 17,
+      "discordSend": 2,
+      "content": 16,
+      "script": 62,
+      "deleteDir": 10,
+      "slackSend": 6,
+      "withCredentials": 18,
+      "slackBuildFailure": 1,
+      "bat": 6,
+      "ftpPublisher": 1,
+      "unknown": 27,
+      "zip": 3,
+      "configFileProvider": 1,
+      "catchError": 9,
+      "junit": 4,
+      "wrap": 2,
+      "publishHTML": 2,
+      "cleanWs": 4,
+      "readTrusted": 2,
+      "githubNotify": 13,
+      "timeout": 1,
+      "dir": 47,
+      "container": 4,
+      "withMaven": 1,
+      "checkout": 1,
+      "postProcess": 3,
+      "init": 1,
+      "slackStatus": 1,
+      "dockerUtils": 1,
+      "githubDeploy": 1,
+      "deployApp": 2,
+      "githubStatus": 1,
+      "xunit": 9,
+      "notifyGitHub": 13,
+      "clearProjects": 2,
+      "node": 2,
+      "withEnv": 6,
+      "build": 1,
+      "withDockerRegistry": 1,
+      "unstash": 9,
+      "withAWS": 1,
+      "emailext": 1
+    },
+    "contents": {
+      "checkout scm": 14,
+      "echo \"Deploying to production...\"": 1,
+      "": 16,
+      "currentBuild.result = \"FAILED\"\\n                step([\\n                    $class: \\": 1,
+      "govuk.checkoutFromGitHubWithSSH(env.REPOSITORY)": 1,
+      "govuk.bundleApp()": 1,
+      "govuk.pushTag(env.REPOSITORY, env.BRANCH_NAME, \"release_${env.BUILD_NUMBER}\")": 1,
+      "govuk.buildProject(\n                        rubyLintDiff: false,\n                        skipDeployToIntegration: true\n                    )": 1,
+      "govuk.buildProject(\n                        sassLint: false,\n                        skipDeployToIntegration: true\n                    )": 1,
+      "govuk.buildProject(\n                        skipDeployToIntegration: true,\n                    )": 1,
+      "govuk.buildProject(skipDeployToIntegration: true)": 2,
+      "govuk.buildProject(\n                        sassLint: false,\n                        skipDeployToIntegration: true,\n                    )": 1,
+      "govuk.buildProject(\\n                        skipDeployToIntegration: true,\\n                        rubyLintDiff: false,\\n                        overrideTestTask: {\\n                            stage(\"Run tests\") {\\n                                sh \"make test\"\\n                            }\\n                        }\\n                    )": 1,
+      "govuk.buildProject(\n                        skipDeployToIntegration: true\n                    )": 1,
+      "color: \\": 3,
+      "ren test_suite INW_OMP.org": 2,
+      "{'artifacts': 'INW_OMP.org/*.out', 'fingerprint': 'true'}": 2,
+      "\\": 17,
+      "{'artifacts': 'installer/*.exe', 'fingerprint': 'true'}": 1,
+      "{'alwaysPublishFromMaster': 'false', 'masterNodeName': 'master', 'continueOnError': 'false', 'failOnError': 'false'}": 1,
+      "{'content': \"sh 'chmod +x ./gradlew';\"}": 1,
+      "{'content': \"sh './gradlew clean';\"}": 1,
+      "{'content': \"sh './gradlew test';\"}": 1,
+      "{'content': \"junit '**/build/test-results/test/*.xml';\"}": 1,
+      "{'content': \"sh './gradlew jar';\"}": 1,
+      "{'content': \"echo 'Creating CloudNet.zip file...';\"}": 1,
+      "{'content': \"sh 'mkdir -p temp';\"}": 2,
+      "{'content': \"sh 'cp -r .template/* temp/';\"}": 1,
+      "{'content': \"sh 'mkdir temp/dev';\"}": 1,
+      "{'content': \"sh 'mkdir temp/dev/examples';\"}": 1,
+      "{'content': \"sh 'cp -r cloudnet-examples/src/main/java/de/dytanic/cloudnet/examples/* temp/dev/examples';\"}": 1,
+      "{'content': \"sh 'mkdir temp/plugins';\"}": 1,
+      "{'content': \"sh 'cp cloudnet-plugins/**/build/libs/*.jar temp/plugins/';\"}": 1,
+      "{'content': \"sh 'cp cloudnet-launcher/build/libs/launcher.jar temp/launcher.jar';\"}": 1,
+      "{'content': \"sh 'rm -r temp/';\"}": 2,
+      "{'content': \"echo 'Creating AutoUpdater.zip file...';\"}": 1,
+      "{'content': \"sh 'cp -r cloudnet/build/libs/*.jar temp/';\"}": 1,
+      "{'content': \"sh 'cp -r cloudnet-driver/build/libs/*.jar temp/';\"}": 1,
+      "{'content': \"sh 'cp -r cloudnet-modules/**/build/libs/*.jar temp/';\"}": 1,
+      "{'content': \"sh 'cp -r **/build/libs/*.cnl temp/';\"}": 1,
+      "{'content': \"echo 'Publishing artifacts to Apache Archiva...';\"}": 1,
+      "[configFile(fileId: \"e94f788c-1d9c-48d4-b9a9-8286ff68275e\", targetLocation: \\": 1,
+      "{'content': \"echo 'Creating javadoc...';\"}": 1,
+      "{'content': \"sh './gradlew allJavadoc';\"}": 1,
+      "{'artifacts': '**/build/libs/*.jar'}": 2,
+      "{'artifacts': '**/build/libs/*.cnl'}": 1,
+      "currentBuild.description = \"${env.COMMIT_HASH}-${params.CHANNEL}\"": 1,
+      "sh \"\"\"\\n                        aws s3 cp rules/rules.min.json.br s3://cdn.cliqz.com/autoconsent/rules/${env.COMMIT_HASH}.json.br \\\\\\n                            --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers \\\\\\n                            --content-encoding br \\\\\\n                            --content-type application/json \\\\\\n                            --cache-control \"immutable\"\\n\\n                        aws s3 cp rules/rules.min.json.gz s3://cdn.cliqz.com/autoconsent/rules/${env.COMMIT_HASH}.json.gz \\\\\\n                            --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers \\\\\\n                            --content-encoding gzip \\\\\\n                            --content-type application/json \\\\\\n                            --cache-control \"immutable\"\\n                    \"\"\"\\n\\n                    def fileName = params.CHANNEL == \\": 1,
+      "**/target/surefire-reports/*.xml": 1,
+      "{'artifacts': '**/target/work/data/.metadata/.log, **/hs_err_pid*.log', 'allowEmptyArchive': 'true'}": 1,
+      "if (params.TRIGGER_DOWNSTREAM) {\\n                    def downstreamJobs = \\": 1,
+      "def currentResult = currentBuild.currentResult\\n                def previousResult = currentBuild.previousBuild?.result ?: \\": 1,
+      "currentBuild.displayName = \"#${BUILD_NUMBER}(JDK${javaVersion()},Eclipse${env.TARGET_PLATFORM})\"": 1,
+      "govuk.initialize()": 1,
+      "{'artifacts': 'build/native/nativeCompile/*', 'fingerprint': 'true'}": 1,
+      "bin/whitelist": 2,
+      "if (env.CHANGE_URL) {\\n                        sh \\": 1,
+      "[usernamePassword(\\n                    credentialsId: \"464911a1-007a-4910-90c8-78ff16ba165e\",\\n                    usernameVariable: \"DOCKER_USER\",\\n                    passwordVariable: \"DOCKER_PASS\"\\n                )]": 1,
+      "{'context': 'Jenkins', 'status': 'SUCCESS'}": 1,
+      "{'context': 'Jenkins', 'status': 'FAILURE'}": 1,
+      "{'context': 'Apply Inventory', 'status': 'SUCCESS'}": 2,
+      "{'context': 'Apply Inventory', 'status': 'FAILURE'}": 2,
+      "{'context': 'CI Builds', 'status': 'SUCCESS'}": 1,
+      "{'context': 'CI Builds', 'status': 'FAILURE'}": 1,
+      "{'context': 'CI Deploys', 'status': 'SUCCESS'}": 1,
+      "{'context': 'CI Deploys', 'status': 'FAILURE'}": 1,
+      "timeout(time: 1, unit: \\": 1,
+      "openshift.withCluster(env.OCP_API_SERVER, env.OCP_TOKEN) {\n                        [env.PR_CI_CD_PROJECT_NAME, env.PR_DEV_PROJECT_NAME, env.PR_TEST_PROJECT_NAME].each { project ->\n                            if (openshift.projectExists(project)) {\n                                openshift.deleteProject(project)\n                            }\n                        }\n                    }": 2,
+      "{'context': 'Jenkins', 'description': 'ALL CI jobs are running...', 'status': 'PENDING'}": 1,
+      "{'context': 'CI Builds', 'description': 'job is running...', 'status': 'PENDING'}": 1,
+      "openshift.withCluster(env.OCP_API_SERVER, env.OCP_TOKEN) {\\n                        openshift.withProject(env.PR_CI_CD_PROJECT_NAME) {\\n                            timeout(time: 5, unit: \\": 1,
+      "{'context': 'CI Deploys', 'description': 'job is running...', 'status': 'PENDING'}": 1,
+      "[usernamePassword(credentialsId: \\": 1,
+      "slackNotifier(currentBuild.currentResult)": 2,
+      "\"client-app\"": 1,
+      "timeout(time: 60, unit: \\": 2,
+      "{'artifacts': 'build/**/*.zip', 'fingerprint': 'true'}": 2,
+      "{'allowEmptyResults': 'true', 'testResults': 'build/test-results/test/*.xml'}": 1,
+      "{'channel': '#jenkins', 'color': 'good', 'message': 'BUILD SUCCESS: ${currentBuild.fullDisplayName}\\\\n${currentBuild.absoluteUrl}'}": 1,
+      "{'channel': '#jenkins', 'color': 'danger', 'message': 'BUILD FAILURE: ${currentBuild.fullDisplayName}\\\\n${currentBuild.absoluteUrl}'}": 1,
+      "{'channel': '#jenkins', 'color': 'warning', 'message': 'BUILD UNSTABLE: ${currentBuild.fullDisplayName}\\\\n${currentBuild.absoluteUrl}'}": 1,
+      "if (env.BRANCH_NAME == \\": 2,
+      "BuildScripts\\\\windows.bat": 1,
+      "if (env.BRANCH_NAME == \"master\") {\\n                        if (versionChangeCommit()) {\\n                            withCredentials([string(credentialsId: \\": 1,
+      "\\n                        poll: false,\\n                        scm: [$class                           : \\": 1,
+      "{'action': 'always'}": 1,
+      "{'testResults': '**/build/test-results/test/*.xml'}": 1,
+      "{'artifacts': '**/build/libs/*', 'allowEmptyArchive': 'true'}": 1,
+      "{'action': 'success'}": 1,
+      "{'action': 'failure'}": 1,
+      "{'action': 'gradle'}": 1,
+      "{'status': 'passed'}": 1,
+      "{'action': 'createPushImage'}": 1,
+      "{'action': 'create'}": 1,
+      "{'action': 'kubectlDeploy', 'cluster': 'dev-fss', 'placeholderFile': 'config-preprod.env'}": 1,
+      "{'action': 'kubectlDeploy', 'cluster': 'prod-fss', 'placeholderFile': 'config-prod.env'}": 1,
+      "{'action': 'tagRelease'}": 1,
+      "currentBuild.result = \"FAILURE\"": 1,
+      "if (!env.hub_org) {\\n                        println(\"${ANSI_BOLD}${ANSI_RED}Uh Oh! Please set a Jenkins environment variable named hub_org with value as registery/sunbidrded${ANSI_NORMAL}\")\\n                        error \\": 1,
+      "cleanWs()\\n                    if (params.github_release_tag == \"\") {\\n                        checkout scm\\n                        commit_hash = sh(script: \\": 1,
+      "metadata.json": 1,
+      "currentBuild.description = \"${build_tag}\"": 1,
+      "env.OCP_API_SERVER = \"${env.OPENSHIFT_API_URL}\"\\n                    env.OCP_TOKEN = readFile(\\": 1,
+      "[\"HOME=${env.WORKSPACE}\"]": 6,
+      "c.cleanup()": 1,
+      "f.invalidate(\"E23K7T1ARU8K88\")": 1,
+      "if (build_version.contains(\"SNAPSHOT\")) {\\n            sh \"if git tag --list | grep ${build_version}; then git tag -d ${build_version}; git push origin :refs/tags/${build_version}; fi\"\\n          }": 1,
+      "\\n        job: \\": 1,
+      "[ credentialsId: \"464911a1-007a-4910-90c8-78ff16ba165e\", url: \"\" ]) {\\n                    script {\\n                        if (env.BRANCH_NAME == \"main\"": 1,
+      "{'content': \"publishHTML target: [\\n              reportTitles: 'clang static analyzer',\\n              allowMissing: false,\\n              alwaysLinkToLastBuild: true,\\n              keepAll: true,\\n              reportDir: 'build/scan-build/report_latest',\\n              reportFiles: '*',\\n              reportName: 'Clang Static Analyzer'\\n            ]\"}": 1,
+      "{'content': \"publishHTML target: [\\n              reportTitles: 'Cppcheck',\\n              allowMissing: false,\\n              alwaysLinkToLastBuild: true,\\n              keepAll: true,\\n              reportDir: 'build/cppcheck/',\\n              reportFiles: '*',\\n              reportName: 'Cppcheck'\\n            ]\"}": 1,
+      "metadata_airframes": 4,
+      "metadata_parameters": 4,
+      "metadata_module_documentation": 1,
+      "def gitCommit = sh(returnStdout: true, script: \\": 1,
+      "docker.withRegistry(\\": 2,
+      "\"go/\"": 1,
+      "\"bats/\"": 1,
+      "\"./\"": 1,
+      "setBuildStatus(\"Build succeeded\", \"SUCCESS\");": 1,
+      "setBuildStatus(\"Build not Successfull\", \"FAILURE\");": 1,
+      "{'body': 'Something is wrong with ${env.BUILD_URL}', 'subject': 'Failed Pipeline: ${currentBuild.fullDisplayName}', 'to': '${DEFAULT_RECIPIENTS}'}": 1,
+      "def remote = [:]\\n                    remote.name = \"woped\"\\n                    remote.host = \"woped.dh-karlsruhe.de\"\\n                    remote.allowAnyHosts = true\\n                    remote.sudo = true\\n                    remote.pty = true\\n\\n                    withCredentials([usernamePassword(credentialsId: \\": 1,
+      "{'testResults': '**/target/surefire-reports/*.xml'}": 1,
+      "{'artifacts': 'build/**, **/target/work/data/.metadata/.log'}": 1,
+      "if (params.TRIGGER_DOWNSTREAM_BUILD==true) {\\n          DOWNSTREAM_JOBS.split(\\": 1,
+      "def curResult = currentBuild.currentResult\\n        def lastResult = \\": 1,
+      "currentBuild.displayName = String.format(\"#%s(JDK%s,Eclipse%s)\", BUILD_NUMBER, javaVersion(), eclipseVersion())": 1,
+      "currentBuild.displayName = \"PR ${env.CHANGE_ID}: ${env.CHANGE_TITLE}\"": 1
+    },
+    "top_types": [
+      [
+        "script",
+        62
+      ],
+      [
+        "dir",
+        47
+      ],
+      [
+        "unknown",
+        27
+      ],
+      [
+        "withCredentials",
+        18
+      ],
+      [
+        "archiveArtifacts",
+        17
+      ],
+      [
+        "content",
+        16
+      ],
+      [
+        "githubNotify",
+        13
+      ],
+      [
+        "notifyGitHub",
+        13
+      ],
+      [
+        "deleteDir",
+        10
+      ],
+      [
+        "catchError",
+        9
+      ]
+    ],
+    "top_contents": [
+      [
+        "\\",
+        17
+      ],
+      [
+        "",
+        16
+      ],
+      [
+        "checkout scm",
+        14
+      ],
+      [
+        "[\"HOME=${env.WORKSPACE}\"]",
+        6
+      ],
+      [
+        "metadata_airframes",
+        4
+      ],
+      [
+        "metadata_parameters",
+        4
+      ],
+      [
+        "color: \\",
+        3
+      ],
+      [
+        "govuk.buildProject(skipDeployToIntegration: true)",
+        2
+      ],
+      [
+        "ren test_suite INW_OMP.org",
+        2
+      ],
+      [
+        "{'artifacts': 'INW_OMP.org/*.out', 'fingerprint': 'true'}",
+        2
+      ]
+    ]
+  },
+  "ranks": {
+    "rank_1": {
+      "count": 48,
+      "top": [
+        [
+          "Test",
+          73
+        ],
+        [
+          "# jenkins-scripts",
+          62
+        ],
+        [
+          "# Periodic Backup extension implementation tutorial",
+          17
+        ],
+        [
+          "# SCM-Manager Plugin",
+          14
+        ],
+        [
+          "# AWS S3 Cleaner",
+          14
+        ],
+        [
+          "# PLEASE DO NOT USE THIS PLUGIN, USE https://github.com/jenkinsci/github-checks-plugin INSTEAD",
+          13
+        ],
+        [
+          "# Notify.Events [![Build Status](https://ci.jenkins.io/job/Plugins/job/notify-events-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/notify-events-plugin/job/master/)",
+          13
+        ],
+        [
+          "README",
+          9
+        ],
+        [
+          "[![Hackfest Image](./img/README_header_top.png)](https://www.jenkins.io/events/online-hackfest/2020-uiux/)",
+          9
+        ],
+        [
+          "TestComplete xUnit Plugin",
+          9
+        ]
+      ]
+    },
+    "rank_2": {
+      "count": 57,
+      "top": [
+        [
+          "Run the auto actions from \"flat lines\" scripts based on Selenium WebDriver",
+          62
+        ],
+        [
+          "README",
+          47
+        ],
+        [
+          "Test",
+          23
+        ],
+        [
+          "# codehealth",
+          18
+        ],
+        [
+          "# Commons Compress API Plugin",
+          17
+        ],
+        [
+          "# Pre-SCM Build Step",
+          14
+        ],
+        [
+          "moved to github",
+          13
+        ],
+        [
+          "weibo-plugin",
+          13
+        ],
+        [
+          "# Unik Builder Plugin",
+          10
+        ],
+        [
+          "# codeBeamer xUnit Importer Plugin",
+          9
+        ]
+      ]
+    },
+    "rank_3": {
+      "count": 59,
+      "top": [
+        [
+          "# Scriptler Plugin for Jenkins",
+          62
+        ],
+        [
+          "# pipeline-reporter",
+          56
+        ],
+        [
+          "# Icedq",
+          21
+        ],
+        [
+          "ArchiveFileSCM",
+          17
+        ],
+        [
+          "README",
+          17
+        ],
+        [
+          "# Jenkins SCM API Plugin",
+          14
+        ],
+        [
+          "Moved to Github.",
+          13
+        ],
+        [
+          "# TeleJenkins [![Build Status](https://ci.jenkins.io/job/Plugins/job/telegram-notifications-plugin/job/master/badge/icon)](https://ci.jenkins.io/job/Plugins/job/telegram-notifications-plugin/job/master/)",
+          13
+        ],
+        [
+          "#Not currently supported",
+          9
+        ],
+        [
+          "TestComplete xUnit Plugin",
+          9
+        ]
+      ]
+    },
+    "all": {
+      "count": 138,
+      "top": [
+        [
+          "Test",
+          99
+        ],
+        [
+          "README",
+          73
+        ],
+        [
+          "# jenkins-scripts",
+          62
+        ],
+        [
+          "Run the auto actions from \"flat lines\" scripts based on Selenium WebDriver",
+          62
+        ],
+        [
+          "# Scriptler Plugin for Jenkins",
+          62
+        ],
+        [
+          "# pipeline-reporter",
+          56
+        ],
+        [
+          "# Icedq",
+          23
+        ],
+        [
+          "# Commons Compress API Plugin",
+          21
+        ],
+        [
+          "# codehealth",
+          19
+        ],
+        [
+          "TestComplete xUnit Plugin",
+          18
+        ]
+      ]
+    }
+  },
+  "distances": {
+    "rank_1": {
+      "min": 0.5379,
+      "max": 1.5827,
+      "avg": 1.2469701587301618,
+      "median": 1.2345,
+      "count": 315,
+      "std": 0.1797447248005504,
+      "distribution": {
+        "counts": [
+          2,
+          0,
+          13,
+          4,
+          16,
+          57,
+          71,
+          38,
+          112,
+          2
+        ],
+        "bins": [
+          "0.54-0.64",
+          "0.64-0.75",
+          "0.75-0.85",
+          "0.85-0.96",
+          "0.96-1.06",
+          "1.06-1.16",
+          "1.16-1.27",
+          "1.27-1.37",
+          "1.37-1.48",
+          "1.48-1.58"
+        ]
+      }
+    },
+    "rank_2": {
+      "min": 0.6576,
+      "max": 1.5854,
+      "avg": 1.3103952380952373,
+      "median": 1.2902,
+      "count": 315,
+      "std": 0.18312239001104152,
+      "distribution": {
+        "counts": [
+          2,
+          13,
+          2,
+          3,
+          12,
+          37,
+          90,
+          21,
+          73,
+          62
+        ],
+        "bins": [
+          "0.66-0.75",
+          "0.75-0.84",
+          "0.84-0.94",
+          "0.94-1.03",
+          "1.03-1.12",
+          "1.12-1.21",
+          "1.21-1.31",
+          "1.31-1.40",
+          "1.40-1.49",
+          "1.49-1.59"
+        ]
+      }
+    },
+    "rank_3": {
+      "min": 0.8271,
+      "max": 1.6002,
+      "avg": 1.3660587301587306,
+      "median": 1.3595,
+      "count": 315,
+      "std": 0.18531061374525068,
+      "distribution": {
+        "counts": [
+          14,
+          1,
+          8,
+          5,
+          34,
+          13,
+          86,
+          30,
+          34,
+          90
+        ],
+        "bins": [
+          "0.83-0.90",
+          "0.90-0.98",
+          "0.98-1.06",
+          "1.06-1.14",
+          "1.14-1.21",
+          "1.21-1.29",
+          "1.29-1.37",
+          "1.37-1.45",
+          "1.45-1.52",
+          "1.52-1.60"
+        ]
+      }
+    }
+  },
+  "multi_rank_docs": {
+    "count": 22,
+    "top": [
+      [
+        "Test",
+        {
+          "rank_1": 73,
+          "rank_2": 23,
+          "rank_3": 3
+        }
+      ],
+      [
+        "README",
+        {
+          "rank_1": 9,
+          "rank_2": 47,
+          "rank_3": 17
+        }
+      ],
+      [
+        "# Icedq",
+        {
+          "rank_1": 2,
+          "rank_2": 0,
+          "rank_3": 21
+        }
+      ],
+      [
+        "# Commons Compress API Plugin",
+        {
+          "rank_1": 3,
+          "rank_2": 17,
+          "rank_3": 1
+        }
+      ],
+      [
+        "# codehealth",
+        {
+          "rank_1": 1,
+          "rank_2": 18,
+          "rank_3": 0
+        }
+      ],
+      [
+        "TestComplete xUnit Plugin",
+        {
+          "rank_1": 9,
+          "rank_2": 0,
+          "rank_3": 9
+        }
+      ],
+      [
+        "Moved to Github.",
+        {
+          "rank_1": 0,
+          "rank_2": 3,
+          "rank_3": 13
+        }
+      ],
+      [
+        "moved to github",
+        {
+          "rank_1": 2,
+          "rank_2": 13,
+          "rank_3": 0
+        }
+      ],
+      [
+        "gssh",
+        {
+          "rank_1": 9,
+          "rank_2": 4,
+          "rank_3": 0
+        }
+      ],
+      [
+        "# Literate CLI",
+        {
+          "rank_1": 6,
+          "rank_2": 1,
+          "rank_3": 0
+        }
+      ],
+      [
+        "This plugin publishes test results of an execution of a testing tool in Jenkins.",
+        {
+          "rank_1": 4,
+          "rank_2": 0,
+          "rank_3": 1
+        }
+      ],
+      [
+        "This plugin prevents the [ProcessTreeKiller](https://wiki.jenkins.io/display/JENKINS/ProcessTreeKiller) from killing the Gradle daemon.",
+        {
+          "rank_1": 0,
+          "rank_2": 2,
+          "rank_3": 2
+        }
+      ],
+      [
+        "# Gradle JTE Plugin",
+        {
+          "rank_1": 0,
+          "rank_2": 3,
+          "rank_3": 1
+        }
+      ],
+      [
+        "# seleniumhtmlreport",
+        {
+          "rank_1": 1,
+          "rank_2": 1,
+          "rank_3": 2
+        }
+      ],
+      [
+        "# Publish Over FTP Plugin for Jenkins",
+        {
+          "rank_1": 1,
+          "rank_2": 0,
+          "rank_3": 2
+        }
+      ],
+      [
+        "# Jenkins Pull-Request Tester Docker Image",
+        {
+          "rank_1": 2,
+          "rank_2": 0,
+          "rank_3": 1
+        }
+      ],
+      [
+        "Jenkins plugin for building RPM packages in Copr.",
+        {
+          "rank_1": 1,
+          "rank_2": 0,
+          "rank_3": 2
+        }
+      ],
+      [
+        "Cppcheck Plugin",
+        {
+          "rank_1": 0,
+          "rank_2": 1,
+          "rank_3": 1
+        }
+      ],
+      [
+        "Chroot-plugin",
+        {
+          "rank_1": 0,
+          "rank_2": 1,
+          "rank_3": 1
+        }
+      ],
+      [
+        "# hugo-plugin",
+        {
+          "rank_1": 1,
+          "rank_2": 0,
+          "rank_3": 1
+        }
+      ]
+    ]
+  }
+}

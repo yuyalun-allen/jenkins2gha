@@ -1,0 +1,185 @@
+# :warning: Deprecation notice
+
+> :warning: WARNING :warning:
+>
+> This plugin is deprecated. Its functionality has been integrated into the
+> [Plastic SCM plugin](https://plugins.jenkins.io/plasticscm-plugin/).
+> Please update your projects to use the Plastic SCM plugin instead.
+
+<h1 align="center">
+  <img src="doc/img/logo-plasticscm.svg" alt="Plastic SCM Logo" width="450" />
+</h1>
+
+<p align="center">
+  Enable DevOps automation features in Jenkins using Plastic SCM's mergebot.
+</p>
+
+---
+
+![Plugin Version](https://img.shields.io/jenkins/plugin/v/plasticscm-mergebot.svg?label=version)
+[![Build Status](https://ci.jenkins.io/buildStatus/icon?job=Plugins/plasticscm-mergebot-plugin/master)](https://ci.jenkins.io/job/Plugins/job/plasticscm-mergebot-plugin/job/master/)
+![Installs](https://img.shields.io/jenkins/plugin/i/plasticscm-mergebot.svg?color=blue)
+
+## Configuration
+
+### Freestyle projects
+
+First of all, create a new freestyle project and select **Mergebot Plastic SCM** as the Source Code
+Management option:
+
+![Source Code Management](doc/img/plasticscm-setup.png)
+
+The plugin itself doesn't need any specific configuration. All settings and parameters are set
+through Plastic SCM WebAdmin when you configure your **mergebot**.
+
+### Pipeline projects
+
+If you wish to use the pipeline workflow for the Jenkins parts of your DevOps cycle, you typically
+have two options: defining a Pipeline script directly in the plan configuration or retrieving it
+from SCM every build.
+
+Regardless of what option you choose, **remember to put the `mergebotCheckout()` command** in your
+Groovy script when you wish to checkout sources from Plastic SCM.
+
+This is an example of a pipeline script using the mergebot checkout:
+
+```groovy
+node {
+  def mvnHome
+  stage('Preparation') { // for display purposes
+      // Get code from Plastic SCM as specified in the build parameters
+      mergebotCheckout()
+
+      // Get the Maven tool.
+      // ** NOTE: This 'M3' Maven tool must be configured
+      // **       in the global configuration.
+      mvnHome = tool 'M3'
+    }
+
+  stage('Build') {
+      // Run the maven build
+      if (isUnix()) {
+        sh "'${mvnHome}/bin/mvn' -Dmaven.test.failure.ignore clean package"
+      } else {
+        bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
+      }
+  }
+
+  stage('Results') {
+      junit '**/target/surefire-reports/TEST-*.xml'
+      archive 'target/*.jar'
+  }
+}
+```
+
+You can also choose to retrieve the script from the Plastic SCM changeset to build. Select "Pipeline
+script from SCM" as the Definition value in the Pipeline section. Then, choose "Mergebot Plastic SCM"
+as the SCM value. You can also specify the file path to find the Jenkinsfile. If you enable the
+Lightweight checkout, the plugin will only retrieve that file. Otherwise, the plugin will perform a
+complete checkout of the target changeset to load it.
+
+![Pipeline script from SCM](doc/img/pipeline-configuration.png)
+
+### Enable remotely triggered builds
+
+To allow Plastic SCM to trigger builds in your Jenkins plan, be sure to check the option "Trigger
+builds remotely" in the "Build triggers" section of the plan configuration.
+
+![Trigger builds remotely](doc/img/remote-trigger-auth.png)
+
+## Setup in Plastic SCM
+
+You can configure the Jenkins plug parameters from the WebAdmin. First, create a new Jenkins plug configuration:
+
+![Jenkins plug configuration](doc/img/jenkins-plug-config.png)
+
+Then, select that new configuration as the CI plug of a **mergebot** configuration:
+
+![CI plug select](doc/img/ci-plug-select.png)
+
+At this point, the **mergebot** will automatically trigger Jenkins builds. You don't need to
+worry about this anymore!
+
+## Build parameters & environment variables
+
+These are the build parameters set by [TrunkBot](https://github.com/PlasticSCM/trunk-mergebot) when
+it triggers a build. They're injected as environment variables so the build steps can use them in
+their processes.
+
+Please bear in mind that only the `PLASTICSCM_MERGEBOT_UPDATE_SPEC` value is mandatory. The rest
+depend on the particular implementation of the mergebot. If you're using a custom mergebot you can
+define your own build parameters.
+
+We'll refer to the changeset being built in a given build as the "current changeset".
+
+* `PLASTICSCM_MERGEBOT_UPDATE_SPEC`: the target object to checkout. It can be a shelve spec, a branch
+  spec, a label spec or a changeset spec.
+  * The `plasticscm-mergebot-plugin` **requires** this build parameter.
+* `PLASTICSCM_MERGEBOT_BRANCH_HEAD_CHANGESET_AUTHOR`: the name of the user who created the current changeset.
+* `PLASTICSCM_MERGEBOT_BRANCH_HEAD_CHANGESET_NUMBER`: the number (also known as ChangesetID) of the
+  current changeset.
+* `PLASTICSCM_MERGEBOT_BRANCH_HEAD_CHANGESET_GUID`: the GUID of the current changeset.
+* `PLASTICSCM_MERGEBOT_BRANCH_NAME`: the branch name of the current changeset.
+* `PLASTICSCM_MERGEBOT_TRUNK_HEAD_CHANGESET_NUMBER`: the target changeset number to merge the current
+  changeset if the build is successful.
+* `PLASTICSCM_MERGEBOT_TRUNK_HEAD_CHANGESET_GUID`: the target changeset GUID to merge the current
+  changeset if the build is successful.
+* `PLASTICSCM_MERGEBOT_REPSPEC`: the repository where the current changeset is stored.
+* `PLASTICSCM_MERGEBOT_TASK_NUMBER`: the issue identifier related to the branch of the current changeset.
+
+## Requirements
+
+* Jenkins `2.7.3` or newer
+* Plastic SCM command line client `7.0.16.2630` or newer
+  * The CLI needs to be configured for the Jenkins user in the master and agent machines.
+
+## Development
+
+### Building the Plugin
+
+To build the plugin you will need:
+
+* [Maven](https://maven.apache.org/) version `3.5` or newer
+* [Java Development Kit (JDK)](https://jdk.java.net/) version `7`
+
+Run the following command to build the plugin:
+
+```shell
+mvn package
+```
+
+### Contributing to the Plugin
+
+New feature requests and bug fix proposals should be submitted as
+[pull requests](https://help.github.com/en/articles/creating-a-pull-request).
+Fork the repository. Make the desired changes in your forked copy. Submit a pull request to the
+`master` branch.
+
+Use the [Jenkins SCM API coding style guide](https://github.com/jenkinsci/scm-api-plugin/blob/master/CONTRIBUTING.md#code-style-guidelines)
+for new code.
+
+Before submitting a pull request please check if your code passes code quality and style checks by
+running:
+
+```shell
+mvn verify
+```
+
+All pull requests will be evaluated by
+[Jenkins CI](https://ci.jenkins.io/job/Plugins/job/plasticscm-plugin/).
+
+## Plugin information
+
+This plugin is developed and maintained by Codice Software S.L., owner of the Plastic SCM product.
+
+Visit us at <https://www.plasticscm.com>
+
+You can meet the team [here](https://www.plasticscm.com/company/team)!
+
+We really appreciate PR and contributions!
+
+Feel the power of merging branches easier than ever with [SemanticMerge](https://semanticmerge.com)!
+
+## Change log
+
+You can find it [here](CHANGELOG.md)

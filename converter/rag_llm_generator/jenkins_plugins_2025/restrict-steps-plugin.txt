@@ -1,0 +1,93 @@
+# Restrict Steps Plugin
+
+This is currently in early-phase development.  Feature request [JENKINS-69606][JENKINS-69606]
+
+Report feature requests or bugs [in JIRA][jira].
+
+[JENKINS-69606]: https://issues.jenkins.io/browse/JENKINS-69606
+[jira]: https://issues.jenkins.io/browse/JENKINS-71574?jql=project%20%3D%20JENKINS%20AND%20component%20%3D%20restrict-steps-plugin
+
+## Introduction
+
+This plugin allows you to block pipeline steps from being used in any context.
+
+Useful for disabling steps available to users.
+
+## Known gaps
+
+The following gaps are desirable to fill.
+
+- It will block steps called from global shared libraries and user pipelines
+  alike.  Global pipeline libraries should be excluded.
+- User vars in shared pipeline libraries are not covered.  I would like to have
+  admin-only vars that can be called from global library but users not able to
+  call them directly except through intended pipeline steps.
+- Declarative pipeline is not currently covered.
+
+## Getting started
+
+Install the plugin and add a config file to the global managed files of the
+[config file provider][1] plugin.
+
+1. Go to _Manage Jenkins > Manage files_.
+2. Create a _Custom file_ with ID `restricted-steps` (this is currently
+   non-configurable)
+3. Give it a sensible name like `Restricted Pipeline Steps`
+4. Add a comment like `Prevents users from calling these steps in pipelines`
+5. Populate the file with YAML containing a `steps` key.  The contents of the
+   key should be a `List` and the name of the step is each item.
+
+Example YAML:
+
+```yaml
+# the following steps will cause a build to fail
+steps:
+  - bat
+  - configFileProvider
+  - createSummary
+  - dockerFingerprintFrom
+  - envVarsForTool
+  - jobDsl
+  - load
+  - tool
+  - withCredentials
+  - withDockerRegistry
+  - withDockerServer
+  - withGroovy
+  - ws
+```
+
+## Config as code
+
+```yaml
+unclassified:
+  globalConfigFiles:
+    configs:
+      - custom:
+          comment: Prevents users from calling these steps in pipelines
+          content: |-
+            # the following steps will cause a build to fail
+            steps:
+              - bat
+              - configFileProvider
+              - createSummary
+              - dockerFingerprintFrom
+              - envVarsForTool
+              - jobDsl
+              - load
+              - tool
+              - withCredentials
+              - withDockerRegistry
+              - withDockerServer
+              - withGroovy
+              - ws
+          id: restricted-steps
+          name: Restricted Pipeline Steps
+          providerId: org.jenkinsci.plugins.configfiles.custom.CustomConfig
+```
+
+## LICENSE
+
+Licensed under MIT, see [LICENSE](LICENSE.md)
+
+[1]: https://plugins.jenkins.io/config-file-provider/

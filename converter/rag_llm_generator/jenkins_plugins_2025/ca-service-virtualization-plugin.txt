@@ -1,0 +1,30 @@
+### CA Service Virtualization Jenkins Plugin
+
+The CA Service Virtualization plug-in for Jenkins lets you manage virtual services and provision tests on CA Service Virtualization from your Jenkins UI.
+
+#### Key Features:
+
+* Create and Deploy virtual services
+* Start / Stop virtual services
+* Deploy / Undeploy virtual services
+* Deploy tests and test suites
+* Display of test or test suite Jenkins built-in reports
+* Use global or dynamic CA SV connection settings
+* CA Service Virtualization credentials supported by Jenkins Credentials store
+* Leverage Jenkins parameters to parametrize CA SV build steps
+* Full support of Jenkins Pipeline scripting
+
+Follow the [CA Service Virtualization Jenkins plugin community](https://community.broadcom.com/enterprisesoftware/communities/communityhomeblogs?CommunityKey=94bda077-625b-4914-8ac3-c88a06c2cc23) to get the latest news, tips & tricks, best practices and support.
+
+## Additional Information
+For detailed documentation see: [Jenkins Plug-in for CA Service Virtualization.](https://techdocs.broadcom.com/casv-jenkins-plugin)
+
+See the Changelog to learn about new features, changes and fixes in the particular plugin version.
+
+Visit the CA DevTest Community pages to provide your feedback and receive community support.
+
+### License
+
+Copyright (c) 2022 CA Technologies.
+
+Licensed under the [Eclipse Public License - v 2.0](https://www.eclipse.org/legal/epl-2.0/)

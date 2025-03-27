@@ -1,0 +1,20 @@
+# DotCover Runner Plugin
+Plugin that makes it easy to execute gather dotcover test coverage data.
+
+## Installation and usage
+
+### Install via the update center
+
+- Make sure the vs test tool is configured - it is a prereq of this tool.
+- Configure the path to the dot cover tool whereever builds will run in the global tool configuration section.
+
+### Usage
+
+Use as a pipeline step, like so:
+
+```
+...
+steps {
+  dotcover()
+}
+```

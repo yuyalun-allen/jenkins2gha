@@ -1,0 +1,52 @@
+# eks-token-plugin
+
+## Introduction
+
+This plugin provides authentication token to access AWS EKS without AWS CLI.
+The major use case is to launch dynamic agent pod in any EKS cluster by [Jenkins Kubernetes Plugin](https://plugins.jenkins.io/kubernetes/)
+## Getting started
+
+### With AWS credential configured
+This plugin integrates with [AWS Credentials Plugin](https://plugins.jenkins.io/aws-credentials/) to get AWS secrets.  
+It supports both AWSAccessKeyId/AWSSecretKey pair and IAM Roles.  
+
+### Without AWS credential configured
+If this plugin has no AWS credential configured, it retrieves AWS secrets from environment variables, system properties or AWS profile.
+
+### EKS Certificate authority
+The EKS certificate authority from AWS console is encoded in base64.  
+Decode it to get a PEM format string before use in the Kubernetes plugin.
+
+###  Kubernetes Credentials Provider
+This plugin supports [Kubernetes Credentials Provider](https://plugins.jenkins.io/kubernetes-credentials-provider/). A valid YAML
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  # this is the jenkins id.
+  name: "a-test-eks"
+  labels:
+    # so we know what type it is.
+    "jenkins.io/credentials-type": "eks"
+  annotations:
+    # description - can not be a label as spaces are not allowed
+    "jenkins.io/credentials-description": "eks1 token"
+type: Opaque
+data:
+  awsCredentialsId: YXdzLTE=
+  clusterName: ZWtzMQ==
+  region: dXMtd2VzdC0y
+
+
+```
+### Token Algorithm
+The token algorithm is from
+[aws cli code](https://github.com/aws/aws-cli/blob/develop/awscli/customizations/eks/get_token.py)
+and inspired by [Programmatically Accessing an Amazon EKS Kubernetes Cluster](https://faddom.com/accessing-an-amazon-eks-kubernetes-cluster/).
+## Contribution
+Refer to our [contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
+
+## LICENSE
+
+Licensed under MIT, see [LICENSE](LICENSE.md)
+

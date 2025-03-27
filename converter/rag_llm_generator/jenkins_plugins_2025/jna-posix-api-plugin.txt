@@ -1,0 +1,4 @@
+# JNA Posix API Plugin
+
+This plugin exposes the [jna-posix](https://github.com/jenkinsci/jna-posix) API to Jenkins plugins.
+which was removed from jenkins-core since release 2.129

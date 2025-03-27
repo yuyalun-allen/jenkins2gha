@@ -1,0 +1,3 @@
+# Jakarta Mail API Plugin
+
+This plugin provides the [Jakarta Mail](https://github.com/eclipse-ee4j/mail) API for other plugins.

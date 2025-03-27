@@ -1,0 +1,7 @@
+Jenkins FxCop Runner plugin
+===================
+
+FxCopCmd.exe execute plugin.  
+
+FxCopCmd.exe  
+http://msdn.microsoft.com/en-us/library/bb429474%28v=vs.80%29.aspx

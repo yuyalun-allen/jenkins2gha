@@ -1,0 +1,4 @@
+Blue Ocean Maven Plugin
+====
+
+This plugin provides upstream Javascript dependencies to Blue Ocean plugins.

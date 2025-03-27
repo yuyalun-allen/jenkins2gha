@@ -1,0 +1,21 @@
+# create-and-run-job-trigger-plugin
+This jenkins plugin provides an endpoint that triggers pipeline job creation and runs from git URL.
+
+Documentation : https://wiki.jenkins.io/display/JENKINS/Create+And+Run+Job+Trigger+Plugin
+
+Issue Tracker : https://issues.jenkins-ci.org/secure/RapidBoard.jspa?rapidView=366
+
+[Report a Bug ![](https://issues.jenkins-ci.org/secure/viewavatar?size=xsmall&avatarId=14673&avatarType=issuetype)](https://issues.jenkins-ci.org/secure/CreateIssueDetails!init.jspa?pid=10172&components=23039&issuetype=1)
+
+[New Feature ![](https://issues.jenkins-ci.org/secure/viewavatar?size=xsmall&avatarId=14681&avatarType=issuetype)](https://issues.jenkins-ci.org/secure/CreateIssueDetails!init.jspa?pid=10172&components=23039&issuetype=2)
+
+[New Task ![](https://issues.jenkins-ci.org/secure/viewavatar?size=xsmall&avatarId=14688&avatarType=issuetype)](https://issues.jenkins-ci.org/secure/CreateIssueDetails!init.jspa?pid=10172&components=23039&issuetype=3)
+
+[Improvement ![](https://issues.jenkins-ci.org/secure/viewavatar?size=xsmall&avatarId=14680&avatarType=issuetype)](https://issues.jenkins-ci.org/secure/CreateIssueDetails!init.jspa?pid=10172&components=23039&issuetype=4)
+
+[Propose Patch ![](https://issues.jenkins-ci.org/secure/viewavatar?size=xsmall&avatarId=14670&avatarType=issuetype)](https://issues.jenkins-ci.org/secure/CreateIssueDetails!init.jspa?pid=10172&components=23039&issuetype=5)
+
+
+[![Build Status](https://ci.jenkins.io/buildStatus/icon?job=Plugins/create-and-run-job-trigger-plugin/master)](https://ci.jenkins.io/job/Plugins/job/create-and-run-job-trigger-plugin/job/master/)
+
+You can download the latest snapshot build from https://ci.jenkins.io/job/Plugins/job/create-and-run-job-trigger-plugin/job/master/lastSuccessfulBuild/artifact/target/create-and-run-job-trigger.hpi

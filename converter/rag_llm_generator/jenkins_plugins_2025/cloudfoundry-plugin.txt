@@ -1,0 +1,191 @@
+Cloud Foundry Jenkins plugin
+============================
+
+This plugin can push apps to a Cloud Foundry platform at the end of a Jenkins build. You can either use the 
+configuration of a manifest.yml file, or write your settings in the Jenkins build's configuration page.
+
+**For usage information and changelog, see the
+[Jenkins Wiki page](https://wiki.jenkins-ci.org/display/JENKINS/Cloud+Foundry+Plugin).**
+
+**For reporting an issue, please use the
+[Jenkins issue tracker](https://issues.jenkins-ci.org/browse/JENKINS/component/19824/).**
+
+Usage
+-----
+
+## As a Build Step / Post-Build Action
+Add the plugin to your Jenkins job, either as a build step or as a post-build action.
+
+![example with manifest](./doc-images/example-manifest.png)
+
+### Configuration Options
+
+<dl>
+  <dt>Target</dt><dd>The fully-qualified domain name of the CloudFoundry API</dd>
+  <dt>Credentials</dt><dd>Credentials passed to CloudFoundry for the push</dd>
+  <dt>Organization</dt><dd>The organization in CloudFoundry</dd>
+  <dt>Space</dt><dd>The space in your organization</dd>
+  <dt>Allow self-signed certificate</dt><dd>Ignore SSL errors when connecting to
+      CloudFoundry API. Not recommended for production systems.</dd>
+  <dt>Plugin timeout (s)</dt><dd>Timeout for all CloudFoundry API operations.
+      (note: this is for the CF APIs, and is not the application startup timeout)
+  <dt>Create Services before pushing</dt><dd>If the Jenkins job should also
+      create CloudFoundry services before pushing the application, they can be
+      defined here. Service configuration options are:<dl>
+        <dt>Name</dt><dd>Name of the service instance. This should match the
+            service name defined in your manifest, for service binding</dd>
+        <dt>Type</dt><dd>Service instance type. The available types vary for
+            each CloudFoundry installation. Check your CloudFoundry marketplace
+            for details of what is available in your environment.</dd>
+        <dt>Plan</dt><dd>Plan to use for your service instance. The available
+            plans for a given service type vary for each CloudFoundry
+            installation. Check your CloudFoundry marketplace for details of
+            what is available in your environment, as well as pricing.</dd>
+        <dt>Reset service if already exists</dt><dd>Delete the service and
+            re-create it. Not recommended for production systems, since it will
+            likely delete any data stored in the service.</dd>
+      </dl>
+  </dd>
+  <dt>Read configuration from a manifest file</dt><dd>When enabled, Jenkins will
+      read the CloudFoundry configuration from a manifest file.<dl>
+      <dt>Manifest file</dt><dd>Path to the manifest file (relative to the workspace)</dd>
+  </dl></dd>
+  <dt>Enter configuration in Jenkins</dt><dd>When enabled, the manifest will be
+      defined in the Jenkins job itself. The available settings to configure
+      are:<dl>
+        <dt>Application Name</dt><dd>Name of the application in CloudFoundry</dd>
+        <dt>Memory (MB)</dt><dd>The amount of memory to allocate for the
+            application, in megabytes</dd>
+        <dt>Hostname</dt><dd>The hostname to use for your application.</dd>
+        <dt>Instances</dt><dd>The number of instances to deploy</dd>
+        <dt>Timeout (s)</dt><dd>Application startup timeout, in seconds. Note
+            that this is not the same setting as the plugin timeout.</dd>
+        <dt>Custom buildpack</dt><dd>If your application requires a custom
+            buildpack, enter it here. Leave this blank to allow CloudFoundry to
+            auto-detect your buildpack.</dd>
+        <dt>Custom stack</dt><dd>Specify any custom CloudFoundry stack to use.
+            Leave this blank to use the default stack.</dd>
+        <dt>Environment Variables</dt><dd>Use this to define any additional
+            environment variables for your application instances</dd>
+        <dt>Services</dt><dd>Specify any services for binding the application.
+            Note: if you have specified services to create above, add their
+            names here.</dd>
+        <dt>Do not create a route</dt><dd>If enabled, CloudFoundry will not
+            define a route for this application to be accessed outside the
+            CloudFoundry platform. This may be useful if the application is
+            meant to be used only by other applications running in
+            CloudFoundry.</dd>
+        <dt>Application Path</dt><dd>The path (relative to your workspace) for
+            the application artifact. If left blank, your entire workspace will
+            be pushed.</dd>
+        <dt>Start command</dt><dd>Specify an alternative command to start the
+            application. Leave blank to use the buildpack's default start
+            command.</dd>
+        <dt>Domain</dt><dd>Domain for the application route. Leave blank to
+            use the default CloudFoundry domain.</dd>
+      </dl>
+  </dd>
+</dl>
+
+## As a Pipeline Step
+
+For Pipeline jobs, use the `pushToCloudFoundry` step (or its alias, `cfPush`).
+Configuration settings are the same as above.
+
+Note that the `credentialsId` is the ID of your CloudFoundry credentials
+(**Jenkins Home > Credentials**)
+
+Minimal configuration:
+```groovy
+pushToCloudFoundry(
+    target: 'api.local.pcfdev.io',
+    organization: 'pcfdev-org',
+    cloudSpace: 'pcfdev-space',
+    credentialsId: 'pcfdev_user'
+)
+```
+
+Full configuration:
+```groovy
+pushToCloudFoundry(
+    target: 'api.local.pcfdev.io',
+    organization: 'pcfdev-org',
+    cloudSpace: 'pcfdev-space',
+    credentialsId: 'pcfdev_user',
+    selfSigned: true, // default value is false
+    pluginTimeout: 240, // default value is 120
+    servicesToCreate: [
+      [name: 'mysql-spring', type: 'p-mysql', plan: '512', resetService: true]
+    ],
+    envVars: [
+      [key: 'FOO', value: 'bar']
+    ],
+    manifestChoice: [ // optional... defaults to manifestFile: manifest.yml
+        manifestFile: 'test-apps/hello-java/target/manifest.yml'
+    ]
+)
+```
+
+Debugging:
+----------
+This will launch a Jenkins instance for you with the plugin pre-installed. The Jenkins files will be stored in the
+`work` folder.
+The Jenkins instance will be accessible at http://localhost:8090/jenkins.
+
+```
+mvn hpi:run -Djetty.port=8090
+```
+
+You can also enable remote debugging at port 8000 by setting some Maven options before running the previous command:
+
+```
+export MAVEN_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=n"
+```
+
+Packaging:
+----------
+
+Prior to running the tests, you will need to install the test apps into your local
+Maven repository. To do this, you simply run `mvn install` on each of the apps
+in the `test-apps` folder.
+
+If you already have a working Jenkins instance, use this command to create an .hpi file. You can then upload it to your
+Jenkins instance. From the `cloudfoundry-jenkins-plugin` folder:
+
+```
+mvn clean install
+```
+
+By default, the integration tests expect a running Cloud Foundry platform available at `api.local.pcfdev.io`, with
+username `user` and password `pass`. If you have a different Cloud Foundry platform and want to run the tests
+against that platform instead, you will need to specify some arguments in your Maven command:
+
+```
+mvn test -Dcloudfoundry.target=<target fqdn> -Dcloudfoundry.username=<username> -Dcloudfoundry.password=<password> -Dcloudfoundry.org=<org> -Dcloudfoundry.space=<space>
+```
+
+The tests will remove all existing applications and services in that space.
+
+Releasing:
+----------
+
+You must not have any unstaged changes.
+
+After adding your jenkins-ci.org username and password in ~/.m2/settings.xml, do:
+
+```
+mvn org.apache.maven.plugins:maven-release-plugin:2.5:prepare org.apache.maven.plugins:maven-release-plugin:2.5:perform
+```
+
+The full artifact name and version is needed to avoid a bug.
+
+Enter the release version, the release tag (default should be good) and the new version name (which can be changed
+later, but must end with SNAPSHOT).
+
+If at any point you have to start over, use `mvn release:clean` beforehand. You'll probably also need to delete the new
+tag locally (and maybe on the remote) and reset to the latest commit.
+
+The new version should appear [on this page](http://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/cloudfoundry/)
+immediately, otherwise it means the release failed. If it worked, the new version will be available on Jenkins after
+~12h. You will see the new version [on this page](http://updates.jenkins-ci.org/update-center.json) once it is available
+to download.

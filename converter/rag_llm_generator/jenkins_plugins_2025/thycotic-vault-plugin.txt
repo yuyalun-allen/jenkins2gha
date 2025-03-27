@@ -1,0 +1,7 @@
+# Deprecated
+
+This plugin has been superseded by two new plugins from Thycotic, and will no longer be maintained. Please use the new plugins for accessing your secrets in Thycotic SecretServer or Thycotic DevOps Secret Vault.
+
+New SecretServer plugin: [https://github.com/jenkinsci/thycotic-secret-server-plugin](https://github.com/jenkinsci/thycotic-secret-server-plugin)
+
+New DevOps Secret Vault plugin: [https://github.com/jenkinsci/thycotic-devops-secrets-vault-plugin](https://github.com/jenkinsci/thycotic-devops-secrets-vault-plugin)

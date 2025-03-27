@@ -1,0 +1,130 @@
+= Remoting Security Workaround Plugin
+
+== Introduction
+
+Multiple vulnerabilities related to agent-controller communication were fixed in 2.319 and LTS 2.303.3.
+This plugin can be installed on Jenkins instances older than that to protect them from these vulnerabilities without requiring an immediate update.
+
+IMPORTANT: Some functionality may break with this plugin installed, so this should be a temporary measure only.
+
+See https://www.jenkins.io/security/advisory/2021-11-04/[2021-11-04 security advisory].
+
+=== Protections
+
+This plugin provides the following protections for code sent by agents to the controller:
+
+1. Rejects `Callable` implementations that do not perform a role check in `#checkRoles` (https://www.jenkins.io/doc/upgrade-guide/2.303/#SECURITY-2458[SECURITY-2458]).
+2. Block execution of specific `Callable` implementations even if they are declared to be safe.
+   The default block list includes:
+   * https://www.jenkins.io/security/advisory/2021-11-04/#SECURITY-2455[SECURITY-2455] (rejecting `FileCallableWrapper`, prohibiting all `FileCallable` implementations)
+   * https://www.jenkins.io/security/advisory/2021-11-04/#SECURITY-2506[SECURITY-2506] (a callable in https://plugins.jenkins.io/subversion/[Subversion Plugin])
+
+== Getting started
+
+1. Install the plugin
+2. Restart Jenkins
+3. Done!
+
+To test that the protection is effective for a given agent, you can run the following in the https://www.jenkins.io/doc/book/managing/script-console/[script console]:
+
+----
+io.jenkins.plugins.remoting_security.Tester.testChannelToAgent("my-agent-name-here")
+----
+
+If there is no output, the agent/controller connection has the additional protections in this plugin applied.
+
+Otherwise, one of the following applies:
+
+- You customized the options for the plugin (see below)
+- The protections have not been applied. The only regular reason for this to happen is when Jenkins hasn't been restarted after installing this plugin, and the connection was created before the plugin was installed.
+
+=== Configuration
+
+This plugin has no UI.
+It is configured through the script console or using system properties.
+
+Using the https://www.jenkins.io/doc/book/managing/script-console/[script console]:
+
+----
+// Add a new callable class name to the block list that will always reject it when sent to a controller from a lower-privileged endpoint
+io.jenkins.plugins.remoting_security.ConfigurableCallableBlocker.SPECIFIC_CALLABLES_TO_ALWAYS_REJECT.add('org.acme.Whatever$MyCallable')
+
+// Remove a callable class name from the block list (may have been in there by default)
+io.jenkins.plugins.remoting_security.ConfigurableCallableBlocker.SPECIFIC_CALLABLES_TO_ALWAYS_REJECT.remove('org.acme.Whatever$MyCallable')
+
+// Disable requirement for callables to perform a (any) role check
+io.jenkins.plugins.remoting_security.RequiredRoleCheck.CALLABLES_CAN_IGNORE_ROLECHECKER = true
+
+// Allow a specific callable to not need to perform a role check
+io.jenkins.plugins.remoting_security.RequiredRoleCheck.SPECIFIC_CALLABLES_CAN_IGNORE_ROLECHECKER.add('org.acme.Whatever$MyCallable')
+
+// Stop allowing a specific callable to not need to perform a role check (may have been in there by default)
+io.jenkins.plugins.remoting_security.RequiredRoleCheck.SPECIFIC_CALLABLES_CAN_IGNORE_ROLECHECKER.remove('org.acme.Whatever$MyCallable')
+----
+
+https://www.jenkins.io/doc/book/managing/system-properties/[Java system properties]:
+
+* `io.jenkins.plugins.remoting_security.ConfigurableCallableBlocker.additionalCallablesToAlwaysReject` is a comma-separated list of class names to add to the block list.
+  Instances of these types will always be rejected.
+* `io.jenkins.plugins.remoting_security.RequiredRoleCheck.specificCallablesCanIgnoreRoleChecker` is a comma-separated list of class names to add to the allow list.
+  Instances of these types will not be required to perform a role check.
+* `io.jenkins.plugins.remoting_security.RequiredRoleCheck.allCallablesCanIgnoreRoleChecker` will disable the required role check entirely if set to `true`, so that callables not performing a role check won't be rejected for this.
+  This is very unsafe to do unless Jenkins has been updated to 2.319 or later, or LTS 2.303.3 or later.
+
+There is no system property that allows removing entries from the default allow list for the required role check.
+It should only contain safe types, so it is not expected to need customization.
+
+== Affected Functionality
+
+With this plugin installed, some Jenkins plugin functionality may not work any longer.
+This includes everything affected by the https://www.jenkins.io/doc/upgrade-guide/2.303/#SECURITY-2458[SECURITY-2458] and https://www.jenkins.io/doc/upgrade-guide/2.303/#SECURITY-2455[SECURITY-2455] changes.
+In addition to that, the following functionality is expected to break when this plugin is installed:
+
+|====
+| Plugin | Affected Feature | Workaround | Fix
+
+| https://plugins.jenkins.io/cobertura/[Cobertura]
+| "Publish Cobertura Coverage Report" post-build step fails
+| n/a
+| Update Cobertura Plugin to 1.17
+
+| https://plugins.jenkins.io/code-coverage-api/[Code Coverage API]
+| Saving of source files (optional feature) in post-build step fails
+| Do not use the feature
+| Update Code Coverage API Plugin to 2.0.4
+
+| https://plugins.jenkins.io/log-parser/[Log Parser]
+| Log parsing fails
+| n/a
+| https://github.com/jenkinsci/log-parser-plugin/pull/32[log-parser-plugin#32]
+
+| https://plugins.jenkins.io/maven-plugin/[Maven Integration]
+| Archiving Maven sites and Javadoc fails
+| Do not archive Maven sites or Javadoc
+| Update Maven Plugin to 3.15.1 or install one of the backports 3.12.1, 3.10.1, 3.8.1, 3.7.1, 3.6.1
+
+| https://plugins.jenkins.io/hp-application-automation-tools-plugin/[Micro Focus Application Automation Tools]
+| TBD
+| TBD
+| n/a (https://issues.jenkins.io/browse/JENKINS-67232[JENKINS-67232])
+
+| https://plugins.jenkins.io/publish-over-ssh/[Publish Over SSH]
+| TBD
+| TBD
+| n/a (https://issues.jenkins.io/browse/JENKINS-67236[JENKINS-67236])
+
+| https://plugins.jenkins.io/selenium/[Selenium]
+| TBD
+| TBD
+| n/a (https://issues.jenkins.io/browse/JENKINS-67255[JENKINS-67255])
+
+| https://plugins.jenkins.io/violations/[Violations]
+| TBD
+| TBD
+| n/a (https://issues.jenkins.io/browse/JENKINS-67254[JENKINS-67254])
+
+|====
+
+== LICENSE
+
+Licensed under MIT, see link:LICENSE.md[LICENSE].

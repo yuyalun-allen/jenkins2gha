@@ -1,0 +1,74 @@
+# Grype vulnerability scanner
+
+## Introduction
+
+[Grype](https://github.com/anchore/grype) is a vulnerability scanner for container images and filesystems.
+This jenkins plugin scans a given target and saves a report as job artifact.
+Starting from version 1.7, the grype plugin can be integrated with the [Warnings Next Generation plugin](https://plugins.jenkins.io/warnings-ng/) (minimal version: 10.3.0).
+
+<img src="images/grypeRes.png" alt="Grype plugin" />
+
+## Getting started
+This jenkins plugin installs grype in the job workspace directory and performs scan.
+See section [Installation/Recommended](https://github.com/anchore/grype) for more installation details.
+
+#### Grype as a build step:
+<img src="images/1.png" alt="Grype plugin" />
+
+<img src="images/2.png" alt="Grype plugin" />
+
+#### Possible scan targets:
+<img src="images/3.png" alt="Grype plugin" />
+
+#### Configure [Warnings Next Generation plugin](https://plugins.jenkins.io/warnings-ng/):
+<img src="images/grypeWarnings.png" alt="Grype plugin" />
+
+#### Scan result report as job artifact:
+<img src="images/attachedReport.png" alt="Grype plugin" />
+
+#### Scan results:
+<img src="images/5.png" alt="Grype plugin" />
+
+<img src="images/6.png" alt="Grype plugin" />
+
+### Usage in a pipeline, with Warnings Next Generation plugin (minimal version: 10.3.0):
+```groovy
+ pipeline {
+  agent {label ''}
+  stages {
+     stage('Grype scan') {
+      steps {
+       grypeScan scanDest: 'dir:/tmp/grpc', repName: 'myScanResult.txt', autoInstall:true
+      }
+    }
+  }
+
+post {
+    always {
+        recordIssues(
+          tools: [grype()],
+          aggregatingResults: true,
+          failedNewAll: 1, //fail if >=1 new issues
+          failedTotalHigh: 20, //fail if >=20 HIGHs
+          failedTotalAll : 100, //fail if >=100 issues in total
+          filters: [
+            excludeType('CVE-2023-2976'),
+            excludeType('CVE-2012-17488'),
+          ],
+          //failOnError: true
+        )
+    }
+  }
+}
+```
+
+See https://www.jenkins.io/doc/pipeline/steps/warnings-ng/ for more advanced features.
+
+#### Acknowledgments
+Thanks to Patrick Röder and Thomas Spicker for contributions and creative input!
+
+
+## LICENSE
+
+Licensed under MIT, see [LICENSE](LICENSE.md)
+

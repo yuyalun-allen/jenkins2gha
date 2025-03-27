@@ -1,0 +1,75 @@
+Jenkins Validating Email Parameter Plugin
+==============
+
+master: [![Build Status](https://travis-ci.com/szcn/validating-email-parameter-plugin.svg?branch=master)](https://travis-ci.com/szcn/validating-email-parameter-plugin)
+
+```
+Plugin;
+- performs e-mail validation
+- prevents sending e-mails except the specified domain.
+- prevents typo
+- user1@jenkins.io user2@jenkins.io user3@jenkins.io --> user1 user2 user3 can be written and performs specific validation. E-mail address will be generated automatically in the build process.
+```
+
+## Parameter Definition
+![](./src/main/resources/io/jenkins/plugins/image/p1.png)
+
+- Default Value  : Specifies the default value of the field, which allows the user to save typing the actual value.
+
+- Domain         : Permitted domain name for sending mail.
+
+![](./src/main/resources/io/jenkins/plugins/image/p2.png)
+
+## Validation
+
+<img src="./src/main/resources/io/jenkins/plugins/image/p3.png" width="550" height="250">
+
+<img src="./src/main/resources/io/jenkins/plugins/image/p4.png" width="550" height="250">
+
+<img src="./src/main/resources/io/jenkins/plugins/image/p8.png" width="550" height="250">
+
+<img src="./src/main/resources/io/jenkins/plugins/image/p6.png" width="550" height="250">
+
+### External Email : If checked, Sending mail is allowed outside the set domain name.
+
+<img src="./src/main/resources/io/jenkins/plugins/image/p5.png" width="550" height="250">
+
+### External Email : false
+
+<img src="./src/main/resources/io/jenkins/plugins/image/p7.png" width="550" height="250">
+
+## Build
+
+- Invalid Email
+
+![](./src/main/resources/io/jenkins/plugins/image/p9.png)
+
+- Valid Email
+
+![](./src/main/resources/io/jenkins/plugins/image/p10.png)
+
+## You can copy that code directly into the pipeline block in your Jenkinsfile
+
+```node
+
+pipeline {
+   agent any
+
+    parameters {
+        email defaultValue: 'sezai.can', description: 'Email address', domain: 'sahibinden.com', externalEmail: true, name: 'EMAIL'
+    }
+
+   stages {
+      stage('Email') {
+         steps {
+            echo "${params.EMAIL}"
+         }
+      }
+   }
+}
+
+
+
+```
+
+![](./src/main/resources/io/jenkins/plugins/image/p11.png)

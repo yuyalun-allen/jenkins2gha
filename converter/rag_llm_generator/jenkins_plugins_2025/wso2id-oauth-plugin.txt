@@ -1,0 +1,21 @@
+# Jenkins WSO2 ID OAuth Plugin
+
+* License: [MIT Licensed](LICENSE.txt)
+* Read more: [WSO2 ID OAuth Plugin wiki page][wiki]
+* Latest build: [![Build Status][build-image]][build-link]
+* [Contributions are welcome](CONTRIBUTING.md).
+
+# Overview
+
+The WSO2 ID OAuth Plugin provides a means of securing a Jenkins instance by
+offloading authentication and authorization to WSO2 ID.  The plugin authenticates
+by using a [WSO2 ID Application][wso2].  It can use multiple
+authorization strategies for authorizing users.  Users are surfaced as
+Jenkins users for authorization.
+
+More comprehensive documentation is listed on the [wiki page][wiki].
+
+[build-image]: https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/wso2id-oauth-plugin
+[build-link]: https://jenkins.ci.cloudbees.com/job/plugins/job/wso2id-oauth-plugin/
+[wso2]: http://wso2.com/identity-and-access-management
+[wiki]: https://wiki.jenkins-ci.org/display/JENKINS/WSO2+ID+OAuth+Plugin

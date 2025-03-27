@@ -1,0 +1,27 @@
+# IBVC
+
+IBVC is a tool that maintains build intermediate and binary files.
+It can make sure your incremental build system has the correct source and binary files with carefully set modification times so it reduces build times and enables delivering software patches.
+
+## Getting IBVC
+
+Contact Panel::Sodtware to purchase an IBVC license.
+
+## IBVC Jenkins Plugin
+
+Adds an IBVC SCM provider and a post build step to commit intermediate and binary files to IBVC repository.
+
+### Building IBVC Jenkins Plugin
+
+#### Rampup
+
+  - [Plugin Tutorial](https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial)
+  
+#### Build and Test
+  
+  - Build:
+      mvn install
+  - Test:
+      mvn hpi:run
+  - [Browse](http://localhost:8080/jenkins)
+  

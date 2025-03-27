@@ -1,0 +1,88 @@
+= Audit Trail Plugin
+
+image:https://img.shields.io/jenkins/plugin/v/audit-trail.svg[link=https://plugins.jenkins.io/audit-trail]
+image:https://img.shields.io/github/release/jenkinsci/audit-trail-plugin.svg?label=changelog[link=https://github.com/jenkinsci/audit-trail-plugin/releases/latest]
+image:https://img.shields.io/jenkins/plugin/i/audit-trail.svg?color=blue[https://plugins.jenkins.io/audit-trail]
+
+This plugin keeps a log of who performed particular Jenkins operations, such as configuring jobs.
+
+This plugin adds an _Audit Trail_ section in the main Jenkins configuration page.
+On this page, you can configure log destination and settings
+(eg file size and number of rotating log files), and a URI pattern for
+requests to be logged.
+The default options select most actions with
+significant effect such as creating/configuring/deleting jobs and views
+or delete/save-forever/start a build.
+The log is sent to the target as configured (writen to disk, to console, sent to Elastic Search or Syslog).
+
+Also see the
+https://wiki.jenkins.io/display/JENKINS/JobConfigHistory+Plugin[JobConfigHistory
+Plugin] for recording actual changes made to job configurations.
+
+== Logger Configuration
+
+=== File logger
+
+Output audit logs in rolling files.
+
+image:docs/images/jenkins-audit-trail-file-logger.png[image,width=400]
+
+The file logger relies on `java.util.logging.FileHandler` and can use
+patterns to describe the log file location as documented
+http://docs.oracle.com/javase/7/docs/api/java/util/logging/FileHandler.html[here]
+(`+%h+`, `+%g+`...).
+
+A separator can be set for the file logger in case further parsing of the file is done.
+Default separator is a space.
+
+=== Syslog logger
+
+Send audit logs to a Syslog server.
+
+image:docs/images/jenkins-audit-trail-syslog-logger.png[image,width=400]
+
+image:docs/images/jenkins-audit-trail-syslog-logger-advanced.png[image,width=400]
+
+=== Console logger
+
+Output audit logs in `stdout` or `stderr`.
+Primarily intended for debugging purpose.
+
+image:docs/images/jenkins-audit-trail-console-logger.png[image,width=400]
+
+=== Elastic Search logger
+
+Send audit logs to an Elastic Search server
+
+image:docs/images/jenkins-audit-trail-elastic-search-logger.png[image,width=400]
+
+== Other configuration
+
+=== Log build triggers
+
+Will log the cause of a build. Defaults to true.
+
+=== Log credential users
+
+Will log usage of credentials as long as they are consumed through the https://plugins.jenkins.io/credentials/[Credentials plugin].
+Defaults to true.
+
+=== About the client IP-address appearing in the logs
+====
+The plugin uses a method that cannot guarantee that the actual IP of the client is captured.
+https://javaee.github.io/javaee-spec/javadocs/javax/servlet/ServletRequest.html#getRemoteAddr--[More details]
+Be aware of this limitation, especially if your instance is configured behind a reverse proxy.
+For getting client IP-address correctly it's required to set HTTP-header *X-Forwarded-For* on the reverse proxy side.
+Also follow these https://www.jenkins.io/doc/book/system-administration/reverse-proxy-configuration-troubleshooting/[recommendations] in order to get round this limitation.
+====
+
+== Changelog
+ifdef::env-github,env-browser[:outfilesuffix: .adoc]
+
+From version 2.5 on, changelog is automatically generated using
+https://github.com/toolmantim/release-drafter[release-drafter]. See
+directly
+the https://github.com/jenkinsci/audit-trail-plugin/releases[GitHub
+release page for the plugin].
+
+For older releases, have a look to the <<CHANGELOG#,archive>>.

@@ -1,0 +1,56 @@
+Jenkins Remoting + Overthere
+============================
+[Jenkins remoting](https://github.com/jenkinsci/remoting) is a library that Jenkins uses to communicate
+between a master and slaves. It provides a mechanism to remotely execute code between two JVMs while
+transparently sending necessary Java class files.
+
+[Overthere](https://github.com/xebialabs/overthere) is a virtual file system library by XebiaLabs that
+allows a JVM to remotely access a file system and run processes.
+
+This small library brings them together, such that the Jenkins remoting mechanism can be used as
+a remoting mechanism behind Overthere.  Furthermore, this is done as a filter of `OverthereConnection`,
+thereby making an `OverthereConnection` on one JVM transparently available on another JVM.
+
+
+    resides in JVM 1                    resides in JVM 2
+
+    +--------------+                    +--------------+                 +---------------+
+    | Overthere    |  Jenkins remoting  | Overthere    |  SSH/CIFS etc.  | actual        |
+    |   Connection |------------------->|   Connection |---------------->|   file system |
+    +--------------+                    +--------------+                 +---------------+
+
+
+Usage
+-----
+First, you create Overthere connection like you normally do:
+
+    OverthereConnection oc = ...;
+
+To make it portable across the remoting layer, wrap this in `RemotableOverthereConnection`:
+
+    oc = new RemotableOverthereConnection(oc);
+
+This object can be now safely passed between two channels:
+
+    Channel ch = ...;
+
+    ch.call(new Callable<Void, IOException>() {
+        public Void call() throws IOException {
+            // this code executes on the other side of the channel
+
+            for (OverthereFile f : oc.getFile("/").listFiles()) {
+                System.out.println(f.getPath());
+            }
+
+            OverthereProcess p = oc.startProcess(CmdLine.build("ls", "-la"));
+            p.getStdin().close();
+            IOUtils.copy(p.getStdout(), System.out);
+            System.out.println("exit code=" + p.waitFor());
+
+            return null;
+        }
+    });
+
+... or it can be used as a return value from `Callable`.
+
+See the `Demo` class in `src/test/java` for a complete example.

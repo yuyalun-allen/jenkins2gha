@@ -1,0 +1,47 @@
+# Jenkins Vagrant Plugin #
+----------------
+
+#### WARNING: Currently the commands were tested with minimal settings ####
+## Current features ##
+- Boot up a vagrant VM
+- Destroy a vagrant VM (--force will be auto added since we run without tty)
+
+## Implemented, Not tested ##
+- Provision a vagrant VM
+
+#### Info: All commands support multi-vm environment and can be specified which machine to run the command on ####
+
+## Future features ##
+- Halt a vagrant VM
+- Run command (as vagrant or root) on a vagrant VM
+- Reload a vagrant VM
+- Resume a vagrant VM
+- Suspend a vagrant VM
+- Add/Remove vagrant box
+- Package a vagrant VM to box
+
+## Disclaimer ##
+#### The original plugin was forked from rtyler's plugin https://github.com/rtyler/vagrant-plugin. ####
+#### The current plugin is NOT backwards compatible ####
+
+## ChangeLog ##
+
+ - 1.0.2: Fixing argument for "providers" when booting up machine (Fix by [fishcake](https://github.com/fishcake))
+
+## Copyrights ##
+
+   Copyright 2014 MyHeritage LTD
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+

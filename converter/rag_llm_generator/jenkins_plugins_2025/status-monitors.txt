@@ -1,0 +1,61 @@
+# **Multimodular project "Jenkins applications"**
+
+This project was developed as part of a bachelor thesis at the Munich University of Applied Sciences.
+It was created as an example for a multimodulare software project.
+It shows how to deal with an Android and a Java project in one multiproject and how to apply common configuration to
+the projects.
+It contains an Android application for displaying basic elements of a Jenkins build server and 
+a Jenkins Tray Icon which notifies about finished builds.
+Both applications are using a common webservice project.
+
+## Simple Jenkins Monitor 
+Jenkins Monitor is a small Android app which shows the jobs of a Jenkins build server with their current status. Furthermore you can access the builds of each job displaying timestamp, result, duration of the build.
+
+## Jenkins Desktop Notifier
+A tray icon developed with Swing, so it can be used on every system with a task bar. Checks the Jenkins server regularly for finished builds. If one build finished, it shows a notification.
+
+## Jenkins REST Client
+Small web library which is used by the applications above. Provides methods and tools for accessing Jenkins.
+
+## Needed for building
+For the deploying of the project you need the following things:
+
+* Java SDK 7 or higher
+* Android SDK with
+	* Android SDK Build-tools 20
+	* SDK Platform API 18
+	* Android Support Repository
+* Gradle 2.1 (If you don't want to use the Gradle Wrapper script) 
+
+Gradle is used as build tool, but a wrapper script is provided, so no Gradle installation is needed to execute the
+build.
+
+## How to build
+With Gradle you can use several options for building the applications.
+
+In the following examples you can replace "gradlew" with "gradle" if you don't want to use the wrapper script.
+
+* To build all subprojects with testing and code analysis (Lint, JaCoCo, PMD, FindBugs and Checkstyle):
+```
+gradlew build
+```
+* To build only one subproject with dependencies, you have to provide the name of the subproject in front of the Gradle task, e.g. Simple Jenkins Monitor:
+```
+gradlew "Simple Jenkins Monitor:build"
+```
+* If you just want to compile the projects:
+```
+gradlew assemble
+```
+
+## Build results
+At these places the results of the build can be found
+
+* JARs of the java projects: `<subproject>/build/libs`
+* APKs of the android projects: `<subproject>/outputs/apkt`
+* Test results
+    * Java projects: `<subproject>/build/reports/tests`
+    * Android projects: `<subproject>/build/test-report`
+* Results of the code analysis
+    * JaCoCo, PMD, FindBugs, Checkstyle:`<subproject>/build/reports`
+    * Lint: `<subproject>/build/output`

@@ -1,0 +1,955 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #2196F3;
+    --accent-color: #FF5722;
+    --light-gray: #f5f5f5;
+    --border-color: #ddd;
+    --text-color: #333;
+    --success-color: #4CAF50;
+    --info-color: #2196F3;
+    --warning-color: #FFC107;
+    --gradient-primary: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+    --gradient-secondary: linear-gradient(135deg, #29b6f6 0%, #0288d1 100%);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* 身体和容器样式 */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: #f9f9f9;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234caf50' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 头部样式 */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+header h1 {
+    color: white;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+}
+
+header p {
+    opacity: 0.9;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.comparison-headers {
+    display: flex;
+    background-color: #f5f7fa;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.comparison-header {
+    flex: 1;
+    padding: 12px 15px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    border-bottom: 2px solid #4CAF50;
+}
+
+.jenkins-header {
+    border-right: 1px solid #ddd;
+    background-color: rgba(76, 175, 80, 0.05);
+}
+
+.actions-header {
+    background-color: rgba(33, 150, 243, 0.05);
+}
+
+/* Adjust the first comparison item to not have top border radius since we now have headers */
+.detailed-comparison .comparison-item:first-child {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+/* If you want a sticky header that stays at the top while scrolling */
+.dialog-content {
+    position: relative;
+}
+
+.comparison-headers {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Dialog styles - Light theme */
+.dialog {
+    background-color: #fff;
+    color: #333;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+    border-bottom: none;
+    color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+
+
+.dialog-tabs {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+}
+
+.dialog-tab {
+    color: #555;
+}
+
+.dialog-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.dialog-content {
+    background-color: #fff;
+}
+
+.logo {
+    display: inline-block;
+    margin-right: 10px;
+    width: 48px;
+    height: 48px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.logo-arrow {
+    color: white;
+    font-size: 24px;
+    margin: 0 15px;
+}
+
+/* 上传部分样式 */
+.upload-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.upload-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.upload-options {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.upload-option {
+    flex: 1;
+    min-width: 300px;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    padding: 40px 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-option:hover {
+    border-color: var(--primary-color);
+    background-color: rgba(76, 175, 80, 0.05);
+    transform: translateY(-3px);
+}
+
+.upload-option.active, .upload-option:active {
+    border-color: var(--primary-color);
+    background-color: rgba(76, 175, 80, 0.1);
+    transform: translateY(0);
+}
+
+.upload-option i {
+    font-size: 56px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.upload-option:hover i {
+    transform: scale(1.1);
+}
+
+.upload-option h3 {
+    margin-bottom: 10px;
+    color: var(--text-color);
+    font-size: 1.4rem;
+}
+
+.upload-option p {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* 结果部分样式 */
+.results-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.results-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.results-header h2 {
+    color: var(--text-color);
+    font-size: 1.6rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.results-header h2 i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.results-table th {
+    background-color: #f5f7fa;
+    color: #5f6368;
+    padding: 14px;
+    text-align: left;
+    border-bottom: 2px solid #eaecef;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.results-table td {
+    padding: 14px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.results-table tr:hover {
+    background-color: #f9fbfd;
+}
+
+.file-name {
+    font-weight: 500;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333;
+}
+
+.time-stamp {
+    color: #666;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    background-color: #388E3C;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: #0b7dda;
+}
+
+.btn-download {
+    background-color: var(--primary-color);
+    padding: 12px 24px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-download i {
+    margin-right: 8px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background-color: #e8f5e9;
+    color: #388E3C;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    font-size: 18px;
+    color: #666;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dialog-title {
+    font-size: 22px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.dialog-title::before {
+    content: "\f0db";  /* Font Awesome code icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.dialog-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.dialog-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.dialog-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f5f5f5;
+}
+
+.dialog-tab {
+    flex: 1;
+    padding: 14px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    color: #555;
+    position: relative;
+    border-bottom: 3px solid transparent;
+}
+
+.dialog-tab:hover {
+    background-color: rgba(76, 175, 80, 0.05);
+    color: #43a047;
+}
+
+.dialog-tab.active {
+    color: #43a047;
+    background-color: white;
+    border-bottom-color: #43a047;
+    font-weight: 600;
+}
+
+.dialog-tab::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-right: 8px;
+}
+
+.code-header {
+    padding: 12px;
+    background: linear-gradient(to right, #f5f7fa, #f9f9f9);
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    text-align: center;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.code-header::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-right: 8px;
+}
+
+.code-panel:first-child .code-header {
+    color: #2e7d32;
+    background: linear-gradient(to right, #e8f5e9, #f1f8e9);
+}
+
+.code-panel:first-child .code-header::before {
+    content: "\f1da";  /* Font Awesome history icon (for Jenkins) */
+    color: #2e7d32;
+}
+
+.code-panel:last-child .code-header {
+    color: #0277bd;
+    background: linear-gradient(to right, #e1f5fe, #e3f2fd);
+}
+
+.code-panel:last-child .code-header::before {
+    content: "\f09b";  /* Font Awesome GitHub icon */
+    color: #0277bd;
+}
+
+/* Also update the detailed comparison headers */
+.comparison-headers {
+    display: flex;
+    background-color: #f5f7fa;
+    border: 1px solid #ddd;
+    border-bottom: none;
+}
+
+.comparison-header {
+    flex: 1;
+    padding: 14px 15px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comparison-header::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-right: 10px;
+}
+
+.jenkins-header {
+    color: #2e7d32;
+    background: linear-gradient(to right, #e8f5e9, #f1f8e9);
+    border-bottom-color: #4CAF50;
+}
+
+.jenkins-header::before {
+    content: "\f1da";  /* Font Awesome history icon */
+    color: #2e7d32;
+}
+
+.actions-header {
+    color: #0277bd;
+    background: linear-gradient(to right, #e1f5fe, #e3f2fd);
+    border-bottom-color: #2196F3;
+}
+
+.actions-header::before {
+    content: "\f09b";  /* Font Awesome GitHub icon */
+    color: #0277bd;
+}
+
+/* Enhance the entire dialog */
+.dialog {
+    background-color: white;
+    border-radius: 8px;
+    width: 92%;
+    max-width: 1300px;
+    max-height: 92vh;
+    overflow: hidden;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    border: none;
+}
+
+.dialog-content {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+    background-color: #fafafa;
+}
+
+.code-comparison {
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    height: 100%;
+    background-color: #fafafa;
+}
+
+.detailed-comparison {
+    margin: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dialog-tab:nth-child(1)::before {
+    content: "\f07e";  /* Font Awesome columns icon */
+}
+
+.dialog-tab:nth-child(2)::before {
+    content: "\f0cb";  /* Font Awesome list icon */
+}
+
+.dialog-content {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+}
+
+.code-comparison {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+}
+
+.code-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.code-header {
+    padding: 8px 12px;
+    background-color: #f5f5f5;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+}
+
+.code-content {
+    flex: 1;
+    overflow: auto;
+    padding: 0;
+    margin: 0;
+    background-color: #fafafa;
+}
+
+.code-content pre {
+    /*margin: 0;*/
+    /*padding: 15px;*/
+    /*overflow: auto;*/
+    /*height: 100%;*/
+    /*box-sizing: border-box;*/
+    /*background-color: #fafafa;*/
+    flex: 1;
+    /* 给 code-content 一个最大高度，超过就出现滚动条 */
+    max-height: 70vh; /* 或者 500px，根据你想要的大小 */
+    overflow-y: auto;
+    padding: 15px;
+    margin: 0;
+    background-color: #fafafa;
+}
+
+.code-content code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+pre {
+    margin: 0;
+    overflow: auto;
+}
+
+.detailed-comparison {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.comparison-item {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background-color: #fafafa;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 5px;
+}
+
+.comparison-item:last-child {
+    border-bottom: none;
+}
+
+.comparison-jenkins,
+.comparison-actions {
+    flex: 1;
+    min-width: 0; /* 重要: 允许flex子项缩小到小于内容大小 */
+    padding: 0;
+    overflow-x: auto; /* 添加水平滚动条 */
+    max-height: 350px; /* 限制垂直高度 */
+    overflow-y: auto; /* 添加垂直滚动条 */
+    display: flex; /* Add flexbox */
+    flex-direction: column; /* Stack children vertically */
+}
+
+
+.comparison-jenkins pre,
+.comparison-actions pre {
+    margin: 0;
+    padding: 12px;
+    box-sizing: border-box;
+    flex: 1; /* Make the pre tags grow to fill the container */
+    min-width: 100%;
+}
+
+/* Make sure code blocks also stretch */
+.comparison-jenkins code,
+.comparison-actions code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    display: block;
+    white-space: pre;
+    height: 100%; /* Ensure code fills the pre tag */
+}
+
+.comparison-jenkins {
+    border-right: 1px solid #ddd;
+}
+
+.comparison-jenkins pre,
+.comparison-actions pre {
+    margin: 0;
+    padding: 12px;
+    min-width: 100%;
+    box-sizing: border-box;
+}
+
+.comparison-jenkins code,
+.comparison-actions code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    display: block;
+    white-space: pre;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    max-width: 480px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state i.fa-upload {
+    font-size: 32px; /* 减小图标大小 */
+    margin: 0 0 15px;
+    color: #aaa;
+    opacity: 0.8;
+}
+
+.empty-state h3 {
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+    color: #444;
+}
+
+.empty-state p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.empty-state .info-box {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f1f7f1;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 15px;
+    border-left: 3px solid #4CAF50;
+    text-align: left;
+}
+
+.empty-state .info-box i {
+    font-size: 16px;
+    margin-right: 10px;
+    color: #4CAF50;
+    margin-top: 2px;
+}
+
+.empty-state .info-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.processing-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.processing-indicator h3 {
+    margin: 15px 0 10px;
+    color: #333;
+    font-size: 1.4rem;
+}
+
+.processing-indicator p {
+    color: #666;
+}
+
+.spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+/* 手动输入对话框样式 */
+.input-dialog-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-dialog-content textarea {
+    width: 100%;
+    min-height: 400px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.input-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 20px;
+    border-top: 1px solid #ddd;
+    gap: 10px;
+}
+
+.input-dialog-actions button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.btn-cancel:hover {
+    background-color: #e0e0e0;
+}
+
+.input-dialog-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-examples {
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.input-examples i {
+    font-size: 14px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .upload-options {
+        flex-direction: column;
+    }
+
+    .code-comparison {
+        flex-direction: column;
+    }
+
+    .btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .results-table th,
+    .results-table td {
+        padding: 10px 8px;
+    }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

@@ -1,0 +1,34 @@
+# Pipeline Charting Plugin
+
+This Jenkins plugin enables flexible charting capabilities for pipelines.
+
+## Compatibility Notice
+
+This plugin is still in early development. While functional, design decisions may still need to be revisited, breaking data recorded in earlier versions. This will be indicated by a compatibility warning in plugin manager.
+
+## Usage
+
+This plugin provides the `addChartData` step. it has the following mandatory arguments:
+
+* `y`: The numeric value to use for the Y axis coordinates of the point to add.
+
+The following arguments are optional:
+
+* `chart`: Which chart to record this value for. Default value is `default`.
+* `series`: Which series (inside a chart) to record this value for. Default value is `default`.
+* `x`: The label for the X axis. Defaults to the build number. Must be unique per 
+
+In one build, any number of points can be added to any number of charts and series, but only one point per chart, series, and x coordinate will be shown.
+
+/* TODO: Which one? */
+
+## Example
+
+The following pipeline, executed a few time, can result in the output below:
+
+	addChartData chart: "Random 1", y: Math.random() * 500, series: "500 max"
+	addChartData chart: "Random 1", y: Math.random() * 200, series: "200 max"
+
+	addChartData y: Math.random() * 5
+
+![](documentation/basic-output.png)

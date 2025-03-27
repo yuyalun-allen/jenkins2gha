@@ -1,0 +1,3 @@
+# Clever Cloud Jenkins Plugin
+
+A plugin to provision build agents on [Clever-Cloud](https://www.clever-cloud.com/)

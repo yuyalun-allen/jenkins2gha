@@ -1,0 +1,2 @@
+# rest-service-scheduler-plugin
+DEPRECATED: do not use 

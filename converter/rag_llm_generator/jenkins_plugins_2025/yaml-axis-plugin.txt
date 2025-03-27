@@ -1,0 +1,124 @@
+# Jenkins Yaml Axis Plugin
+Matrix project axis creation and exclusion plugin using yaml file
+
+[![Plugin Version](https://img.shields.io/jenkins/plugin/v/yaml-axis.svg)](https://github.com/jenkinsci/yaml-axis-plugin/blob/master/README.md)
+[![Build Status](https://ci.jenkins.io/buildStatus/icon?job=Plugins/yaml-axis-plugin/master)](https://ci.jenkins.io/job/Plugins/job/yaml-axis-plugin/job/master/)
+
+## Usage
+### 1. Add yaml file to repository
+example
+
+```yaml
+# axis.yml
+RUBY_VERSION:
+  - 2.1.8
+  - 2.2.4
+  - 2.3.0
+
+exclude:
+  - RUBY_VERSION: 2.1.8
+  - RUBY_VERSION: 2.3.0
+    DATABASE: oracle
+```
+
+### 2. Create Multi-configuration project
+![new_job](doc/new_job.png)
+
+### 3. Configuration Axis
+Choose **Yaml Axis**
+
+![Add axis](doc/add_axis.png)
+
+Input configurations
+
+![config](doc/axis_config.png)
+
+* **Axis yaml file** : Yaml file path (relative path from workspace or absolute path)
+* **Axis name** : Top key in yaml file
+
+You can combine **Yaml Axis** and other axes
+
+### 4. Configuration Execution Strategy
+#### Choose "Yaml matrix execution strategy" at Execution Strategy
+![strategy](doc/execution_strategy.png)
+
+If you don't want to exclusion, choose **Classic**
+
+#### Input settings
+##### Example 1 (Use yaml file)
+
+![yaml_file](doc/yaml_file.png)
+
+##### Example 2 (Use yaml text)
+![yaml_text](doc/yaml_text.png)
+
+### 4. Build job
+Generate yaml based matrix and run job :muscle:
+
+![result](doc/result.png)
+
+* blue is executed job
+* gray is excluded(skipped) job
+
+## Detail
+### Excluding logic
+Excluding pattern may be specified with `List` of `Map` (e.g. `List<Map<String, [String or List]>>`)
+
+Elements in the `Map` may be a List to exclude multiple items for one key
+```yaml
+# axis.yml
+exclude:
+  - RUBY_VERSION: 2.1.8
+  - RUBY_VERSION: 2.3.0
+    DATABASE: oracle
+```
+When specified 2 axes
+
+![axis](doc/axis.png)
+
+This results in a 3x3 build matrix.
+
+![result](doc/result.png)
+
+* When specified `RUBY_VERSION` value `2.1.8`, 3 results are excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `mysql` is excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `postgres` is excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `oracle` is excluded
+* When specified `RUBY_VERSION` value `2.3.0` and `DATABASE` value `oracle`, 1 result is excluded
+  * `RUBY_VERSION` value `2.3.0` and `DATABASE` value `oracle` is excluded
+
+#### Another example
+```yaml
+# axis2.yml
+exclude:
+  - RUBY_VERSION: 2.1.8
+  - RUBY_VERSION: 2.3.0
+    DATABASE: 
+      - oracle
+      - mysql
+```
+* When specified `RUBY_VERSION` value `2.1.8`, 3 results are excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `mysql` is excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `postgres` is excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `oracle` is excluded
+* When specified `RUBY_VERSION` value `2.3.0`, 2 results are excluded
+  * `RUBY_VERSION` value `2.3.0` and `DATABASE` value `oracle` is excluded
+  * `RUBY_VERSION` value `2.3.0` and `DATABASE` value `mysql` is excluded
+
+#### Final example
+Using multiple lists will exclude the cartesian product of those lists.
+```yaml
+# axis3.yml
+exclude:
+  - RUBY_VERSION: 
+      - 2.1.8
+      - 2.3.0
+    DATABASE: 
+      - oracle
+      - mysql
+```
+* 4 results are excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `mysql` is excluded
+  * `RUBY_VERSION` value `2.1.8` and `DATABASE` value `oracle` is excluded
+  * `RUBY_VERSION` value `2.3.0` and `DATABASE` value `oracle` is excluded
+  * `RUBY_VERSION` value `2.3.0` and `DATABASE` value `mysql` is excluded

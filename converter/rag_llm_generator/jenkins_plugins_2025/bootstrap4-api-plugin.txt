@@ -1,0 +1,6 @@
+:tip-caption: :bulb:
+:imagesdir: etc/images
+
+= Bootstrap 4 Jenkins Plugin
+
+This plugin reached end-of-life. Please use the new https://plugins.jenkins.io/bootstrap5-api/[Bootstrap 5 Jenkins Plugin].

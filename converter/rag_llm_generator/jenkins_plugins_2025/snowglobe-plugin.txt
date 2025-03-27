@@ -1,0 +1,57 @@
+# snowglobe-plugin
+Snowglobe plugin for Jenkins
+
+This allows Jenkins jobs to control a SnowGlobe instance (see https://nirima.github.io/SnowGlobe/).
+
+## Operations
+
+
+The operations are relatively simple:
+
+### Clone
+```groovy
+snowglobe_clone createAction: true, sourceId: 'ci-template', targetId: 'new-globe-name'
+```
+
+### Set Variables
+
+Variables are specified in TOML format, e.g:
+
+```
+
+key="value"
+
+[settings]
+x="hello"
+
+```
+
+Call: 
+```groovy
+snowglobe_set_variables globeId: 'my-globe', variables: 'key="value"'
+```
+
+### Get Variables
+```groovy
+data = snowglobe_get_variables  globeId: 'my-globe'
+```
+ 
+### Apply
+```groovy
+snowglobe_apply createAction: true, globeId: 'my-globe'
+```
+### State
+```groovy
+data = snowglobe_state createAction: false, globeId: 'my-globe'
+```
+
+### Destroy
+```groovy
+snowglobe_clone remove: true, globeId: 'my-globe'
+```
+
+Remove: set to true to also remove the SnowGlobe after destruction.
+
+
+In all cases - createAction controls whether to add an action to the build, which will also remove the globe when the CI build
+is complete.

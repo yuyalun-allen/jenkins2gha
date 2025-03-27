@@ -1,0 +1,10 @@
+## Continuum Jenkins Plugin
+
+This plugin exposes Continuum commands that are available via its REST API as pipeline steps, such as
+
+- ctmInitiatePipeline
+- ctmPostPiData
+- ctmSetPiData
+
+You can find REST API documentation [here](https://community.versionone.com/VersionOne_Continuum/REST_API_and_Command_Line_Tools/API_Introduction/Continuum_REST_API_Reference).
+

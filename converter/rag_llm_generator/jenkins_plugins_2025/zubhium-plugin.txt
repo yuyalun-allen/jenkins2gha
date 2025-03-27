@@ -1,0 +1,22 @@
+jenkins-zubhium-plugin
+======================
+
+Zubhium artifact uploader for Jenkins.
+Adds a post-build action to the job configuration.
+
+Plugin Features:
+---
+* Define the APK you whish to upload
+* Enter Release Notes
+* Replace already uploaded APKs
+* Use a HTTP proxy if you wish
+* Use proguard mappings
+* Maintained by [derFunk](http://www.derfunk.com)
+
+Zubhium Features:
+---
+* Over The Air Beta Distribution
+* Realtime Crash Reporting
+* Enable support & Listen to users
+* Track + Analyse
+* Visit [Zubhium's Website](https://www.zubhium.com/)

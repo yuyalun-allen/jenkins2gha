@@ -1,0 +1,73 @@
+Testing
+-------
+
+```bash
+cd demo
+docker build -t demo .
+docker run --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro -p 127.0.0.1:22:22 -p 127.0.0.1:8080:8080 --rm --name demo demo &
+```
+
+As per [this tip](https://unix.stackexchange.com/a/335195/26736) you then need to:
+
+```bash
+docker exec demo rm /var/run/nologin
+```
+
+Now to get a shell inside the container with a working X display (so you can interact with the Swing GUIs):
+
+```bash
+ssh -X jenkins@localhost xterm bash
+```
+
+The password is `jenkins`.
+You may need to first:
+
+```bash
+ssh-keygen -f ~/.ssh/known_hosts -R localhost
+```
+
+Prepare a Jenkins core build including the module and
+
+```bash
+docker cp …/jenkins.war demo:/tmp/jenkins.war
+```
+
+In the shell inside the container:
+
+```bash
+java -jar /tmp/jenkins.war &
+```
+
+From your host, to log in to http://localhost:8080/ use this password:
+
+```bash
+docker exec demo cat /home/jenkins/.jenkins/secrets/initialAdminPassword
+```
+
+Run through the setup wizard, installing no plugins.
+Configure security, enabling the JNLP agent port (random is fine).
+Manage nodes, create a permanent `agent` with the JNLP connector, using say `/tmp` as the home directory.
+Then in the container
+
+```bash
+curl -u admin:`cat ~/.jenkins/secrets/initialAdminPassword` http://localhost:8080/computer/agent/slave-agent.jnlp > /tmp/x.jnlp
+javaws /tmp/x.jnlp
+```
+
+When prompted, install the agent as a service.
+Watch http://localhost:8080/computer/agent/log on host.
+From the container:
+
+```bash
+systemctl list-units jenkins-slave-*
+```
+
+to find the new service name. Then
+
+```bash
+sudo systemctl stop jenkins-slave-XXXXXXXX
+sudo systemctl start jenkins-slave-XXXXXXXX
+sudo systemctl restart jenkins-slave-XXXXXXXX
+```
+
+You should see it connecting and disconnecting.

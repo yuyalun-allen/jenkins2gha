@@ -1,0 +1,43 @@
+
+
+## Welcome to MyAppCI
+
+The task extension supports mobile app uploads to MyAppCI mobile application lifecycle management.
+
+See: https://myappci.com
+
+ 
+Integrate the task into you mobile app pipeline.
+
+## Specify the Task Parameters:
+
+ 
+
+**Branchname/Branchid:**
+
+ 
+The id of your CI branch maintained in MyAppCI (requires a professional subscription).
+
+  
+**API Key:**
+
+The API key of your CI branch.
+
+
+**Filename:**
+
+The filename of your APK or IPA file including the file path. The file needs to be within your Jenkins workspace.
+
+e.g.
+
+myapp.apk or
+myapp.ipa
+
+ 
+## Environment Variable:
+
+Specify the environment variable which specifies the release version
+
+e.g:
+
+version: 1.2.4

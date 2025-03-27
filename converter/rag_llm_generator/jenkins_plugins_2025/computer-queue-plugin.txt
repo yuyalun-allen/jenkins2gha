@@ -1,0 +1,5 @@
+# Computer Queue plugin
+
+This plugin displays the queue for a given computer in its page.
+ 
+![](docs/images/computer.jpg)

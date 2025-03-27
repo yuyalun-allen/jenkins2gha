@@ -1,0 +1,15 @@
+# test-odyssey-jenkins-plugin
+Jenkins plugin for triggering test execution run on Test-Odyssey from jenkins
+
+To use this plugin you must have a premium license with test-odyssey.
+
+Global Config:
+Provide the userId, password and organization code as created by Test-Odyssey (https://test-odyssey.com)
+
+Local Config:
+Provide details for execution run in job configure to start an execution in Test-Odyssey with the provided details when ever the job is triggered.
+
+For any issues : admin@ekatechserv.com
+
+Website : 
+http://ekatechserv.com

@@ -1,0 +1,6 @@
+The Config Rotator plugin for Jenkins
+
+Automatic try-out of possible configurations. 
+Monitors the SCM for newer versions of components and tests if compliant. Only available using ClearCaseUCM as SCM.
+
+https://wiki.jenkins-ci.org/display/JENKINS/config+rotator+plugin

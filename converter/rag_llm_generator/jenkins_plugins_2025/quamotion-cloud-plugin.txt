@@ -1,0 +1,2 @@
+# quamotion-cloud-jenkins
+Jenkins plugin to interact with Quamotion Cloud

@@ -1,0 +1,27 @@
+# OpenJDK Native Plugin
+
+This plugin adds auto installer for OpenJDK from native RPM packages and provides switching between OpenJDK vesrions using Linux alternatives.
+
+
+## Configuration
+
+Add Java installation, select `Install automatically` and choose OpenJDK installer:
+
+![OpenJDK Installer](images/openJDKInstaller.png "OpenJDK installer")
+
+Select RPM package, which you want to install:
+
+![RPM selection](images/openJDKInstaller_rpm.png "RPM selection")
+
+`Alternatives` and `yum` are run via `sudo`, therefore appropriate sudoers setup is requited (including switching off tty requirement which is turned on by default or run pseudo-tty e.g. by including `-t` param in `ssh` command).
+
+Example setup:
+
+**/etc/sudoers.d/jenkins**
+
+```
+#Defaults    requiretty
+User_Alias JENKINS = test_user
+Cmnd_Alias OPENJDK_INSTALL = /usr/sbin/alternatives, /usr/bin/yum
+JENKINS ALL = NOPASSWD: OPENJDK_INSTALL
+```

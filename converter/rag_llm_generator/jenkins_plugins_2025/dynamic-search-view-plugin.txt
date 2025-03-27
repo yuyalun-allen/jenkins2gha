@@ -1,0 +1,35 @@
+The Dynamic Search View plugin adds a new view option, which allows you to configure additional filters on top of your main view.
+
+# About this plugin
+
+The Dynamic Search View allows you to configure additional filters at the view’s main page, which are applied after selecting **Submit**.
+This allows users to filter and search for jobs in one central view.
+
+**WARNING** 
+
+The current version of the plugin is a proof of concept and has several significant issues, which are listed here. 
+As always, contributions are appreciated by anyone!
+
+# Usage
+
+1.  Create a new **Dynamic Search View**.
+2.  Configure the main filters for the view.
+    1.  You can setup implicit filters and columns. 
+    2.  The plugin also supports standard `JobFilter` and `ListViewColumn` extensions.
+    3.  If you want to filter all jobs, set a regexp filter with the `.\*` mask
+3.  Select your new view.
+    1.  You can set additional filters on the main view page.
+    2.  Select **Submit** to apply the additional filters.
+
+The updated View creation page:
+
+![](docs/images/CreateView.png)
+
+View with additional filters:
+
+![](docs/images/MainPage.png)
+
+## Report an Issue
+
+Please report issues and enhancements through the
+[Jenkins issue tracker](https://www.jenkins.io/participate/report-issue/redirect/#17668).

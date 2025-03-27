@@ -1,0 +1,871 @@
+
+=== YAML文件相似度比较结果 (按相似度从高到低排序) ===
+排名   文件编号      CI文件                     转换文件                                    相似度       备注                  
+--------------------------------------------------------------------------------------------------------------
+1    40        ci40.yaml                jenkins40.yaml                          0.8137                      
+2    10        ci10.yaml                jenkins10.yaml                          0.7743                      
+3    67        ci67.yaml                jenkins67.yaml                          0.7540                      
+4    37        ci37.yaml                jenkins37.yaml                          0.7347                      
+5    12        ci12.yaml                jenkins12.yaml                          0.7041                      
+6    8         ci8.yaml                 jenkins8.yaml                           0.6954                      
+7    4         ci4.yaml                 jenkins4.yaml                           0.6513                      
+8    6         ci6.yaml                 jenkins6.yaml                           0.6513                      
+9    9         ci9.yaml                 jenkins9.yaml                           0.6513                      
+10   5         ci5.yaml                 jenkins5.yaml                           0.6486                      
+11   7         ci7.yaml                 jenkins7.yaml                           0.6486                      
+12   11        ci11.yaml                jenkins11.yaml                          0.6486                      
+13   66        ci66.yaml                jenkins66.yaml                          0.6215                      
+14   41        ci41.yaml                jenkins41.yaml                          0.6075                      
+15   51        ci51.yaml                jenkins51.yaml                          0.6075                      
+16   62        ci62.yaml                jenkins62.yaml                          0.5894                      
+17   63        ci63.yaml                jenkins63.yaml                          0.5687                      
+18   46        ci46.yaml                jenkins46.yaml                          0.5680                      
+19   60        ci60.yaml                jenkins60.yaml                          0.5595                      
+20   29        ci29.yaml                jenkins29.yaml                          0.5307                      
+21   39        ci39.yaml                jenkins39.yaml                          0.5256                      
+22   18        ci18.yaml                jenkins18.yaml                          0.5220                      
+23   52        ci52.yaml                jenkins52.yaml                          0.5090                      
+24   28        ci28.yaml                jenkins28.yaml                          0.5069                      
+25   1         ci1.yaml                 jenkins1.yaml                           0.5024                      
+26   2         ci2.yaml                 jenkins2.yaml                           0.5018                      
+27   65        ci65.yaml                jenkins65.yaml                          0.4884                      
+28   38        ci38.yaml                jenkins38.yaml                          0.4854                      
+29   31        ci31.yaml                jenkins31.yaml                          0.4642                      
+30   26        ci26.yaml                jenkins26.yaml                          0.4591                      
+31   33        ci33.yaml                jenkins33.yaml                          0.4580                      
+32   3         ci3.yaml                 jenkins3.yaml                           0.4108                      
+33   16        ci16.yaml                jenkins16.yaml                          0.4057                      
+34   32        ci32.yaml                jenkins32.yaml                          0.3719                      
+35   43        ci43.yaml                jenkins43.yaml                          0.3537                      
+
+=== 详细比较结果 ===
+
+文件对 #40: ci40.yaml vs jenkins40.yaml
+整体相似度: 0.8137
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.4983
+  env: 0.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  maven <-> Maven_Clean_Build_Deploy: 0.9081
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8687
+      uses: 0.8500
+      run: 0.6136
+
+文件对 #10: ci10.yaml vs jenkins10.yaml
+整体相似度: 0.7743
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.6000
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build <-> Build: 0.7854
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+
+文件对 #67: ci67.yaml vs jenkins67.yaml
+整体相似度: 0.7540
+特征相似度:
+  runs-on: 0.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  windows_test <-> Test_Windows: 0.7548
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.8640
+      uses: 0.8500
+      run: 0.9262
+
+文件对 #37: ci37.yaml vs jenkins37.yaml
+整体相似度: 0.7347
+特征相似度:
+  runs-on: 0.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.6750
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build <-> Build: 0.7800
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8164
+      run: 0.9500
+
+文件对 #12: ci12.yaml vs jenkins12.yaml
+整体相似度: 0.7041
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> Build: 0.7250
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6071
+      uses: 0.7485
+      run: 0.4000
+
+文件对 #8: ci8.yaml vs jenkins8.yaml
+整体相似度: 0.6954
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> Build_Project: 0.7119
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5884
+      uses: 0.7485
+      run: 0.4000
+
+文件对 #4: ci4.yaml vs jenkins4.yaml
+整体相似度: 0.6513
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  test <-> Build_Project: 0.6455
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4936
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #6: ci6.yaml vs jenkins6.yaml
+整体相似度: 0.6513
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> Build_Project: 0.6455
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4936
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #9: ci9.yaml vs jenkins9.yaml
+整体相似度: 0.6513
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build <-> Build: 0.6455
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4936
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #5: ci5.yaml vs jenkins5.yaml
+整体相似度: 0.6486
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> Build_Project: 0.6415
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4878
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #7: ci7.yaml vs jenkins7.yaml
+整体相似度: 0.6486
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  test <-> Build_Project: 0.6415
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4878
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #11: ci11.yaml vs jenkins11.yaml
+整体相似度: 0.6486
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3500
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build <-> Build: 0.6415
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4878
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #66: ci66.yaml vs jenkins66.yaml
+整体相似度: 0.6215
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5201
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  decrypt <-> Decrypt_secrets: 0.7854
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+  test <-> Remove_local_docker_image: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.6947
+  build <-> Run_tests: 0.6354
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+  deploy <-> Build_image: 0.6354
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+  push <-> Push_image_to_image_registry: 0.5185
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5264
+      uses: 0.6136
+      run: 0.4000
+  cleanup <-> Launch_server: 0.4720
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4600
+      uses: 0.4000
+      run: 0.4000
+
+文件对 #41: ci41.yaml vs jenkins41.yaml
+整体相似度: 0.6075
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8063
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  create-docker-container <-> Create_docker_container: 0.7800
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  build-and-release <-> Build_and_release: 0.4854
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+
+文件对 #51: ci51.yaml vs jenkins51.yaml
+整体相似度: 0.6075
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8063
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  create-docker-container <-> Create_docker_container: 0.7800
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  build-and-release <-> Build_and_release: 0.4854
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+
+文件对 #62: ci62.yaml vs jenkins62.yaml
+整体相似度: 0.5894
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4070
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  check-signoffs <-> Check_for_Signed_Off_Commits: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  lint <-> Lint_website: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  build <-> Check_Whitelist: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  cleanup <-> Post-Build: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  check-whitelist <-> Build_website: 0.5040
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5057
+      uses: 0.4000
+      run: 0.4662
+  publish <-> Publish_docker_image: 0.4398
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4140
+      uses: 0.4000
+      run: 0.4000
+
+文件对 #63: ci63.yaml vs jenkins63.yaml
+整体相似度: 0.5687
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.1667
+最佳匹配的Jobs:
+  build <-> Compile: 0.8163
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7376
+      uses: 0.8500
+      run: 0.5956
+
+文件对 #46: ci46.yaml vs jenkins46.yaml
+整体相似度: 0.5680
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.1667
+最佳匹配的Jobs:
+  build <-> Build_Tools: 0.8146
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7351
+      uses: 0.8500
+      run: 0.5895
+
+文件对 #60: ci60.yaml vs jenkins60.yaml
+整体相似度: 0.5595
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.6946
+  env: 1.0000
+  job数量比率: 0.6923
+最佳匹配的Jobs:
+  setup <-> Setup_Setup_Docker: 0.8326
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7609
+      uses: 0.8500
+      run: 0.5230
+  testing <-> Testing_Unit_Tests: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  build <-> Build: 0.7689
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.8842
+      uses: 0.8500
+      run: 0.8608
+  publish <-> Save_and_Publish_Publish_specs_to_npm: 0.7254
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.8220
+      uses: 0.6741
+      run: 0.7758
+  github_release <-> Github_tagged_release: 0.7014
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7877
+      uses: 0.8500
+      run: 0.6708
+  deploy_dev <-> Save_and_Publish_Store_in_S3: 0.6891
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7701
+      uses: 0.8500
+      run: 0.5187
+  preview_pr <-> Preview_PR_dev_and_Automation_Tests: 0.6797
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7567
+      uses: 0.6741
+      run: 0.7769
+  cleanup <-> Post-Build: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  deploy_s3 <-> Create_dev_build: 0.5795
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6135
+      uses: 0.6741
+      run: 0.3929
+
+文件对 #29: ci29.yaml vs jenkins29.yaml
+整体相似度: 0.5307
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8083
+  env: 1.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  build <-> Build: 0.6737
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7481
+      uses: 0.5714
+      run: 0.9500
+
+文件对 #39: ci39.yaml vs jenkins39.yaml
+整体相似度: 0.5256
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8779
+  env: 0.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build <-> Test: 0.7584
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6549
+      uses: 0.8500
+      run: 0.4000
+
+文件对 #18: ci18.yaml vs jenkins18.yaml
+整体相似度: 0.5220
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7102
+  env: 1.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build-and-deploy <-> Build: 0.7260
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6086
+      uses: 0.6332
+      run: 0.5535
+
+文件对 #52: ci52.yaml vs jenkins52.yaml
+整体相似度: 0.5090
+特征相似度:
+  runs-on: 0.3333
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8912
+  env: 1.0000
+  job数量比率: 0.7500
+最佳匹配的Jobs:
+  prepare_environment <-> Prepare_Environment: 0.7321
+    runs-on: 0.5000
+    needs: 1.0000
+    steps: 0.7245
+      uses: 0.8500
+      run: 0.3000
+  ansible_slave <-> Spin_up_shared_ansible_slave_Merge_PR: 0.6618
+    runs-on: 0.3333
+    needs: 0.0000
+    steps: 0.8740
+      uses: 0.8500
+      run: 0.6250
+  clear_projects <-> Spin_up_shared_ansible_slave_Apply_ci_for_ci_Inventory: 0.5686
+    runs-on: 0.5000
+    needs: 0.0000
+    steps: 0.7052
+      uses: 0.4000
+      run: 0.9500
+  final_cleanup <-> Clear_Existing_Projects: 0.4300
+    runs-on: 0.5000
+    needs: 0.0000
+    steps: 0.5071
+      uses: 0.4000
+      run: 0.5500
+  verify_builds <-> Post-Build: 0.3487
+    runs-on: 0.5000
+    needs: 0.0000
+    steps: 0.3910
+      uses: 0.4000
+      run: 0.3000
+  verify_deploys <-> Verifying_CI_Builds: 0.3213
+    runs-on: 0.5000
+    needs: 0.0000
+    steps: 0.3519
+      uses: 0.4000
+      run: 0.3000
+
+文件对 #28: ci28.yaml vs jenkins28.yaml
+整体相似度: 0.5069
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6392
+  env: 1.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  test <-> Checkout: 0.6659
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5227
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #1: ci1.yaml vs jenkins1.yaml
+整体相似度: 0.5024
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4451
+  env: 1.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build <-> Build: 0.7555
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6508
+      uses: 0.7306
+      run: 0.3778
+
+文件对 #2: ci2.yaml vs jenkins2.yaml
+整体相似度: 0.5018
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.3698
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build <-> Checkout: 0.7335
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6193
+      uses: 0.7306
+      run: 0.4000
+  deploy <-> Build_Test: 0.5594
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5849
+      uses: 0.7306
+      run: 0.4000
+
+文件对 #65: ci65.yaml vs jenkins65.yaml
+整体相似度: 0.4884
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8218
+  env: 0.0000
+  job数量比率: 0.2000
+最佳匹配的Jobs:
+  build <-> Checkout: 0.7139
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5912
+      uses: 0.7071
+      run: 0.4000
+
+文件对 #38: ci38.yaml vs jenkins38.yaml
+整体相似度: 0.4854
+特征相似度:
+  runs-on: 0.3333
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8955
+  env: 1.0000
+  job数量比率: 0.0833
+最佳匹配的Jobs:
+  build <-> Pre_build_ccache_stats: 0.7577
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6539
+      uses: 0.8500
+      run: 0.4308
+
+文件对 #31: ci31.yaml vs jenkins31.yaml
+整体相似度: 0.4642
+特征相似度:
+  runs-on: 0.2500
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5534
+  env: 1.0000
+  job数量比率: 0.8750
+最佳匹配的Jobs:
+  prepare-environment <-> Post-Build: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  cleanup-projects <-> Ansible_Operations_Apply_Inventory: 0.6460
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7086
+      uses: 0.5077
+      run: 0.9500
+  ansible-operations <-> Ansible_Operations_Merge_PR: 0.5710
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.8157
+      uses: 0.8500
+      run: 0.6250
+  notify-status <-> Prepare_Environment: 0.3873
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.5532
+      uses: 0.5351
+      run: 0.4000
+  verify-builds <-> Verify_CI_Builds: 0.3633
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.5190
+      uses: 0.5077
+      run: 0.3667
+  post-cleanup <-> Verify_CI_Deploys: 0.3464
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.4949
+      uses: 0.5077
+      run: 0.3143
+  verify-deployments <-> Clear_Existing_Projects: 0.3366
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.4809
+      uses: 0.5077
+      run: 0.4000
+
+文件对 #26: ci26.yaml vs jenkins26.yaml
+整体相似度: 0.4591
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.2667
+  env: 1.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  build-and-push <-> Test: 0.6588
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5126
+      uses: 0.6247
+      run: 0.4000
+
+文件对 #33: ci33.yaml vs jenkins33.yaml
+整体相似度: 0.4580
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.5381
+  env: 0.0000
+  job数量比率: 0.8000
+最佳匹配的Jobs:
+  install-dependencies <-> Install_Composer: 0.7718
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6740
+      uses: 0.6663
+      run: 0.6286
+  deploy-staging <-> Install_Yarn: 0.6408
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7012
+      uses: 0.8500
+      run: 0.3582
+  deploy-production <-> Deployment_staging: 0.5413
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5590
+      uses: 0.5750
+      run: 0.5047
+  notify-slack <-> Deployment_production: 0.3750
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.3215
+      uses: 0.3000
+      run: 0.4000
+
+文件对 #3: ci3.yaml vs jenkins3.yaml
+整体相似度: 0.4108
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8462
+  env: 1.0000
+  job数量比率: 0.1111
+最佳匹配的Jobs:
+  lint <-> Checkout: 0.5935
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.6335
+      uses: 0.8500
+      run: 0.4000
+
+文件对 #16: ci16.yaml vs jenkins16.yaml
+整体相似度: 0.4057
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7250
+  env: 0.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  build <-> TestUnit: 0.5836
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.8337
+      uses: 0.5750
+      run: 0.9500
+
+文件对 #32: ci32.yaml vs jenkins32.yaml
+整体相似度: 0.3719
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.3316
+  env: 0.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  molecule-test <-> Setup: 0.5457
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.5652
+      uses: 0.6128
+      run: 0.5360
+
+文件对 #43: ci43.yaml vs jenkins43.yaml
+整体相似度: 0.3537
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.6848
+  env: 0.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  deploy <-> deploy: 0.4854
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+  build-test <-> build_test_mock_linux: 0.7800
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+
+=== 相似度分布分析 ===
+总文件对数: 35
+有效比较结果: 35
+平均相似度: 0.5712
+最高相似度: 0.8137
+最低相似度: 0.3537
+
+相似度分布:
+  0.9-1.0: 0 个文件对 (0.0%)
+  0.8-0.9: 1 个文件对 (2.9%)
+  0.7-0.8: 4 个文件对 (11.4%)
+  0.6-0.7: 10 个文件对 (28.6%)
+  0.5-0.6: 11 个文件对 (31.4%)
+  0.4-0.5: 7 个文件对 (20.0%)
+  0.3-0.4: 2 个文件对 (5.7%)
+  0.2-0.3: 0 个文件对 (0.0%)
+  0.1-0.2: 0 个文件对 (0.0%)
+  0.0-0.1: 0 个文件对 (0.0%)

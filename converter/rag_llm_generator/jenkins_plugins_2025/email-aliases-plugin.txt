@@ -1,0 +1,3 @@
+# Email Aliases Plugin
+Allows a user to associate alternate email aliases with their Jenkins user profile
+

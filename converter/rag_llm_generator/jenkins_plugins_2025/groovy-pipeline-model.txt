@@ -1,0 +1,76 @@
+# What
+Parses Groovy source file that represents the output of pipeline visual editor like this:
+
+```
+stage('build') {
+    checkout scm
+    sh 'mvn install'
+    stash id:'zot', path:'xxx'
+}
+stage('test') {
+    parallel(
+        test1: {
+            sh './test.sh 1'
+        },
+        test2: {
+            sh './test.sh 2'
+            sh './teardown.sh'
+        }
+    )
+}
+stage('deploy') {
+    heroku app:'foo/bar'
+}
+```
+
+... into JSON data model that it internally uses, like this:
+
+```
+{"pipeline": [
+    {
+    "name": "build",
+    "branches": [    {
+      "name": "default",
+      "steps":       [
+        "checkout scm",
+        "sh 'mvn install'",
+        "stash id:'zot', path:'xxx'"
+      ]
+    }]
+  },
+    {
+    "name": "test",
+    "branches":     [
+            {
+        "name": "test1",
+        "steps": ["sh './test.sh 1'"]
+      },
+            {
+        "name": "test2",
+        "steps":         [
+          "sh './test.sh 2'",
+          "sh './teardown.sh'"
+        ]
+      }
+    ]
+  },
+    {
+    "name": "deploy",
+    "branches": [    {
+      "name": "default",
+      "steps": ["heroku app:'foo/bar'"]
+    }]
+  }
+]}
+```
+
+# How
+This library uses Groovy compiler and runs it up to a certain phase so that the Groovy code
+is parsed into AST. The resulting tree is inspected against the expected data model to produce
+a model tree (or report an error in the process.)
+
+Arbitrary steps are supported, and we can even support a block of untranslatable pipeline script
+as a step, as an escape hatch for people who need something non-trivial.
+
+Comments, import statements and etc. that are present in the input is recognized, but they will
+not be preserved during round-trip.

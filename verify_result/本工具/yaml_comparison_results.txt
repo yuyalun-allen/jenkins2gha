@@ -1,0 +1,1765 @@
+
+=== YAML文件相似度比较结果 (按相似度从高到低排序) ===
+排名   文件编号      CI文件                     转换文件                                    相似度       备注                  
+--------------------------------------------------------------------------------------------------------------
+1    55        ci55.yaml                convert_jenkins_to_actions_55.yaml      0.9500                      
+2    56        ci56.yaml                convert_jenkins_to_actions_56.yaml      0.9500                      
+3    71        ci71.yaml                convert_jenkins_to_actions_71.yaml      0.9500                      
+4    37        ci37.yaml                convert_jenkins_to_actions_37.yaml      0.9260                      
+5    10        ci10.yaml                convert_jenkins_to_actions_10.yaml      0.9211                      
+6    35        ci35.yaml                convert_jenkins_to_actions_35.yaml      0.9170                      
+7    41        ci41.yaml                convert_jenkins_to_actions_41.yaml      0.9170                      
+8    59        ci59.yaml                convert_jenkins_to_actions_59.yaml      0.9170                      
+9    67        ci67.yaml                convert_jenkins_to_actions_67.yaml      0.9111                      
+10   8         ci8.yaml                 convert_jenkins_to_actions_8.yaml       0.9060                      
+11   57        ci57.yaml                convert_jenkins_to_actions_57.yaml      0.9020                      
+12   40        ci40.yaml                convert_jenkins_to_actions_40.yaml      0.8955                      
+13   12        ci12.yaml                convert_jenkins_to_actions_12.yaml      0.8902                      
+14   51        ci51.yaml                convert_jenkins_to_actions_51.yaml      0.8870                      
+15   4         ci4.yaml                 convert_jenkins_to_actions_4.yaml       0.8532                      
+16   6         ci6.yaml                 convert_jenkins_to_actions_6.yaml       0.8532                      
+17   45        ci45.yaml                convert_jenkins_to_actions_45.yaml      0.8515                      
+18   5         ci5.yaml                 convert_jenkins_to_actions_5.yaml       0.8513                      
+19   66        ci66.yaml                convert_jenkins_to_actions_66.yaml      0.8494                      
+20   54        ci54.yaml                convert_jenkins_to_actions_54.yaml      0.8489                      
+21   30        ci30.yaml                convert_jenkins_to_actions_30.yaml      0.8470                      
+22   7         ci7.yaml                 convert_jenkins_to_actions_7.yaml       0.8450                      
+23   58        ci58.yaml                convert_jenkins_to_actions_58.yaml      0.8415                      
+24   15        ci15.yaml                convert_jenkins_to_actions_15.yaml      0.7534                      
+25   9         ci9.yaml                 convert_jenkins_to_actions_9.yaml       0.7395                      
+26   43        ci43.yaml                convert_jenkins_to_actions_43.yaml      0.7391                      
+27   31        ci31.yaml                convert_jenkins_to_actions_31.yaml      0.7304                      
+28   70        ci70.yaml                convert_jenkins_to_actions_70.yaml      0.7261                      
+29   44        ci44.yaml                convert_jenkins_to_actions_44.yaml      0.7257                      
+30   46        ci46.yaml                convert_jenkins_to_actions_46.yaml      0.7177                      
+31   39        ci39.yaml                convert_jenkins_to_actions_39.yaml      0.7164                      
+32   63        ci63.yaml                convert_jenkins_to_actions_63.yaml      0.7148                      
+33   11        ci11.yaml                convert_jenkins_to_actions_11.yaml      0.7143                      
+34   20        ci20.yaml                convert_jenkins_to_actions_20.yaml      0.7054                      
+35   53        ci53.yaml                convert_jenkins_to_actions_53.yaml      0.7054                      
+36   32        ci32.yaml                convert_jenkins_to_actions_32.yaml      0.6805                      
+37   29        ci29.yaml                convert_jenkins_to_actions_29.yaml      0.6721                      
+38   26        ci26.yaml                convert_jenkins_to_actions_26.yaml      0.6691                      
+39   62        ci62.yaml                convert_jenkins_to_actions_62.yaml      0.6629                      
+40   38        ci38.yaml                convert_jenkins_to_actions_38.yaml      0.6541                      
+41   60        ci60.yaml                convert_jenkins_to_actions_60.yaml      0.6499                      
+42   17        ci17.yaml                convert_jenkins_to_actions_17.yaml      0.6496                      
+43   18        ci18.yaml                convert_jenkins_to_actions_18.yaml      0.6440                      
+44   34        ci34.yaml                convert_jenkins_to_actions_34.yaml      0.6396                      
+45   49        ci49.yaml                convert_jenkins_to_actions_49.yaml      0.6380                      
+46   1         ci1.yaml                 convert_jenkins_to_actions_1.yaml       0.6345                      
+47   28        ci28.yaml                convert_jenkins_to_actions_28.yaml      0.6335                      
+48   52        ci52.yaml                convert_jenkins_to_actions_52.yaml      0.6269                      
+49   68        ci68.yaml                convert_jenkins_to_actions_68.yaml      0.6231                      
+50   21        ci21.yaml                convert_jenkins_to_actions_21.yaml      0.6212                      
+51   27        ci27.yaml                convert_jenkins_to_actions_27.yaml      0.6212                      
+52   61        ci61.yaml                convert_jenkins_to_actions_61.yaml      0.6212                      
+53   25        ci25.yaml                convert_jenkins_to_actions_25.yaml      0.5995                      
+54   47        ci47.yaml                convert_jenkins_to_actions_47.yaml      0.5972                      
+55   2         ci2.yaml                 convert_jenkins_to_actions_2.yaml       0.5964                      
+56   33        ci33.yaml                convert_jenkins_to_actions_33.yaml      0.5888                      
+57   16        ci16.yaml                convert_jenkins_to_actions_16.yaml      0.5787                      
+58   69        ci69.yaml                convert_jenkins_to_actions_69.yaml      0.5759                      
+59   36        ci36.yaml                convert_jenkins_to_actions_36.yaml      0.5715                      
+60   23        ci23.yaml                convert_jenkins_to_actions_23.yaml      0.5603                      
+61   50        ci50.yaml                convert_jenkins_to_actions_50.yaml      0.5561                      
+62   24        ci24.yaml                convert_jenkins_to_actions_24.yaml      0.5497                      
+63   65        ci65.yaml                convert_jenkins_to_actions_65.yaml      0.5375                      
+64   19        ci19.yaml                convert_jenkins_to_actions_19.yaml      0.5004                      
+65   13        ci13.yaml                convert_jenkins_to_actions_13.yaml      0.4998                      
+66   42        ci42.yaml                convert_jenkins_to_actions_42.yaml      0.4957                      
+67   3         ci3.yaml                 convert_jenkins_to_actions_3.yaml       0.4522                      
+68   48        ci48.yaml                convert_jenkins_to_actions_48.yaml      0.4381                      
+69   64        ci64.yaml                convert_jenkins_to_actions_64.yaml      0.4218                      
+70   14        ci14.yaml                convert_jenkins_to_actions_14.yaml      0.2772                      
+71   22        ci22.yaml                convert_jenkins_to_actions_22.yaml      0.2589                      
+
+=== 详细比较结果 ===
+
+文件对 #55: ci55.yaml vs convert_jenkins_to_actions_55.yaml
+整体相似度: 0.9500
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build_jdk7 <-> jdk1.7: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  build_jdk8 <-> jdk1.8: 0.8289
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  build_jdk11 <-> jdk11: 0.8289
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+
+文件对 #56: ci56.yaml vs convert_jenkins_to_actions_56.yaml
+整体相似度: 0.9500
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  test <-> test: 0.8873
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8390
+      uses: 0.8500
+      run: 0.7517
+
+文件对 #71: ci71.yaml vs convert_jenkins_to_actions_71.yaml
+整体相似度: 0.9500
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 0.8714
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build <-> build: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  test <-> test: 0.8876
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+  deploy <-> deploy: 0.8876
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+
+文件对 #37: ci37.yaml vs convert_jenkins_to_actions_37.yaml
+整体相似度: 0.9260
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.6750
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build <-> build: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8164
+      run: 0.9500
+
+文件对 #10: ci10.yaml vs convert_jenkins_to_actions_10.yaml
+整体相似度: 0.9211
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.6342
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  build <-> build: 0.8071
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7245
+      uses: 0.8500
+      run: 0.3000
+
+文件对 #35: ci35.yaml vs convert_jenkins_to_actions_35.yaml
+整体相似度: 0.9170
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build-and-test <-> build: 0.9118
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8740
+      uses: 0.8500
+      run: 0.6250
+
+文件对 #41: ci41.yaml vs convert_jenkins_to_actions_41.yaml
+整体相似度: 0.9170
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  create-docker-container <-> create_docker_container: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  build-and-release <-> build_and_release: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+
+文件对 #59: ci59.yaml vs convert_jenkins_to_actions_59.yaml
+整体相似度: 0.9170
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build_and_test <-> build: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.7220
+
+文件对 #67: ci67.yaml vs convert_jenkins_to_actions_67.yaml
+整体相似度: 0.9111
+特征相似度:
+  runs-on: 0.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.9256
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  windows_test <-> windows: 0.6953
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.7790
+      uses: 0.8500
+      run: 0.7095
+
+文件对 #8: ci8.yaml vs convert_jenkins_to_actions_8.yaml
+整体相似度: 0.9060
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.5085
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> build_project: 0.7659
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6656
+      uses: 0.7485
+      run: 0.5214
+
+文件对 #57: ci57.yaml vs convert_jenkins_to_actions_57.yaml
+整体相似度: 0.9020
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.7250
+  env: 0.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  test <-> test: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.7306
+      run: 0.9500
+
+文件对 #40: ci40.yaml vs convert_jenkins_to_actions_40.yaml
+整体相似度: 0.8955
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.5455
+  env: 0.5000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  maven <-> maven_clean_build_&_deploy: 0.8663
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8090
+      uses: 0.8500
+      run: 0.5289
+
+文件对 #12: ci12.yaml vs convert_jenkins_to_actions_12.yaml
+整体相似度: 0.8902
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3769
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> build: 0.7276
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6109
+      uses: 0.7485
+      run: 0.3000
+
+文件对 #51: ci51.yaml vs convert_jenkins_to_actions_51.yaml
+整体相似度: 0.8870
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 0.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  create-docker-container <-> create_docker_container: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  build-and-release <-> build_and_release: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+
+文件对 #4: ci4.yaml vs convert_jenkins_to_actions_4.yaml
+整体相似度: 0.8532
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3920
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  test <-> build_project: 0.6390
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4842
+      uses: 0.5750
+      run: 0.3071
+
+文件对 #6: ci6.yaml vs convert_jenkins_to_actions_6.yaml
+整体相似度: 0.8532
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3920
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> build_project: 0.6390
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4842
+      uses: 0.5750
+      run: 0.3071
+
+文件对 #45: ci45.yaml vs convert_jenkins_to_actions_45.yaml
+整体相似度: 0.8515
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.1000
+  strategy: 1.0000
+  steps: 0.6417
+  env: 0.0000
+  job数量比率: 0.7000
+最佳匹配的Jobs:
+  initialize <-> initialize: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  build-test <-> build_and_run_tests: 0.8164
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7377
+      uses: 0.5122
+      run: 0.9500
+  package <-> extract_application_files: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  deploy-prod <-> deploy_to_preprod: 0.6550
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7215
+      uses: 0.7789
+      run: 0.4000
+  docker-push <-> push_docker_image: 0.6354
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+  deploy-preprod <-> deploy_to_production: 0.6354
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6935
+      uses: 0.8500
+      run: 0.4000
+  post-process <-> post-always: 0.6066
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6523
+      uses: 0.7284
+      run: 0.4000
+
+文件对 #5: ci5.yaml vs convert_jenkins_to_actions_5.yaml
+整体相似度: 0.8513
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.4061
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  tests <-> build_project: 0.6352
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4789
+      uses: 0.5750
+      run: 0.3206
+
+文件对 #66: ci66.yaml vs convert_jenkins_to_actions_66.yaml
+整体相似度: 0.8494
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6614
+  env: 0.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  decrypt <-> decrypt_secrets: 0.8117
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7311
+      uses: 0.8500
+      run: 0.3143
+  cleanup <-> remove_local_docker_image: 0.7376
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+  test <-> run_tests: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  build <-> build_image: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  deploy <-> launch_server: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  push <-> push_image_to_image_registry: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+
+文件对 #54: ci54.yaml vs convert_jenkins_to_actions_54.yaml
+整体相似度: 0.8489
+特征相似度:
+  runs-on: 0.3333
+  needs: 0.1538
+  strategy: 1.0000
+  steps: 0.5995
+  env: 1.0000
+  job数量比率: 0.8889
+最佳匹配的Jobs:
+  stylecheck <-> stylecheck: 0.9300
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  licensecheck <-> licensecheck: 0.8289
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  build-test-jdk8 <-> build_and_test_jdk8: 0.8093
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  deploy-central <-> deploy_to_maven_central: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.8695
+  build-test-jdk9 <-> build_and_test_jdk9: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  build-test-jdk11 <-> build_and_test_jdk11: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  deploy-dev-artifacts <-> copy_javadoc: 0.4589
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6555
+      uses: 0.4000
+      run: 0.7333
+  deploy-prod-artifacts <-> copy_options: 0.3240
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.4629
+      uses: 0.4000
+      run: 0.4625
+
+文件对 #30: ci30.yaml vs convert_jenkins_to_actions_30.yaml
+整体相似度: 0.8470
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6417
+  env: 0.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  cleanup <-> post-always: 0.7995
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7136
+      uses: 0.4000
+      run: 0.9500
+  build-website <-> check_whitelist: 0.7376
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+  check-signed-off <-> check_signed-off_commits: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  lint-website <-> lint_website: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  publish-image <-> publish_docker_image: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  check-whitelist <-> build_website: 0.5409
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5584
+      uses: 0.4000
+      run: 0.6325
+
+文件对 #7: ci7.yaml vs convert_jenkins_to_actions_7.yaml
+整体相似度: 0.8450
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.3905
+  env: 1.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  test <-> build_project: 0.6308
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4725
+      uses: 0.5750
+      run: 0.3048
+
+文件对 #58: ci58.yaml vs convert_jenkins_to_actions_58.yaml
+整体相似度: 0.8415
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8311
+  env: 0.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build <-> build: 0.8663
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8091
+      uses: 0.8500
+      run: 0.4838
+
+文件对 #15: ci15.yaml vs convert_jenkins_to_actions_15.yaml
+整体相似度: 0.7534
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  build <-> checkout: 0.7674
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6678
+      uses: 0.8500
+      run: 0.4000
+
+文件对 #9: ci9.yaml vs convert_jenkins_to_actions_9.yaml
+整体相似度: 0.7395
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5592
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build <-> build: 0.7311
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6158
+      uses: 0.5750
+      run: 0.6250
+
+文件对 #43: ci43.yaml vs convert_jenkins_to_actions_43.yaml
+整体相似度: 0.7391
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.8126
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  deploy <-> deploy: 0.7708
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.8869
+      uses: 0.8500
+      run: 0.7333
+
+文件对 #31: ci31.yaml vs convert_jenkins_to_actions_31.yaml
+整体相似度: 0.7304
+特征相似度:
+  runs-on: 0.5000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7835
+  env: 0.0000
+  job数量比率: 0.7000
+最佳匹配的Jobs:
+  post-cleanup <-> post-cleanup: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  prepare-environment <-> prepare_environment: 0.8093
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  notify-status <-> post-success: 0.6893
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7705
+      uses: 0.8500
+      run: 0.4000
+  cleanup-projects <-> clear_existing_projects: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  verify-builds <-> verify_ci_builds: 0.6184
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6692
+      uses: 0.5077
+      run: 0.9500
+  ansible-operations <-> verify_ci_deploys: 0.5407
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.7725
+      uses: 0.8500
+      run: 0.6442
+  verify-deployments <-> post-always: 0.4918
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4883
+      uses: 0.5077
+      run: 0.3000
+
+文件对 #70: ci70.yaml vs convert_jenkins_to_actions_70.yaml
+整体相似度: 0.7261
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7118
+  env: 0.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  build-and-test <-> init_title: 0.8200
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7428
+      uses: 0.8500
+      run: 0.5600
+
+文件对 #44: ci44.yaml vs convert_jenkins_to_actions_44.yaml
+整体相似度: 0.7257
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build <-> post-always: 0.7733
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6762
+      uses: 0.8500
+      run: 0.3000
+
+文件对 #46: ci46.yaml vs convert_jenkins_to_actions_46.yaml
+整体相似度: 0.7177
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.1667
+最佳匹配的Jobs:
+  build <-> build_tools: 0.8146
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7351
+      uses: 0.8500
+      run: 0.5895
+
+文件对 #39: ci39.yaml vs convert_jenkins_to_actions_39.yaml
+整体相似度: 0.7164
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build <-> test: 0.6931
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.7758
+      uses: 0.8500
+      run: 0.5990
+
+文件对 #63: ci63.yaml vs convert_jenkins_to_actions_63.yaml
+整体相似度: 0.7148
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9431
+  env: 1.0000
+  job数量比率: 0.1667
+最佳匹配的Jobs:
+  build <-> compile: 0.8163
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7376
+      uses: 0.8500
+      run: 0.5956
+
+文件对 #11: ci11.yaml vs convert_jenkins_to_actions_11.yaml
+整体相似度: 0.7143
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5150
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build <-> build: 0.7040
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5772
+      uses: 0.5750
+      run: 0.5633
+
+文件对 #20: ci20.yaml vs convert_jenkins_to_actions_20.yaml
+整体相似度: 0.7054
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5461
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build-and-test <-> checkout_git_repo: 0.6869
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5528
+      uses: 0.6871
+      run: 0.4000
+
+文件对 #53: ci53.yaml vs convert_jenkins_to_actions_53.yaml
+整体相似度: 0.7054
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5461
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build-and-test <-> checkout_git_repo: 0.6869
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5528
+      uses: 0.6871
+      run: 0.4000
+
+文件对 #32: ci32.yaml vs convert_jenkins_to_actions_32.yaml
+整体相似度: 0.6805
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4637
+  env: 0.2857
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  molecule-test <-> setup: 0.6957
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5652
+      uses: 0.6128
+      run: 0.5360
+
+文件对 #29: ci29.yaml vs convert_jenkins_to_actions_29.yaml
+整体相似度: 0.6721
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8083
+  env: 1.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  build <-> build: 0.6737
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7481
+      uses: 0.5714
+      run: 0.9500
+
+文件对 #26: ci26.yaml vs convert_jenkins_to_actions_26.yaml
+整体相似度: 0.6691
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6089
+  env: 1.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  build-and-push <-> test: 0.7057
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5796
+      uses: 0.6247
+      run: 0.5167
+
+文件对 #62: ci62.yaml vs convert_jenkins_to_actions_62.yaml
+整体相似度: 0.6629
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4482
+  env: 0.0000
+  job数量比率: 1.0000
+最佳匹配的Jobs:
+  cleanup <-> post-always: 0.6593
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  check-signoffs <-> check_for_signed-off_commits: 0.5876
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+  lint <-> lint_website: 0.5876
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+  build <-> build_website: 0.5876
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+  check-whitelist <-> check_whitelist: 0.5040
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.5057
+      uses: 0.4000
+      run: 0.4662
+  publish <-> publish_docker_image: 0.4357
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6224
+      uses: 0.4000
+      run: 0.7355
+
+文件对 #38: ci38.yaml vs convert_jenkins_to_actions_38.yaml
+整体相似度: 0.6541
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 1.0000
+  job数量比率: 0.0833
+最佳匹配的Jobs:
+  build <-> pre_build_ccache_stats: 0.7575
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6536
+      uses: 0.8500
+      run: 0.4300
+
+文件对 #60: ci60.yaml vs convert_jenkins_to_actions_60.yaml
+整体相似度: 0.6499
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.1250
+  strategy: 0.0000
+  steps: 0.6125
+  env: 0.0000
+  job数量比率: 0.6000
+最佳匹配的Jobs:
+  build <-> build: 0.6582
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7261
+      uses: 0.4000
+      run: 0.8608
+  setup <-> post-always: 0.8380
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.7686
+      uses: 0.8500
+      run: 0.3959
+  preview_pr <-> preview_pr_(dev)_and_automation_tests: 0.7637
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6624
+      uses: 0.4000
+      run: 0.7769
+  github_release <-> github_tagged_release: 0.7381
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.8401
+      uses: 0.8500
+      run: 0.8322
+  testing <-> unit_tests: 0.7376
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.8395
+      uses: 0.4000
+      run: 0.9500
+  deploy_dev <-> deploy_to_dev: 0.6941
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7772
+      uses: 0.8500
+      run: 0.6450
+  publish <-> publish_specs_to_npm: 0.6199
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.6713
+      uses: 0.4000
+      run: 0.7758
+  cleanup <-> lint_for_errors: 0.6035
+    runs-on: 1.0000
+    needs: 0.1250
+    steps: 0.6210
+      uses: 0.4000
+      run: 0.7333
+  deploy_s3 <-> post-changed: 0.5506
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5723
+      uses: 0.4000
+      run: 0.5628
+
+文件对 #17: ci17.yaml vs convert_jenkins_to_actions_17.yaml
+整体相似度: 0.6496
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7250
+  env: 0.0000
+  job数量比率: 0.7500
+最佳匹配的Jobs:
+  build-test <-> win64-intel_build: 0.7800
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.9500
+  create-installer <-> win64-intel_installer: 0.6300
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.7071
+      run: 0.9500
+  deploy <-> win64-intel_test: 0.3484
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.4978
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #18: ci18.yaml vs convert_jenkins_to_actions_18.yaml
+整体相似度: 0.6440
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8352
+  env: 0.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build-and-deploy <-> build: 0.7163
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5947
+      uses: 0.6332
+      run: 0.5535
+
+文件对 #34: ci34.yaml vs convert_jenkins_to_actions_34.yaml
+整体相似度: 0.6396
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5542
+  env: 0.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build-and-test <-> post-always: 0.7642
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6631
+      uses: 0.8422
+      run: 0.4000
+
+文件对 #49: ci49.yaml vs convert_jenkins_to_actions_49.yaml
+整体相似度: 0.6380
+特征相似度:
+  runs-on: 0.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.7836
+  env: 0.0000
+  job数量比率: 0.4000
+最佳匹配的Jobs:
+  windows-build <-> configure_conan: 0.6710
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.7443
+      uses: 0.7071
+      run: 0.5574
+  linux-build <-> build_debug: 0.6088
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.6554
+      uses: 0.7071
+      run: 0.4008
+
+文件对 #1: ci1.yaml vs convert_jenkins_to_actions_1.yaml
+整体相似度: 0.6345
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4034
+  env: 1.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build <-> build: 0.7366
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.6237
+      uses: 0.7306
+      run: 0.3778
+
+文件对 #28: ci28.yaml vs convert_jenkins_to_actions_28.yaml
+整体相似度: 0.6335
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6392
+  env: 1.0000
+  job数量比率: 0.3333
+最佳匹配的Jobs:
+  test <-> checkout: 0.6455
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4936
+      uses: 0.5750
+      run: 0.4000
+
+文件对 #52: ci52.yaml vs convert_jenkins_to_actions_52.yaml
+整体相似度: 0.6269
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.1000
+  strategy: 1.0000
+  steps: 0.6955
+  env: 0.0000
+  job数量比率: 0.6667
+最佳匹配的Jobs:
+  prepare_environment <-> prepare_environment: 0.6462
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.7089
+      uses: 0.4000
+      run: 0.9500
+  clear_projects <-> clear_existing_projects: 0.5050
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.5071
+      uses: 0.4000
+      run: 0.5500
+  ansible_slave <-> post-success: 0.5034
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.7191
+      uses: 0.8500
+      run: 0.4000
+  verify_builds <-> verifying_ci_builds: 0.4897
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6996
+      uses: 0.4000
+      run: 0.9500
+  final_cleanup <-> apply_ci-for-ci_inventory: 0.4869
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6956
+      uses: 0.4000
+      run: 0.9500
+  verify_deploys <-> clear_existing_projects_on_successful_job: 0.3492
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.4988
+      uses: 0.4000
+      run: 0.5366
+
+文件对 #68: ci68.yaml vs convert_jenkins_to_actions_68.yaml
+整体相似度: 0.6231
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.3333
+  strategy: 1.0000
+  steps: 0.5467
+  env: 0.0000
+  job数量比率: 0.4286
+最佳匹配的Jobs:
+  build <-> build: 0.5935
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4193
+      uses: 0.4000
+      run: 0.4625
+  post-cleanup <-> post-always: 0.8644
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8062
+      uses: 0.5351
+      run: 0.9500
+  deploy <-> build_docker: 0.5591
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.3702
+      uses: 0.3771
+      run: 0.4000
+
+文件对 #21: ci21.yaml vs convert_jenkins_to_actions_21.yaml
+整体相似度: 0.6212
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.7368
+  env: 0.0000
+  job数量比率: 0.4444
+最佳匹配的Jobs:
+  style-checks <-> stylecheck: 0.8664
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8092
+      uses: 0.7485
+      run: 0.8318
+  deploy-central <-> deploy_to_maven_central: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.8780
+  build-and-test <-> build_and_test_jdk8: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  deploy-artifacts <-> copy_jars: 0.4507
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4296
+      uses: 0.4000
+      run: 0.4101
+
+文件对 #27: ci27.yaml vs convert_jenkins_to_actions_27.yaml
+整体相似度: 0.6212
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.7368
+  env: 0.0000
+  job数量比率: 0.4444
+最佳匹配的Jobs:
+  style-checks <-> stylecheck: 0.8664
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8092
+      uses: 0.7485
+      run: 0.8318
+  deploy-central <-> deploy_to_maven_central: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.8780
+  build-and-test <-> build_and_test_jdk8: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  deploy-artifacts <-> copy_jars: 0.4507
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4296
+      uses: 0.4000
+      run: 0.4101
+
+文件对 #61: ci61.yaml vs convert_jenkins_to_actions_61.yaml
+整体相似度: 0.6212
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.7368
+  env: 0.0000
+  job数量比率: 0.4444
+最佳匹配的Jobs:
+  style-checks <-> stylecheck: 0.8664
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.8092
+      uses: 0.7485
+      run: 0.8318
+  deploy-central <-> deploy_to_maven_central: 0.7800
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.9000
+      uses: 0.8500
+      run: 0.8780
+  build-and-test <-> build_and_test_jdk8: 0.6593
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7276
+      uses: 0.4000
+      run: 0.9500
+  deploy-artifacts <-> copy_jars: 0.4507
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4296
+      uses: 0.4000
+      run: 0.4101
+
+文件对 #25: ci25.yaml vs convert_jenkins_to_actions_25.yaml
+整体相似度: 0.5995
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.4333
+  env: 1.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build <-> checkout_from_github: 0.6734
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5335
+      uses: 0.6664
+      run: 0.4000
+
+文件对 #47: ci47.yaml vs convert_jenkins_to_actions_47.yaml
+整体相似度: 0.5972
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8738
+  env: 0.0000
+  job数量比率: 0.1667
+最佳匹配的Jobs:
+  build-and-deploy <-> check_for_typos: 0.6775
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7536
+      uses: 0.8500
+      run: 0.4625
+
+文件对 #2: ci2.yaml vs convert_jenkins_to_actions_2.yaml
+整体相似度: 0.5964
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6735
+  env: 1.0000
+  job数量比率: 0.4000
+最佳匹配的Jobs:
+  deploy <-> deploy: 0.5161
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5230
+      uses: 0.4000
+      run: 0.6250
+  build <-> checkout: 0.7094
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5849
+      uses: 0.7306
+      run: 0.4000
+
+文件对 #33: ci33.yaml vs convert_jenkins_to_actions_33.yaml
+整体相似度: 0.5888
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.5095
+  env: 0.0000
+  job数量比率: 0.8000
+最佳匹配的Jobs:
+  install-dependencies <-> post-always: 0.7090
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5843
+      uses: 0.6743
+      run: 0.4000
+  deploy-staging <-> deployment_production: 0.5225
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5322
+      uses: 0.5946
+      run: 0.4534
+  deploy-production <-> deployment_staging: 0.4853
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4790
+      uses: 0.4000
+      run: 0.5047
+  notify-slack <-> composer: 0.4720
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4600
+      uses: 0.4000
+      run: 0.4000
+
+文件对 #16: ci16.yaml vs convert_jenkins_to_actions_16.yaml
+整体相似度: 0.5787
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6000
+  env: 0.0000
+  job数量比率: 0.2000
+最佳匹配的Jobs:
+  build <-> checkout: 0.6832
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5474
+      uses: 0.5750
+      run: 0.4125
+
+文件对 #69: ci69.yaml vs convert_jenkins_to_actions_69.yaml
+整体相似度: 0.5759
+特征相似度:
+  runs-on: 0.3333
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.6622
+  env: 0.2500
+  job数量比率: 0.2857
+最佳匹配的Jobs:
+  cleanup <-> post-success: 0.6789
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.7555
+      uses: 0.4000
+      run: 0.9500
+  build <-> initialize: 0.6351
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.6929
+      uses: 0.5494
+      run: 0.9386
+
+文件对 #36: ci36.yaml vs convert_jenkins_to_actions_36.yaml
+整体相似度: 0.5715
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.7072
+  env: 0.0000
+  job数量比率: 0.1667
+最佳匹配的Jobs:
+  build-and-deploy <-> clean_workspace: 0.6677
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5252
+      uses: 0.6594
+      run: 0.3000
+
+文件对 #23: ci23.yaml vs convert_jenkins_to_actions_23.yaml
+整体相似度: 0.5603
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5841
+  env: 0.0000
+  job数量比率: 0.2000
+最佳匹配的Jobs:
+  build-and-deploy <-> checkout: 0.6551
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5074
+      uses: 0.6651
+      run: 0.3000
+
+文件对 #50: ci50.yaml vs convert_jenkins_to_actions_50.yaml
+整体相似度: 0.5561
+特征相似度:
+  runs-on: 0.0000
+  needs: 1.0000
+  strategy: 1.0000
+  steps: 0.6494
+  env: 0.0000
+  job数量比率: 0.8000
+最佳匹配的Jobs:
+  windows-build <-> test_debug: 0.7290
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.8271
+      uses: 0.8500
+      run: 0.7346
+  linux-docker <-> configure_conan: 0.6636
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.7337
+      uses: 0.8500
+      run: 0.4972
+  windows-fmuproxy <-> build_debug: 0.1500
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.0000
+      uses: 0.0000
+      run: 0.0000
+  linux-conan <-> build_release: 0.1500
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.0000
+      uses: 0.0000
+      run: 0.0000
+
+文件对 #24: ci24.yaml vs convert_jenkins_to_actions_24.yaml
+整体相似度: 0.5497
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5630
+  env: 0.0000
+  job数量比率: 0.1429
+最佳匹配的Jobs:
+  build <-> post-always: 0.6735
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.5336
+      uses: 0.6256
+      run: 0.4000
+
+文件对 #65: ci65.yaml vs convert_jenkins_to_actions_65.yaml
+整体相似度: 0.5375
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9750
+  env: 0.0000
+  job数量比率: 0.2000
+最佳匹配的Jobs:
+  build <-> build: 0.5365
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.5521
+      uses: 0.4000
+      run: 0.6426
+
+文件对 #19: ci19.yaml vs convert_jenkins_to_actions_19.yaml
+整体相似度: 0.5004
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.8083
+  env: 1.0000
+  job数量比率: 0.1000
+最佳匹配的Jobs:
+  build <-> build: 0.4980
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.4971
+      uses: 0.4000
+      run: 0.6200
+
+文件对 #13: ci13.yaml vs convert_jenkins_to_actions_13.yaml
+整体相似度: 0.4998
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.3472
+  env: 0.0000
+  job数量比率: 0.2000
+最佳匹配的Jobs:
+  build <-> build: 0.6005
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4293
+      uses: 0.4000
+      run: 0.4800
+
+文件对 #42: ci42.yaml vs convert_jenkins_to_actions_42.yaml
+整体相似度: 0.4957
+特征相似度:
+  runs-on: 1.0000
+  needs: 1.0000
+  strategy: 0.0000
+  steps: 0.2667
+  env: 1.0000
+  job数量比率: 0.1667
+最佳匹配的Jobs:
+  build <-> build_android: 0.6012
+    runs-on: 1.0000
+    needs: 1.0000
+    steps: 0.4303
+      uses: 0.4375
+      run: 0.4000
+
+文件对 #3: ci3.yaml vs convert_jenkins_to_actions_3.yaml
+整体相似度: 0.4522
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.5487
+  env: 0.0000
+  job数量比率: 0.1000
+最佳匹配的Jobs:
+  lint <-> post-always: 0.6055
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.6506
+      uses: 0.8500
+      run: 0.4000
+
+文件对 #48: ci48.yaml vs convert_jenkins_to_actions_48.yaml
+整体相似度: 0.4381
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.9503
+  env: 0.0000
+  job数量比率: 0.1429
+最佳匹配的Jobs:
+  build <-> build: 0.4716
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6737
+      uses: 0.7071
+      run: 0.5227
+
+文件对 #64: ci64.yaml vs convert_jenkins_to_actions_64.yaml
+整体相似度: 0.4218
+特征相似度:
+  runs-on: 0.0000
+  needs: 0.0000
+  strategy: 0.0000
+  steps: 0.8267
+  env: 0.0000
+  job数量比率: 0.1364
+最佳匹配的Jobs:
+  analysis <-> catkin_build_on_ros_workspace: 0.6886
+    runs-on: 0.0000
+    needs: 1.0000
+    steps: 0.7695
+      uses: 0.8500
+      run: 0.6930
+  generate-metadata <-> parameter: 0.5827
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.8324
+      uses: 0.7071
+      run: 0.9500
+  deploy <-> s3: 0.4666
+    runs-on: 0.0000
+    needs: 0.0000
+    steps: 0.6666
+      uses: 0.6741
+      run: 0.6250
+
+文件对 #14: ci14.yaml vs convert_jenkins_to_actions_14.yaml
+整体相似度: 0.2772
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.2667
+  env: 1.0000
+  job数量比率: 0.5000
+最佳匹配的Jobs:
+  build <-> build: 0.1500
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.0000
+      uses: 0.0000
+      run: 0.0000
+
+文件对 #22: ci22.yaml vs convert_jenkins_to_actions_22.yaml
+整体相似度: 0.2589
+特征相似度:
+  runs-on: 1.0000
+  needs: 0.0000
+  strategy: 1.0000
+  steps: 0.2667
+  env: 1.0000
+  job数量比率: 0.2500
+最佳匹配的Jobs:
+  build <-> build: 0.1500
+    runs-on: 1.0000
+    needs: 0.0000
+    steps: 0.0000
+      uses: 0.0000
+      run: 0.0000
+
+=== 相似度分布分析 ===
+总文件对数: 71
+有效比较结果: 71
+平均相似度: 0.7009
+最高相似度: 0.9500
+最低相似度: 0.2589
+
+相似度分布:
+  0.9-1.0: 11 个文件对 (15.5%)
+  0.8-0.9: 12 个文件对 (16.9%)
+  0.7-0.8: 12 个文件对 (16.9%)
+  0.6-0.7: 17 个文件对 (23.9%)
+  0.5-0.6: 12 个文件对 (16.9%)
+  0.4-0.5: 5 个文件对 (7.0%)
+  0.3-0.4: 0 个文件对 (0.0%)
+  0.2-0.3: 2 个文件对 (2.8%)
+  0.1-0.2: 0 个文件对 (0.0%)
+  0.0-0.1: 0 个文件对 (0.0%)

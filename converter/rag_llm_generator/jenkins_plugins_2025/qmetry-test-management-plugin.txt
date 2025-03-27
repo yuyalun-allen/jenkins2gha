@@ -1,0 +1,60 @@
+# qmetry-test-management-plugin
+
+https://wiki.jenkins.io/display/JENKINS/QMetry+Test+Managment+Plugin
+
+QMetry Test Management plugin for Jenkins has been designed to seamlessly integrate your CI/CD pipeline with QMetry.
+
+Easily configure Jenkins to submit your test results to QMetry without needing to write any code or deal with REST API. 
+Your Test Results could be from any automation framework like Cucumber, Test NG, JUnit, QAF, HP-UFT, or Robot.
+
+## Installing the plugin
+Follow the steps to install QMetry Test Management Plugin directly from Jenkins marketplace.
+
+1. Login to your Jenkins instance.
+2. Go to *Manage Jenkins > Manage Plugins > Available*
+3. Now search for **QMetry Test Management Plugin** and click *Install*
+
+Alternatively, to create a new build, clone this repository and use the maven command
+```
+mvn build
+```
+Now install the **.hpi** file generated inside the */target* directory of the build into Jenkins. Follow the steps.
+
+1. Login to your Jenkins instance.
+2. Go to *Manage Jenkins > Manage Plugins > Advanced*
+3. Under **Upload Plugin**, upload the hpi file generated.
+
+## Using the plugin
+We assume that you have a Jenkins project that produces test result files on build, using automation frameworks like Cucumber, TestNG, JUnit, HP-UFT, QAS, or Robot. 
+To upload result files to QMetry, follow the steps.
+
+1. Login to Jenkins instance.
+2. Go to your project > configure.
+3. Under *Post Build Actions*, click on **Publish Build Result(s) to QMetry Test Management**.
+
+Fill the QMetry configuration form as per your requirement.
+
+* **QMetry instance URL** - url to your qtm instance
+* **Automation API Key** - Automation Key
+* **Automation Framework** - JUNIT/TESTNG/CUCUMBER/QAS/HP-UFT/ROBOT
+* **Automation Hierarchy** - Hierarchy which will be used to parse test result files on QTM
+* **Result File(s) Path/Directory** - path to result file (or directory for multiple files) relative to build directory
+* **Project** - Name, ID or Key of QMetry Project
+* **Test Suite ID** (optional) - Key/ID of test suite to be reused
+* **Test Suite Name** (optional) - Test Suite Name (This will create a new test suite with given name)
+* **Test Suite Folder Path** (optional) - Test Suite Folder Path (This will upload results to the mentioned Test Suite Folder. It is ignored if the QMetry instance type is Server.)
+* **Release** (optional if cycle not present) - Target Release ID or Release name
+* **Cycle** (optional) - Target Cycle Id or Cycle Name
+* **Build** (optional) - Target Build ID or Build name
+* **Platform** (optional) - Name of the platform to connect the suite
+* **Test Case Fields** (optional) - Test Case Fields in Json Format
+* **Test Suite Fields** (optional) - Test Suite Fields in Json Format
+* **skipWarning** (optional) - 0 : (Default) Test Case Import will be failed if the result file contains test case summary with more than 255 characters, 1 : Test Cases can be imported by ignoring the warning about summary length. If the test case summary is longer, it will be truncated to 255 characters
+* **isMatchingRequired** (optional) - 1 : (Default) Create a new Test Case or Test Case Version if no version matches with the one being uploaded, 0 : Reuse already linked Test Case version on Test Suite OR auto link the existing latest version of Test Case, if the Test Case entity key OR Test Case summary is found matching
+
+Build your project from Jenkins and your test results should be automatically linked to the Test Suite specified, (or new Test Suite is created)
+
+In Case of failure, check for following points :
+
+* **Test Suite** should include *Test Suite Key or Id* from your QMetry Test Management project. Ignore the field if you want to create a new Test Suite for the results.
+* **Platform** (if specified), must be included in your QMetry Test Management project, before the task is executed.

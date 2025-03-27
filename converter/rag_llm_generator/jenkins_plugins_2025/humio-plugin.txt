@@ -1,0 +1,27 @@
+# Humio Plugin for Jenkins
+
+This plugin will automatically ship all build logs to Humio.
+
+## Usage
+
+Go to `Manage Jenkins` -> `Global Configuration` and find the Humio section.
+You will need to put in the `repositoryId` and an ingest token you have created
+in Humio for `repositoryName`.
+You can create an ingest token under the settings page of your repository.
+
+## Installation
+
+Build the HPI package using:
+
+```shell
+mvn package
+```
+
+Upload the `hpi` file from the target directory to Jenkins,
+under `Plugins` > `Advanced`.
+
+
+## Developing on this plugin
+
+Use the `hpi:run` maven task to start a Jenkins locally with
+the plugin enabled.

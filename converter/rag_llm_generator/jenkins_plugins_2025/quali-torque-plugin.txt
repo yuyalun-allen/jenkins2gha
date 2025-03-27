@@ -1,0 +1,73 @@
+# Sandbox-Jenkins-Plugin 
+
+The __Torque Jenkins Plugin__ provides an easy way to consume Torque sandboxes through Jenkins for a variety of use cases. The plugin allows you to build jobs that create on-demand sandboxes in Torque based on pre-defined blueprints. 
+
+__Note__: The Torque Jenkins plugin does not support production environments.
+
+## Prerequisites
+
+* Jenkins server 2.3 and above with internet access
+* Port connection between Jenkins and the Torque API Server
+
+
+
+
+## Installation
+1) Download the hpi package from the Releases tab
+
+2) Navigate to the advanced section under the plugins tab in jenkins
+
+3) Upload the hpi file into the "upload plugin" section
+
+4) Restart jenkins
+
+
+## Configuring Torque in Jenkins
+
+1) Log in to Jenkins as administrator. 
+2) From the left pane, click __Manage Jenkins__, and then select __Configure System__. 
+3) Scroll down to the __Torque Connection__ section. 
+The __Domain name or IP__ should already be filled with your Torque account URL. 
+4) Specify the Token. 
+5) In Torque, go to __Settings > Integrations > Jenkins__ and create a __New Token__. 
+6) Copy the token. 
+7) Click __Change Password__ and paste the new token.  
+8) Click __Save__. 
+
+
+## Creating pipelines
+
+1) Create a new pipeline. 
+2) Click __Advanced Project Options__ and create a __Pipeline script__. Feel free to use our pipeline script examples for reference. 
+Note that the __Integration Tests__ section (shown in the above image) is the main section of the ‘start sandbox’ pipeline as it defines the details of the sandbox to be launched, and then the __.startSandbox()__ line launches it, any deployment errors are caught using the __catch(Exception e)__ element, and the __finally__ part is triggered when the sandbox is active. 
+3) Click __Save__. 
+
+
+
+### Pipeline support (Workflow)
+
+How to use Torque plugin:
+
+Blueprint:
+  * Use **torque.blueprint** to define a Blueprint object that can then be used to perform operations on a blueprint.
+```
+blueprint = torque.blueprint('blueprint_name', ['appname1': 'version', 'appname2': 'version'])
+```
+  * Use **blueprint.startSandbox** to starts a sandbox and returns a sandbox object which you could stop later.
+```
+sandbox = blueprint.startSandbox()
+```
+  * Use **blueprint.doInsideSandbox** to starts a sandbox for the duration of the body
+```
+blueprint.doInsideSandbox{
+   //code block
+}
+```
+
+Sandbox:
+  * Use **sandbox.end()** to stop the sandbox
+```
+sandbox.end()
+```
+
+Enjoy

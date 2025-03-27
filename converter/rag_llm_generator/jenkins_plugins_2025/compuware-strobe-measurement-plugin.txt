@@ -1,0 +1,96 @@
+# <img src="images/bmc_brandmark.png" width="45" height="45">BMC AMI Strobe Measurement Task
+
+## Overview
+
+BMC AMI Strobe (Strobe), the leading mainframe application performance management solution,
+is traditionally used by Operations teams to pinpoint and resolve application
+performance problems found in production. The shift left approach for testing allows
+development teams to conduct tests earlier in the cycle. The plugin allows Jenkins users 
+to setup automated Strobe measurements and get custom callback notifications when complete.
+
+## Prerequisites
+
+The following are required to use this plugin:
+
+-   Jenkins
+-   Jenkins Credentials plugin
+-   BMC AMI Strobe (Strobe) license
+-   BMC AMI Common Configuration plugin
+-   An installation of BMC AMI Common Enterprise Services (CES) with Strobe installed.
+
+	**Note**: You need CES version 20.02.*xx* or later to use the notification callback.
+			  This version will also utilize the INITBY of the CI (Continuous Integration) identifier,
+			  which will allow BMC AMI DevX Adviser to track this activity.
+			  This plugin can still submit measurements using earlier CES versions. 
+			  Strobe 18.02 PTF SBG422A is required for the INITBY of CI.
+
+## Installing in a Jenkins instance
+
+Install the BMC AMI Strobe Measurement Task plugin as per
+Jenkins instructions for installing plugins. Dependent plugins will
+automatically be installed. You will need to separately install 
+BMC AMI Common Enterprise Services (CES).
+    
+### Configuration
+
+1.  In CES, perform the following steps:
+
+	a. 	Navigate to the Host Connections page and define the host connection that is connected to your Strobe installation.
+
+	b.	Navigate to the Security page and define a Personal Access Token for this host connection.
+    	
+    **Note**: Strobe on the mainframe can have difficulty determining
+    		  the correct CES host. So you might need to set the **ces.host.address** 
+    		  property to the CES host location in **ces.properties** located at **data/ces/config** in the CES installation directory.
+    		  For example, ces.host.address=127.0.0.1 or ces.host.address=localhost
+
+2.  Go to Jenkins system > Jenkins > Manage Jenkins > Configure System > Common Configurations > Host Connections section. In the **Host Connections** section, add the same host connection as defined in CES, while ensuring the following:
+
+		-	Make sure that description field matches the description in CES.
+		-	Add the CES URL in the format scheme://host:port    e.g. https://myHost:48226
+
+3.  In the Jenkins system, define the Personal Access Token from step 1 as secret text in the Credentials plugin. 
+	For more information, see the [Jenkins documentation for Credentials Plugin](https://plugins.jenkins.io/credentials/).
+
+### Executing a Measurement
+
+Perform the following steps:
+
+1.  In your Jenkins Project, go to the Configure > Build Steps section, click **Add build step** and select **BMC AMI Strobe Measurement Task**.
+
+2.  In BMC AMI Strobe Measurement Task pane, select your host connection and the personal access token that you previously defined. You can also configure both from this screen.
+
+3.  Fill out the rest of the form as desired. Refer to the help next to each field if you have any questions.
+
+4.  Click **Save**.
+
+Your project is now configured to start a measurement on the configured job.
+
+## Product Assistance
+
+BMC provides assistance to customers with its documentation, the BMC Support website, and via telephone calls with the Customer Support team.
+
+### BMC Support Central
+
+You can access information about BMC products via our Support site, [https://support.bmc.com](https://support.bmc.com/). Support Central provides access to critical information about your BMC products. You can review frequently asked questions, read or download documentation, access product fixes, or e-mail your questions or comments. The first time you access Support Central, you must register and obtain a password. The registration is free.
+
+### Contacting Customer Support
+
+At BMC, we strive to make our products and documentation the best in the industry. Feedback from our customers helps us maintain our quality standards. If you need support services, please obtain the following information before calling BMC/'s 24-hour telephone support:
+
+- The Jenkins pipeline job output that contains any error messages or pertinent information.
+
+- The name, release number, and build number of your product. This information is displayed in the installed extensions page. Apply the filter, BMC, to display all the installed BMC extensions.
+
+- Environment information, such as the operating system and release on which the BMC AMI DevX Workbench for Eclipse CLI is installed.
+
+
+### Web
+
+You can report issues via the BMC Support website: [https://support.bmc.com](https://support.bmc.com/).
+
+Note: Please report all high-priority issues by phone.
+
+### Corporate Website
+
+To access the BMC website, go to [https://www.bmc.com/](https://www.bmc.com/). The BMC site provides a variety of product and support information.

@@ -1,0 +1,116 @@
+[[ContinuousIntegrationWithToadEdgePlugin-Compatibilitymatrix]]
+== Compatibility matrix
+
+[cols=",",options="header",]
+|===
+|Plugin version |Toad Edge^TM^ version
+|2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 2.14|2.0.x, 2.1.x, 2.2.x, 2.3.x, 2.4.x, 2.5.x, 2.6.x, 2.7.x, 2.8.x, 2.9.x, 2.10.x, 2.11.x, 2.12.x
+|===
+
+[[ContinuousIntegrationWithToadEdgePlugin-Introduction]]
+== Introduction
+
+This plugin allows user to automate Database Lifecycle Management tasks
+from within Jenkins. Following tasks are available:
+
+. Compare database schemas - Compare two different schemas (from
+database, model or snapshot). Based on it you can do in the next steps
+further actions (like generating report or alter script)
+. Compare database with baseline - Compare your current schema with
+baseline. In case the schema is different the build step will fail.
+. Create baseline - Set the current state of your schema as the baseline
+to detect any changes that has been made into the schema since now.
+. Create snapshot - Save your database schema to a file to have the
+possibility to return to it later.
+. Deploy SQL script - Run any arbitrary SQL script on a selected
+database.
+. Generate Jenkins HTML comparison report - Generate a HTML report based
+on a previous schema compare build step. This report is accessible via
+build detail within build history in Jenkins.
+. Generate standalone HTML comparison report - Generate a HTML report
+based on a previous schema compare build step. 
+. Generate change SQL script - Generate an alter SQL script based on a
+previous schema compare build step.
+. Generate create SQL script - Generate a create SQL script from your
+VCS repository, saved snapshot or database.
+
+[[ContinuousIntegrationWithToadEdgePlugin-Installing]]
+== Installing
+
+First you need to install the plugin.
+
+. Open your Jenkins.
+. Go to Manage Jenkins > Manage Plugins > Available and search for
+Continuous Integration with Toad Edge^TM^.
+. Check the Continuous Integration with Toad Edge^TM^, and finish
+installation
+
+In order for plugin to work properly it needs Continuous Integration
+with Toad Edge CLI libraries. Those are distributed as .zip file. To
+make it work:
+
+. Upload libraries to your jenkins master node
+. Go to Manage Jenkins -> Configure System and look for Continuous
+Integration with Toad Edge section
+. Fill-in path to libraries to "Continuous Integration with Toad
+Edge^TM^ libraries .zip file" field
+. Save
+
+[[ContinuousIntegrationWithToadEdgePlugin-Documentation]]
+== Documentation
+
+Documentation for Continuous Integration with Toad Edge^TM^ can be found
+on Quest Software Inc. pages.
+
+[cols=",",options="header",]
+|===
+|Plugin version |Documentation link
+
+|2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 2.10, 2.11, 2.12, 2.14 a|
+https://support.quest.com/technical-documents/toad-edge/2.2/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.3/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.4/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.6/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.7/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.8/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.9/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.10/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.11/user-guide/continuous-integration-and-delivery
+
+https://support.quest.com/technical-documents/toad-edge/2.12/user-guide/continuous-integration-and-delivery
+|===
+
+[[ContinuousIntegrationWithToadEdgePlugin-Documentation]]
+== Troubleshooting
+
+[[ContinuousIntegrationWithToadEdgePlugin-Documentation]]
+=== Jenkins HTML comparison report rendering issues
+
+If you are having issues viewing Jenkins HTML comparison report, it could be due to your browser's Content Security Policy. You can check your browser console to confirm the same.
+Also, the reports will not get rendered if Jenkins's https://www.jenkins.io/doc/book/security/user-content/#resource-root-url[resource root url] is configured.
+
+To view Jenkins HTML reports, you would have to relax the CSP. This can be done by going to _Jenkins > Manage Jenkins > Script Console_
+
+*Run this script to relax CSP:*
+
+`System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "default-src 'self'; script-src * 'self' 'unsafe-inline'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src * data:");`
+
+This will be reverted once Jenkins restarts
+
+_Please note that we would also suggest you to review https://www.jenkins.io/doc/book/security/configuring-content-security-policy/ and https://content-security-policy.com/ to understand the nature of CSP and the protection which it offers before changing CSP._
+
+However, if you are reluctant to relax your CSP. We would recommend you to generate only standalone HTML comparison report. These reports can be found inside your chosen output folder.
+
+
+[[ContinuousIntegrationWithToadEdgePlugin-Documentation]]
+=== Input folder/file path restrictions during job configuration
+
+From plugin version 2.4, all folder and file paths should be inside the agent node where the job is running. Paths to master node and other remote nodes won't work.

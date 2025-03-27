@@ -1,0 +1,50 @@
+# Dogu Integration Plugin
+
+## Description
+
+Dogu is an cross E2E test automation platform for web, mobile and game application. You can integrate various tools such as Appium, Selenium and Playwright that you have previously used with Dogu, allowing you to perform parallel processing and check test results more easy. Experience more efficient test automation with Dogu.
+
+This plugin helps to integrate jenkins with [Dogu](https://github.com/dogu-team/dogu).
+
+## Features
+
+### Dogu Credential
+
+You can add Dogu access token to Jenkins credential store. [Dogu Organization Token](https://docs.dogutech.io/management/organization/settings#access-token) and [Dogu Project Token](https://docs.dogutech.io/management/project/settings#access-token) are supported.
+
+### Dogu Run Routine Build Step
+
+You can run a routine in Jenkins. You can specify the Dogu project and routine by ID.
+
+## How it works
+
+When you add a Dogu Credential, it will be added to the Jenkins credential store. The Dogu Run Routine Build Step will use the Dogu Credential to connect to Dogu and run the routine.
+
+## Development
+
+### Getting Started
+
+1. mvn hpi:run
+
+### Rebuild
+
+1. mvn clean
+2. mvn hpi:run
+
+### Verify
+
+1. mvn spotless:apply
+2. mvn clean verify
+3. mvn dependency:analyze
+
+### Install Plugins Manually
+
+1. Pipeline
+
+## License
+
+MIT
+
+## Contact
+
+contact@dogutech.io

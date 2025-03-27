@@ -1,0 +1,17 @@
+Creating templates
+------------------
+Edit e-mail in Thunderbird, save it as a template, then use "Save As..." to export it into the *.eml format.
+
+Setting up outgoing e-mail
+--------------------------
+Kohsuke has been doing '-Dmail.smtp.port=1025' and 'ssh -L 1025:localhost:25 jenkins-ci.org' to route e-mails
+through jenkins-ci.org SMTP server.
+
+Usage
+-----
+Put all *.eml files that has the subject line like this in a single folder, and run this program
+specifying the said directory as the argument.
+
+  Receipt [$123.45] By: Kohsuke Kawaguchi [kk@kohsuke.org]
+
+The program will update Google Docs and send thank you e-mail.

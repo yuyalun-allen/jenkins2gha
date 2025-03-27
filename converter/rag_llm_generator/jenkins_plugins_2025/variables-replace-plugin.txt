@@ -1,0 +1,40 @@
+# variables-replace
+This Jenkins plugin allow to replace easily variables in files content.
+
+Example of Usage : <br/><br/>
+
+> In the main configuration, you can set :
+
+- Variables Prefix = #{
+- Variables Suffix = }#
+- Target Files = path/to/your/document.txt (*It's a textarea field, each line is considered as one file path*)
+ 
+
+<br/>
+
+> In the list of variables, you can add two variables like this :
+
+First :
+
+- Name = FIRST_NAME
+- Value = John
+
+Second :
+
+- Name = FEELING
+- Value = Happy
+
+
+We assumes the content of your file was this before replacement :
+
+Hello my name is #{FIRST_NAME}# and today I am #{FEELING}#
+<br/><br/>
+
+
+>Result :
+
+
+The replaced content would be this :
+
+Hello my name is John and today I am Happy
+

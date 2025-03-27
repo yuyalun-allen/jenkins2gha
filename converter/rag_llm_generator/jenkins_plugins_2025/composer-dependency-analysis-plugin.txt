@@ -1,0 +1,89 @@
+# Version-Analysis-Of-Build-Dependencies
+
+This plugin can be used for build jobs which install dependencies 
+via composer followed by testing those dependencies e.g through unit tests.
+This plugin reads out the resulting composer.lock file which is located 
+inside the particular workspace of a build job. The composer.lock file includes all dependencies together with their installed versions.
+The dependencies and their versions will be stored related to the specific build to a sqlite database.
+Hence, the database keeps track of the dependencies and their versions which are tested during a specific build. 
+
+## What is that plugin good for?
+
+Imagine you and your team are developing a bunch of components which are going to be integrated to one system using composer and continuous integration.
+Some of the components have dependencies to other components of the system.
+The system has grown big, so the effort of maintaining a cross-system integration test is getting too high.
+
+The functionality of the system is assured through modular integration tests.
+This will be accomplished by the build jobs of the several components of the system. 
+A build job includes loading the sources of the component (e.g from a git or svn repository) and install all dependencies in their latest version via composer. Afterwards, the component including its dependencies is tested (e.g through unit tests).
+
+So what can happen? Imagine you are developing three components: component A,B and C. These components are part of your system. Component B and C are dependent on component A.
+Whenever the build job for component B or C is runnig, component A is loaded as a dependency via composer.
+Let's take a look at it in a chronological sequence. 
+
+It's Thursday the first of january 1970. 
+The build job of component C is running at 12:30 PM with the following version information:
+component C in version 3.6
+component A in version 2.0
+
+The build job of component A is running at 13:00 PM with the following version information:
+component A in version 2.1
+
+The build job of component B is running at 13:30 PM with the following version information:
+component B in version 1.4
+component A in version 2.1
+
+Again, the build job of component A is running at 14:00 PM with the following version information:
+component A in version 2.2
+
+Finally, all components in their latest version will be integrated to the system at 15:00 PM:
+component C in version 3.6
+component B in version 1.4
+component A in version 2.2
+
+Remember that no cross-system integration test exists. The components and their dependencies are only tested in modular integration tests during their builds. That means that component C in version 3.6 and component B in version 1.4 have never been tested against component A in version 2.2 through modular integration tests.
+
+To be capable to track those incidents, this plugin has been developed. The plugin will display the disparities between a version of components that have been tested against each other and a version of components that have been installed during another integration build using the same components. That information tells you which integration build needs to be excuted again to ensure that all components are tested against each other.
+
+
+## How does it work?
+
+### How to install
+	Run
+	'''
+	$ mvn hpi:hpi
+	'''
+	to create the version-analysis-of-build-dependencies.hpi
+
+	To install:
+	1. copy the resulting **./target/version-analysis-of-build-dependencies.hpi** file to the $JENKINS_HOME/plugins directory. Don't forget to restart Jenkins afterwards.
+
+	2. or use the plugin management configuration to upload the hpi file. You have to restart Jenkins in order to find the pluing in the installed plugins list.
+
+### Configure the plugin
+
+#### Global configuration
+	1. Go to your JENKINS_HOME directory. Usually for Unix the JENKINS_HOME directory is located at /var/lib/jenkins and for Mac OS X at /Users/Shared/Jenkins/Home.
+	'''
+	e.g $ cd /var/lib/jenkins
+	'''
+
+	2. Instantiate the sqlite database with the given create.sql:
+	'''
+		$ sudo sqlite3 <databaseName>.db  <  <directory of>/create.sql
+	'''
+
+	3. Change the access rights for the database file
+		'''
+			$ sudo chmod 0755 <databaseName>.db
+			$ sudo chown jenkins:jenkins <databaseName>.db
+		'''
+
+	4. Add the absolute path of the database file to the global configuration of the plugin. You will find this settings in the jenkins system configuration.
+	![alt text](https://github.com/Sandritter/Version-Analysis-Of-Build-Dependencies/src/main/webapp/images/global.png)
+
+#### Job configuration
+	will follow soon
+	
+#### JOB DSL configuration (optional)
+	will follow soon

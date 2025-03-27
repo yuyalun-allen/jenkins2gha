@@ -1,0 +1,63 @@
+# Qualys Host Scanning Connector
+
+## About
+
+The Qualys Host Scanning Connector empowers DevOps teams to automate the VM scanning of host and EC2 cloud instance from Jenkins. By integrating scans in this manner, Host or Cloud instance security testing is accomplished to discover and eliminate security flaws.
+
+## How this plugin works
+
+When the plugin step starts, it launches a scan on the configured Host or cloud instance with the configured scan options. Qualys VM module scans it and responds with the vulnerabilities. If you have configured any pass/fail criteria, the plugin evaluates the response against that. If it finds something is not matching your criteria, it will cause exception to fail your build. Otherwise, your build job proceeds to next step (if any).  
+
+## How to use this plugin
+
+### Prerequisites
+
+* A valid Qualys subscription with access to VM(Vulnerability Management) module and Qualys APIs.
+
+
+### Where to use this plugin step
+
+This plugin step can be configured during "Post-build" phase of your job, right after you build your VM/cloud instance. 
+
+### Configuration
+
+If you are using pipeline, you should go to "Pipeline Syntax", and select `qualysVulnerabilityAnalyzer` step.
+If you are using freestyle, you should add `Scan host/instances with Qualys VM` post-build step.
+
+A form appears with several input fields. Now you are ready to configure the plugin. 
+
+#### Qualys Credentials
+
+1. Enter your Qualys API Server URL. 
+2. Select/Add your Qualys API Credentials.
+3. If you need proxy to communicate to the Internet, set correct proxy settings. 
+4. To confirm that Jenkins can communicate to Qualys Cloud Platform and APIs, use `Test Connection` button.
+
+#### Scan Options
+
+1. In the "Name" field, provide scan name for the VM Scan. By default, the scan name will be: [job_name]_jenkins_build_[build_number] + timestamp. You can edit the scan name, but a timestamp will automatically be appended regardless.
+2. You can choose the "Target" as either Host IP or Cloud Instance (AWS EC2).
+3. For Host IP, enter the IP to scan.
+4. For Cloud Instance, enter the EC2 Instance id and the EC2 connector name. You can optionally choose to Run the selected EC2 connector.
+5. Next, configure the scan parameters- Option profile and scanner name.
+
+#### Pass/Fail Criteria
+
+1. Configure to fail build by Severity -  if any of the detections found, exceeds the limit specified for one or more severity types in scan results, the build will fail. For example, if you set vulnerability severity to 2 then the build will fail if a vulnerability found in scan having severity equal to or greater than 2; that is 2,3,4 & 5.
+2. Configure to fail build by QIDs - if the configured QIDs found in the scan result.
+3. Configure to fail build by CVEs - if the configured CVEs found in the scan result.
+4. Configure to fail build by CVSS Base score - This can be either using CVSS v2 or CVSS v3.
+5. Configure to fail build by PCI Vulnerability Detections. Select the checkbox if you want to fail build if PCI Vulnerabilities are found.
+
+By default the pass/fail criteria is applied to Confirmed type of vulnerabilities. We can apply above fail conditions to potential vulnerabilities as well by configuring its checkbox.
+
+You can also exclude some conditions - You can configure a comma separated list of either CVEs or QIDs to exclude from the build failure conditions.
+
+#### Timeout Settings
+
+In the Timeout settings, specify the polling frequency in minutes for collecting the VM scan status data and the timeout duration for getting the scan results.
+
+### Generate Pipeline Script *(for pipeline project only)*
+
+If you are configuring pipeline project, click the `Generate Pipeline Script` button/link. It will give you a command which you can copy and paste in your project's pipeline script. 
+

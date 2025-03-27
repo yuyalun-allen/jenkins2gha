@@ -1,0 +1,47 @@
+# Unik Builder Plugin
+
+This plugin allows to add different Unik command as build steps to your freestyle and pipeline jobs as build steps. 
+
+Unik is a build framework that simplifies the build and execution of Unikernel instances (https://github.com/solo-io/unik).
+
+# Commands
+
+The commands currently supported are:
+
+* create an image
+* delete an image
+* pull an image from a registry
+* push an image to a registry 
+* run a new instance
+* start an existing instance
+* stop a running instance
+* delete an instance
+* create a volume
+* attach a volume
+* detach a volume
+* delete a volume
+
+## Example Usage
+
+In the fallowing we pull an image from a repository and run it, both as a freestyle job an as a pipeline job.
+
+### Freestyle Job
+
+![pull and run instances](images/pull_and_run_instance.png)
+
+### Pipeline Job
+
+````
+node{
+    unik pull(imageName: 'myImage', provider: 'virtualbox', unikHubEndpoint: hub(credentialsId: 'hubCredentialsID', url: 'http://myunik.hub.com/'))
+    unik run(imageName: 'myImage', instanceName: 'myInstance')
+}
+````
+
+## Configuration
+
+Additionally we can globally configure both a default location for the Unik deamon and a default location for a Unik Hub. 
+
+![builder config](images/builder_config.png)
+
+![hub config](images/hub_config.png)

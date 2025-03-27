@@ -1,0 +1,116 @@
+[[apache-httpcomponents-client-5-api-plugin]]
+= Apache HttpComponents Client 5.x API Plugin for Jenkins
+:toc: macro
+:toclevels: 3
+:toc-title:
+
+image:https://ci.jenkins.io/job/Plugins/job/apache-httpcomponents-client-5-api-plugin/job/main/badge/icon[link="https://ci.jenkins.io/job/Plugins/job/apache-httpcomponents-client-5-api-plugin/job/main/"]
+image:https://github.com/jenkinsci/apache-httpcomponents-client-5-api-plugin/actions/workflows/jenkins-security-scan.yml/badge.svg[link="https://github.com/jenkinsci/apache-httpcomponents-client-5-api-plugin/actions/workflows/jenkins-security-scan.yml"]
+
+image:https://img.shields.io/jenkins/plugin/i/apache-httpcomponents-client-5-api.svg?color=blue&label=installations[link="https://stats.jenkins.io/pluginversions/apache-httpcomponents-client-5-api.html"]
+image:https://img.shields.io/github/contributors/jenkinsci/apache-httpcomponents-client-5-api-plugin.svg?color=blue[link="https://github.com/jenkinsci/apache-httpcomponents-client-5-api-plugin/graphs/contributors"]
+image:https://img.shields.io/github/release/jenkinsci/apache-httpcomponents-client-5-api-plugin.svg?label=changelog[link="https://github.com/jenkinsci/apache-httpcomponents-client-5-api-plugin/releases/latest"]
+
+This plugin bundles all the components of https://hc.apache.org[Apache HttpComponents Client 5.x].
+
+These components can be used by other plugins as a dependency.
+It allows managing library updates independently of plugins.
+
+== How to introduce to your plugin
+
+=== Plugins directly depending on httpclient5
+
+Replace the dependency to `org.apache.httpcomponents.client5:httpclient5` with the dependency to `apache-httpcomponents-client-5-api`.
+
+Avoid version conflicts by using the https://github.com/jenkinsci/bom[Jenkins Plugin BOM] rather than depending on a specific version.
+
+*Before:*
+
+[source,xml]
+----
+<dependencies>
+  ...
+  <dependency>
+    <groupId>org.apache.httpcomponents.client5</groupId>
+    <artifactId>httpclient5</artifactId>
+    <version>5.2.1</version>
+  </dependency>
+  ...
+</dependencies>
+----
+
+*After:*
+
+[source,xml]
+----
+<dependencies>
+  ...
+  <dependency>
+    <groupId>io.jenkins.plugins</groupId>
+    <artifactId>apache-httpcomponents-client-5-api</artifactId>
+  </dependency>
+  ...
+</dependencies>
+----
+
+=== Plugins using libraries depending on httpclient5
+
+Add the dependency to `apache-httpcomponents-client-5-api` *before* any of dependencies to those libraries to force maven to use `httpclient5` declared by `apache-httpcomponents-client-5-api`.
+
+Avoid version conflicts by using the https://github.com/jenkinsci/bom[Jenkins Plugin BOM] rather than depending on a specific version.
+
+*Before:*
+
+[source,xml]
+----
+<dependencies>
+  ...
+  <dependency>
+    <artifactId>somelibrary-using-httpclient5</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+  <dependency>
+    <artifactId>anotherlibrary-using-httpclient5</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+  ...
+</dependencies>
+----
+
+*After:*
+
+[source,xml]
+----
+<dependencies>
+  ...
+  <dependency>
+    <groupId>io.jenkins.plugins</groupId>
+    <artifactId>apache-httpcomponents-client-5-api</artifactId>
+  </dependency>
+  <dependency>
+    <artifactId>somelibrary-using-httpclient5</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+  <dependency>
+    <artifactId>anotherlibrary-using-httpclient5</artifactId>
+    <version>1.0.0</version>
+  </dependency>
+  ...
+</dependencies>
+----
+
+== Versioning
+
+Version follows the pattern of `<org.apache.httpcomponents.client5 version>-<plugin version>`.
+This way it is clear what upstream dependency is offered and allows patch releases for the plugin itself if required.
+
+Since `org.apache.httpcomponents.client5` artifacts have a release cycle that is independent from `org.apache.httpcomponents.core5` artifacts, the latter are included in patch releases for this plugin.
+
+== Release Notes
+
+Release notes are recorded in https://github.com/jenkinsci/apache-httpcomponents-client-5-api-plugin/releases[GitHub Releases].
+
+== License
+
+* Plugin source and documentation - https://opensource.org/licenses/MIT[MIT License]
+* Nested library - https://www.apache.org/licenses/LICENSE-2.0[Apache License 2.0]

@@ -1,0 +1,40 @@
+= Pipeline: Keep Environment Step Plugin
+
+== Introduction
+
+This plugin contributes the `keepEnv` step for Jenkins Pipelines.
+It is similar to the `withEnv` step, but only retains environment variables that are defined in the argument, or are "system" environment variables.
+
+It is similar in function to the "Keep Only Specified Environment Variables" option for some build steps introduced in Jenkins 2.248.
+
+== Getting started
+
+The following Pipeline demonstrates how this plugin works:
+
+----
+node {
+    withEnv(['foo=bar', 'baz=qux', 'PATH=/usr/bin:/bin:/foo']) {
+        sh 'env'
+        keepEnv(['foo', 'WORKSPACE']) {
+            sh 'env'
+        }
+    }
+}
+----
+
+* The second invocation of `env` will not list `baz` or most Jenkins-contributed environment variables, like `BUILD_ID` or `NODE_NAME`.
+* The variables `foo` (from the surrounding `withEnv` block), `WORKSPACE` (contributed by Jenkins), a few essential Jenkins-contributed variables, as well as system-contributed variables (like `PATH`) will still be available.
+* System-contributed environment variables that are not set to be kept will be reset to their default value (`PATH` in the example) instead of being undefined.
+
+== Issues
+
+Report issues and enhancements in the https://issues.jenkins-ci.org/[Jenkins issue tracker].
+
+== Contributing
+
+Refer to our https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md[contribution guidelines]
+
+== LICENSE
+
+Licensed under MIT, see link:LICENSE.md[LICENSE]
+

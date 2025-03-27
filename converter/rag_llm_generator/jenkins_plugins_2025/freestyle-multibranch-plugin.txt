@@ -1,0 +1,37 @@
+# Jenkins Freestyle Multibranch Plugin
+
+This plugin exposes a new project type in Jenkins, the freestyle multi-branch project. 
+
+This project type expects that the build steps of a job are the same for all branches.
+
+See also this [plugin's wiki page][wiki]
+
+# History
+
+When developing the idea of the literate project type, this project type was the first experiment on the road.
+
+# Environment
+
+The following build environment is required to build this plugin
+
+* `java-1.6` and `maven-3.0.5`
+
+# Build
+
+To build the plugin locally:
+
+    mvn clean verify
+
+# Release
+
+To release the plugin:
+
+    mvn release:prepare release:perform -B
+
+# Test local instance
+
+To test in a local Jenkins instance
+
+    mvn hpi:run
+
+  [wiki]: http://wiki.jenkins-ci.org/display/JENKINS/Freestyle+Multibranch+Plugin

@@ -1,0 +1,2 @@
+# worksoft-certify-process-suite-plugin
+Worksoft certify process suite is used to execute the certify processes in folder level.

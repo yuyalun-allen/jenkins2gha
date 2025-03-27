@@ -1,0 +1,19 @@
+# Bitbucket Pull Requests filter
+
+## Introduction
+
+The plugin provides a way of filtering Pull Requests against available fields.
+One of the available traits is filtering the PR that contain one of the expressions.
+This way, only PRs that match the regular expression or contain some of the words will be considered by Jenkins.
+
+## Issues
+
+Report issues and enhancements in the [Jenkins issue tracker](https://issues.jenkins.io/).
+
+## Contributing
+
+Refer to our [contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
+
+## LICENSE
+
+Licensed under MIT, see [LICENSE](LICENSE.md)

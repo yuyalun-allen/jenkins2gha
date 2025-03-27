@@ -1,0 +1,65 @@
+:toc:
+:toc-placement!:
+
+Adds a command for the CLI which shows a build's console log. If
+https://plugins.jenkins.io/instant-messaging[instant-messaging-plugin]
+is installed, it also provides a command for it (Jabber, IRC, ...).
+
+toc::[]
+
+[[ci-job]]
+CI Job
+------
+
+image:https://ci.jenkins.io/buildStatus/icon?job=Plugins%2Flog-command-plugin%2Fmaster[]
+
+
+[[usage]]
+Usage
+-----
+
+[[cli]]
+CLI
+~~~
+
+show-log <job> [-b N] [-n N] +
+<job>: The name of the job. +
+-b N : N is the number of the build. Default value is the last build. +
+-n N : N is the number of log lines to show. Default values is 10.
+
+[[instant-messaging]]
+Instant Messaging
+~~~~~~~~~~~~~~~~~
+
+Same as CLI, but it also provides an alias for the command: **sl**.
+
+[[changelog]]
+Changelog
+---------
+
+[[version-1.0.2]]
+Version 1.0.2
+~~~~~~~~~~~~~
+
+* Migrate documentation to github
+* Build on ci.jenkins.io
+* Updated dependencies:
+** new parent pom
+** more recent version of jenkins core
+** more recent version of instant-messaging plugin
+
+[[version-1.0.1]]
+Version 1.0.1
+~~~~~~~~~~~~~
+
+* Better handling of errors. +
+* Fixed typos in Wiki url. +
+* Better plugin's name should appear now in the plugin manager.
+
+[[version-1.0.0]]
+Version 1.0.0
+~~~~~~~~~~~~~
+
+* Initial Release
+
+ 

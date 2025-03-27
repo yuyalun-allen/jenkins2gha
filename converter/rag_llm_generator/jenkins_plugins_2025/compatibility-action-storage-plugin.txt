@@ -1,0 +1,49 @@
+#Compatibility Action Storage Plugin
+The purpose of this plugin is to provide a way to store metadata about the given compatability of an abstract configuration. Currently using MongoDB.
+
+##Usage
+The current implementation can be used this way, we only include the MongoDB connector `GlobalConfiguration.all().get(NoSQLDatabasePlugin.class).getProvider()`
+
+The Provider is serializable, so you will need to initialize and get the Provider and pass that down if you want to use it in remoting. (Make the database call from the slave for example)
+
+
+##MongoDB examples
+
+Then you can insert objects with the follwing method
+`...getProvider().create(new MyObject("myuniqueid))`. Creates the object. The default mongodb implementation assigns an arbitrary object id to the returned object. 
+
+Objects are retrived the follwing way
+`...getProvider().read("myuniqueid", MyObject.class)`. This retrieves an object from the database with the specified id and returns it in the format of the class argument
+
+You can also if you need more fine grained control over the underlying connection you can do the following
+`...getProvider(MongoProviderImpl.class).getService().getClient()`. This gives you acccess to all methods on the mongo client. 
+
+You can also extract Many objects of the same type:
+`...getProvider().readMany(new BasicDBObject("name","John Doe"),Person.class))`
+
+Other methods include (list and sort)
+`...getProvider().listAndSort(new DBObject("",""), new BasicDBOBject("date",-1));`
+
+##Requirements
+For the MongoDB implementation we require that the POJO is annotated with the @ObjectID annotation because we use Jackson to convert and store the objects in json format in the database. 
+
+Example
+````
+
+    @ObjectId
+    @JsonProperty("_id")
+    public String getId() {
+        return id;
+    }
+
+    @ObjectId
+    @JsonProperty("_id")
+    public void setId(String id) {
+        this.id = id;
+    }
+    
+````
+
+##Limitations
+
+Only one database per jenkins instance is supported at the moment. 

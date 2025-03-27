@@ -1,0 +1,25 @@
+# Jenkins integration plugin for Jira Service Management
+
+Use the Jenkins plugin to integrate with Jira Service Management and forward Jenkins build alerts. Jira Service Management determines the right people to notify based on their on-call schedules, notifies them via email, text messages (SMS), phone calls, and mobile push notifications (both iOS and Android), and escalates alerts until they’re acknowledged or closed.
+
+:warning: If the feature isn’t available on your site, keep checking Jira Service Management for updates.
+
+## Steps to install and test
+1. Install Maven and the JDK.
+```
+$ mvn -version | grep -v home
+Apache Maven 3.5.0 (; 2017-04-03T22:39:06+03:00)
+Java version: 1.8.0_131, vendor: Oracle Corporation
+Default locale: en_US, platform encoding: UTF-8
+```
+2. Create an HPI file to install the plugin in Jenkins. <br>
+The HPI file is found at `target/jsm-integration.hpi`.
+```
+mvn hpi:hpi
+```
+
+## Contributions
+Contributions to Jira Service Management Integration Jenkins Plugin are welcome! Read how to contribute to the project in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+Copyright (c) [2023] Atlassian US., Inc. Apache 2.0 licensed. [View the LICENSE](LICENSE) file.

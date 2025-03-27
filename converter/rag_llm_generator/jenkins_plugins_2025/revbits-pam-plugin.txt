@@ -1,0 +1,118 @@
+# RevBits PAM Secret Plugin
+
+## Introduction
+
+RevBits PAM secrets manager plugin securely fetches secrets from RevBits PAM.
+
+## Getting started
+
+### Plugin Build-up
+
+To compile plugin .hpi file:
+
+```
+mvn clean install
+```
+
+To run standalone plugin with jenkins server:
+
+```
+mvn hpi:run
+```
+
+## Installing the RevBits PAM Secret Plugin
+### Manual Install
+Login to Jenkins and navigate to Dashboard > Manage Jenkins > Manage Plugins > Advance > Upload Plugin (Upload plugin with .hpi extension)
+
+![Insalling The RevBits PAM Secrets Plugin](doc/images/1-Installing-the-RevBits-PAM-Secret-Plugin.png)
+
+#### Uploading RevBits PAM Secret Plugin:
+
+Navigate to: Advance > Upload Plugin
+![Uploading RevBits PAM Secret Plugin](doc/images/2-Uploading-RevBits-PAM-Secret-Plugin.png)
+
+## Add Credentials in RevBits PAM server
+
+Adding Docker Hub credentials in the RevBits PAM server.
+
+Navigate to: Secret Management > Accesses > Add Access
+
+![Add Credentials in RevBits PAM server](doc/images/3-Add-Credentials-in-RevBits-PAM.png)
+
+Navigate to: Secrets > Add Secret
+
+![Add Credentials in RevBits PAM server](doc/images/4-Add-Credentials-in-RevBits-PAM.png)
+
+## Connecting the Plugin to Revbits PAM.
+
+Navigate to: Dashboard > Manage Jenkins > Manage Credentials
+
+![Connecting the Plugin to Revbits PAM](doc/images/5-Connecting-the-Plugin-to-Revbits-PAM.png)
+
+Adding credentials
+
+![Adding credentials](doc/images/6-Adding-credentials.png)
+
+Select Revbits PAM Secret Credentials from drop down menu
+
+![Selection of Revbits PAM Secret Credentials](doc/images/7-Selection-of-Revbits-PAM-Secret-Credentials.png)
+
+Filling the credential form as per requirement and copying the API key from the RevBits PAM.
+
+![Filling the credential form](doc/images/8-Filling-the-credential-form.png)
+
+Using secrets in Jenkins project to define the variable explicitly
+
+![Using secrets in Jenkins project](doc/images/9-Using-secrets-in-Jenkins.png)
+
+## Creating a new pipeline project and writing a pipeline code to fetch secrets.
+
+To create new pipeline project, Navigate to > Dashboard > New Item
+
+![Creating a new pipeline](doc/images/10-Creating-a-new-pipeline-project.png)
+
+Navigate to: Dashboard and Select newly created pipeline “demopipeline”
+
+![Select newly created pipeline](doc/images/11-Select-newly-created-pipeline.png)
+
+Navigate to Dashboard > Select “demopipeline” > Configure
+
+![Dashboard Configure](doc/images/12-Dashboard-Configure.png)
+
+Navigate to Advance Project Options and add the following code as provided
+
+```groovy
+pipeline{
+agent any
+    stages {
+        stage("Testing RevBits PAM Secrets Plugin)") {
+            steps{
+            withCredentials([[$class: 'PamSecretsCredentialsBinding'
+            ,credentialsId: 'jenkinsid'// credentials ID that we define in the jenkins manage user credentials section
+            ,variable: 'dockerhub'] // variable that we define in RevBits PAM secrets
+                ]){
+
+           sh "docker login -u username  -p ${env.dockerhub}"   // getting login to dockerhub
+           sh "docker push username/jenkins-demo-nginx:v1"  // push an existing image to dockerhub, we can chnage tag v1 to v2,v3 and so on
+                }
+            }
+        }
+    }
+}
+```
+
+![Code](doc/images/13-Advance-Project-Options.png)
+
+## Run job and verify results
+
+Navigate to: Dashboard > Select “demo pipeline” > Trigger “Build Now”
+
+![Run Job](doc/images/14-Run-job-and-verify-results.png)
+
+After successfully running a job, login to Dockerhub. It can be seen the image is pushed to Dockerhub.
+
+![Verify on Dockerhub](doc/images/15-Dockerhub.png)
+
+## License
+
+This repository is licensed under Apache License 2.0 - see [`LICENSE`](LICENSE.md) for more details.

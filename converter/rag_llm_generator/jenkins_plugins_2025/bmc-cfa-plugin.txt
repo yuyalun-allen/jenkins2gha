@@ -1,0 +1,120 @@
+# BMC AMI DevOps for Application Checkpoint Analysis  
+[![Jenkins Plugin](https://img.shields.io/jenkins/plugin/v/bmc-cfa.svg)](https://plugins.jenkins.io/bmc-cfa) 
+# Table of contents
+1. [Requirements](#req)
+2. [Overview](#overview)
+3. [Authenticating the SSL Certificate](#cert)  
+4. [Screenshots](#screenshots)
+5. [Job logs](#joblogs)
+6. [Commit Frequency Report for DB2](#db2rpt)
+7. [Commit Frequency Report for IMS](#imsrpt)
+8. [Checkpoint/Commit Distribution Action](#imsrpt) 
+9. [Required information for diagnosing problems](#diag)
+
+## Requirements <a name="req"></a>
+| Required software                        | Version |
+|------------------------------------------|---------|
+| Jenkins                                  | 2.387.2 |
+| BMC AMI Log Analyzer for IMS             | 1.7.00  |
+| z/OSMF                                   |         |
+
+
+## Overview <a name="overview"></a>
+BMC AMI DevOps for Application Checkpoint Analysis plugin can be invoked as a Jenkins job's **build step**, and trigger the process of reporting application checkpoints/commit information from IMS and DB2 logs. It can be used to illustrate the impact of changes made by application programs on IMS databases, by comparing checkpoint reports before and after the implemented changes.
+
+![BMC build step](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/bmc_build_step.jpg)
+
+**Use case:** 
+The plugin can be integrated as part of the development life cycle for application development team, where one of the steps does checkpoint/commit analysis.
+
+
+It uses z/OSMF REST API to submit the following job to run on z/OS.
+```
+//CFRDEVOP JOB (${ACCTNO}),'CFA REPORT',NOTIFY=&SYSUID,
+//         CLASS=A,MSGCLASS=X,REGION=0M
+//CFRMAIN   EXEC PGM=CFRMAIN,REGION=4M                       
+//STEPLIB   DD DISP=SHR,DSN=${CFA_LOAD0} 
+//SYSOUT   DD SYSOUT=*                
+//SYSIN    DD *                       
+* comment
+ANALYZE   keywords
+INTERVAL  keywords
+REPORTS   keywords
+END
+/*
+//
+```
+
+**Notes!**
+
+- Notice that the values for the different keywords are not explicitly displayed in the generated JCL.
+Instead placeholders (which are marked with ${}) are used.
+The placeholders are being internally resolved into variables by Jenkins during the build process.
+Therefore, it’s not recommended to modify the JCL, but it’s possible.
+
+- **Script Security Plugin** is used, thus an administrator will have to approve the scripts.
+Otherwise a security exception is thrown:
+ERROR: Failed to evaluate groovy script.
+org.jenkinsci.plugins.scriptsecurity.scripts.UnapprovedUsageException: script not yet approved for use
+
+  An administrator will have to approve via Manage Jenkins -> In-process Script Approval
+
+![ In-process Script Approval](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/In_process_script_approv.JPG)
+![ Script Approval](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/ScriptApproval.JPG)
+
+
+## Authenticating the SSL Certificate <a name="cert"></a>
+1. Distribute the z/OS certificate to the appropriate workstation, and import it into Java KeyStore using keytool.
+2. Issue the following command from the command line:
+```
+keytool -import -alias <alias_name> -keystore <keystore_name > -file <file_name>
+```
+where:
+- **alias_name** - alias name of the entry to process
+- **keystore_name** - the location of the cacerts file , By default it is in jre/lib/security/cacerts
+- **file_name**- file.cer
+You will be asked for password (which is by default : changeit). Enter the password.
+Restart your Java Virtual Machine or your computer.
+
+## Screenshots: <a name="screenshots"></a>
+![BMC CFA Plugin](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/cfa_plugin.jpg) 
+
+For details of the dialog box fields, click the question mark icon next to each field.
+
+For further information regarding a specific field please refer to BMC AMI Log Analyzer for IMS documentation:
+- [Specifying ANALYZE control statements](https://docs.bmc.com/docs/loganalyzer17/specifying-analyze-control-statements-958587173.html)
+- [Specifying INTERVAL control statements](https://docs.bmc.com/docs/loganalyzer17/specifying-interval-control-statements-958587198.html)
+- [APPCHECK keyword](https://docs.bmc.com/docs/loganalyzer17/appcheck-keyword-958587247.html)
+
+## Job logs <a name="joblogs"></a>
+The contents of the job spool files are available in Jenkins job **workspace** under the respective build number folder.
+
+![job logs](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/workspace.jpg)
+
+For further information regarding a specific report please refer to:
+- [SUMMARY](https://docs.bmc.com/docs/loganalyzer17/using-the-analysis-summary-report-958587322.html)
+- [REPRTIMS](https://docs.bmc.com/docs/loganalyzer17/using-the-application-checkpoint-report-958587359.html)
+- [SYSOUT](https://docs.bmc.com/docs/loganalyzer17/sysout-dd-statement-958587165.html)
+
+## REPRTDB2 - Commit Frequency Report for DB2 <a name="db2rpt"></a>
+ ![Commit Frequency Report for DB2](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/reprtdb2.JPG)
+
+## REPRTIMS - Commit Frequency Report for IMS <a name="imsrpt"></a> 
+![Commit Frequency Report for IMS](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/reprtims.JPG)
+
+## Checkpoint/Commit Distribution Action <a name="comAction"></a> 
+![BMC build action](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/build_action.jpg)
+## Required information for diagnosing problems <a name="diag"></a> 
+1.	Identify **plugin version**:
+**Jenkins**->**Manage Jenkins**->**Manage Plugins**->**Installed**
+![BMC plugin version](https://github.com/jenkinsci/bmc-cfa-plugin/blob/main/src/main/webapp/images/plugin_version.JPG)
+2.	**Jenkins Job logs**  
+	* Navigate to  **C:\Users\\*user_name*\\AppData\Local\Jenkins\.jenkins**
+	* Select **jobs** directory
+	* Select the relevant job
+    * Select **builds** directory
+ 	* Select the relevant build number
+	* log
+3. System log: **Jenkins**->**Manage Jenkins**->**System Log**
+4. **config.xml** in C:\Users\\*user_name*\\AppData\Local\Jenkins\.jenkins\jobs\\*job_name*
+

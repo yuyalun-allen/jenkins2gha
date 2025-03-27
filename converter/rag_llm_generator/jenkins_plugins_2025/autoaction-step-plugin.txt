@@ -1,0 +1,1 @@
+Run the auto actions from "flat lines" scripts based on Selenium WebDriver

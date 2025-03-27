@@ -1,0 +1,3 @@
+# JavaMail API Plugin
+
+This plugin provides the [JavaMail](https://github.com/javaee/javamail) API for other plugins.

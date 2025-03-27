@@ -1,0 +1,121 @@
+# Markdown Params
+
+## Introduction
+
+Markdown Params plugin allows Jenkins pipelines to parse Markdown files, extract lists (including checkbox list), and retrieve parameters from them, such as checked or unchecked items. 
+
+This is useful in continuous integration (CI) processes, where Markdown can serve as a task list or selection tool in pull request templates. 
+
+Combined with Jenkins plugins like http_request or generic-webhook-trigger, this enables dynamic control over pipelines based on user-defined inputs, such as deploying microservices marked in pull requests.
+
+### Use case
+
+This diagram illustrates the interaction between the Markdown Params plugin and other components in a pull request workflow.
+
+![use case diagram](doc/usecase.png)
+
+
+
+## Example to get started
+
+To demonstrate the functionality of the Markdown Params plugin, we can use the following Markdown task list. This checkboxes list outlines the microservices scheduled for deployment.
+
+```markdown
+#### Microservices to deploy
+- [x] Auth
+- [x] Users
+- [ ] Inventory
+- [ ] Billing
+- [ ] Monitoring
+```
+#### Pipeline
+
+In a minimal pipeline example, the Markdown Params plugin reads the Markdown task list and "deploy" the specified microservices.
+The plugin retrieves the checked items to decide which microservices to deploy.
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Demo') {
+            steps {
+                script {
+                    def md = markdownParams "#### Microservices to deploy\n- [x] Auth\n- [x] Users\n- [ ] Inventory\n- [ ] Billing\n- [ ] Monitoring"
+                    def items = md.getCheckedItemsOf("Microservices to deploy")
+                    items.each { item ->
+                        echo "Deploying ${item}"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+#### Output
+
+When the above pipeline runs, it will output the following text.
+
+```text
+Deploying Auth
+Deploying Users
+```
+
+
+## Functions
+
+* getCheckboxItemsOf(String header) → returns a list with all checkbox items in \<header\> section
+* getCheckedItemsOf(String header) → returns a list with all checkbox checked items in \<header\> section
+* getUncheckedItemsOf(String header) → returns a list with all checkbox unchecked items in \<header\> section
+* isAllItemsCheckedOf(String header) → returns true if all checkbox items in \<header\> section are checked 
+* isNoneItemsCheckedOf(String header) → returns true if all checkbox items in \<header\> section are unchecked
+* getUnorderedListItemsOf(String header) → returns a list with all unordered items in \<header\> section
+* getOrderedListItemsOf(String header) → returns a list with all ordered items in \<header\> section
+
+> ℹ️ **Info:** If the item is not under a specific header, using an empty header `""` will retrieve all items
+
+## Plugin development
+
+Run and try the example
+```shell
+mvn hpi:run
+```
+
+More details on Jenkins plugin development is available [here](https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial).
+Dependencies https://www.jenkins.io/doc/developer/plugin-development/dependency-management/
+
+## Other useful commands
+```shell
+mvn tidy:pom
+```
+
+
+```shell
+mvn clean install
+```
+
+
+```shell
+mvn clean verify
+```
+
+
+```shell
+mvn versions:update-parent
+```
+
+```shell
+mvn spotless:apply
+```
+
+
+## Contributing
+
+[Contributing](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
+
+[Contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
+
+## LICENSE
+
+Licensed under MIT, see [LICENSE](LICENSE.md)
+

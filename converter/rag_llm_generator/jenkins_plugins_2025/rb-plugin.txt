@@ -1,0 +1,78 @@
+# Review Board Integration Plugin
+
+[Review Board](https://reviewboard.org) can integrate with
+[Jenkins](https://jenkins.io) to do test builds of code changes and report the
+results back on a review request. This plugin provides the necessary APIs to
+facilitate this integration.
+
+
+## Server Configuration
+
+Once this plugin is installed, you'll need to configure your Review Board
+server inside Jenkins:
+
+1. On your Jenkins server, navigate to `Manage Jenkins`, then select `Configure
+   System`.
+
+2. Scroll down until you reach the `Review Board` configuration section.
+
+3. Click `Add Review Board Server` to create a new Review Board server
+   configuration.
+
+4. Enter your Review Board server URL into the `Review Board URL` field. This
+   must match the server URL set in the Review Board `General Settings` page.
+
+5. If you have previously created a credential for your Review Board API token,
+   select it here and skip to the job configuration.
+
+6. If you have not yet created a credential for the Review Board API token,
+   click `Add` and select `Jenkins`.
+
+7. In the prompt, set `Kind` to `Secret text`.
+
+8. Set `Scope` to `Global`.
+
+9. Fill in `Secret` with the `Review Board API Token` found in the Jenkins CI
+   integration configuration page in the Review Board administration UI.
+
+10. Give your secret a unique identifier in the `ID` field and click `Add`.
+
+11. Click `Save` to save your server configuration.
+
+
+## Job Configuration
+
+For each job you wish to use on Jenkins, you must add four new build parameters
+that will be used to give Jenkins information on the incoming review request.
+To add these, perform the following steps:
+
+1. Navigate to your job's page and click `Configure`.
+
+2. Ensure the `This project is parameterized` checkbox is checked.
+
+3. For each of the following parameter names, repeat these two steps:
+
+   * `REVIEWBOARD_REVIEW_ID`
+   * `REVIEWBOARD_DIFF_REVISION`
+   * `REVIEWBOARD_STATUS_UPDATE_ID`
+   * `REVIEWBOARD_SERVER`
+
+   1. Click `Add parameter` and select `String parameter`
+   2. Input the parameter name into the `Name` field and leave all other fields
+      blank.
+
+4. Scroll down to the `Build` section. Here we can add the `Apply patch from
+   Review Board` step by clicking `Add build step` and choosing it from the
+   dropdown menu.
+
+   *Note*: This step uses RBTools to apply the patch from Review Board. It will
+   attempt to install the package using pip, but if it lacks permission you
+   will need to manually install it. Additionally, the order of your build
+   steps matter, so this step should likely be the first build step so all
+   later build steps see the correct source code.
+
+5. Scroll down to the `Post-build actions` section. Here we can add the
+   `Publish build status to Review Board` step by clicking `Add post-build
+   action` and choosing it from the dropdown menu.
+
+6. Click `Save` to save these changes.

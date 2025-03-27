@@ -1,0 +1,22 @@
+Jenkins TortoiseSVN Browser Plugin
+==================================
+
+This plugin adds a *TortoiseSVN* option to the list of Subversion repository browsers. Projects configured to use this browser will then display links on `/changes` web pages that open a TortoiseSVN log or diff viewer.
+
+Requirements and Dependencies
+-----------------------------
+
+1. [Subversion Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Subversion+Plugin) for Jenkins.
+
+1. [TortoiseSVN](http://tortoisesvn.net/) 1.8.x installed on clients using the various links created by this plugin. Some links (those in `/job/(jobname)/(buildnumber)/changes` using the file path as label) don't work in TortoiseSVN 1.7.x. This is a limitation in older versions of TortoiseSVN ([changed in this commit](https://code.google.com/p/tortoisesvn/source/detail?spec=svn25164&r=22701)).
+
+1. This plugin requires that the user configures the web browser to open `tsvncmd:` URLs using TortoiseSVN. For example in Firefox, this can be done when first clicking on such a link.
+
+Known Issues and Limitations
+----------------------------
+
+1. The repository browser in this plugin requires no configuration and works for any number of configured SVN module locations. Due to the matching rules involved, this can, in rare cases, lead to the wrong repository being linked. This is still better than creating the wrong link for all but one configured module location.
+
+1. Paths in changesets that are outside the module locations configured in the job are not linked. This is a side effect of the matching rules determining which repository to link to, and considered a feature: Paths not contributing to the job workspace can easily be distinguished from those that do.
+
+1. Links will be invalid for users who do not have TortoiseSVN. This includes everyone not using Windows. This is a limitation inherent to this approach. Consider limiting use of this repository browser to projects with teams exclusively using Windows as OS (with TortoiseSVN installed), or for repositories that do not have a web-based viewer.

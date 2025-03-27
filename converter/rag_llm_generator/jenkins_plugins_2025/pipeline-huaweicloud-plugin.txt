@@ -1,0 +1,63 @@
+# pipeline-huaweicloud-plugin
+This plugins adds Jenkins pipeline steps to interact with the HuaweiCloud API.
+
+# How to build it
+```
+git clone https://github.com/huaweicloud/pipeline-huaweicloud-plugin
+cd pipeline-huaweicloud-plugin
+mvn package -DskipTests
+``` 
+
+Install pipeline-huaweicloud-plugin/target/pipeline-huaweicloud.hpi in jenkins (such as: http://127.0.0.1/pluginManager/advanced)
+
+
+# Usage / Steps
+
+## withOBS
+
+the `withOBS` step provides authorization for the nested steps.
+
+Set region, endpointUrl, credentials information:
+
+```groovy
+ withOBS(endpointUrl:"https://obs.cn-north-1.myhuaweicloud.com",region:'cn-north-1',credentials:'ZJTEST') {
+    // do something
+}
+```
+
+When you use Jenkins Declarative Pipelines you can also use `withOBS` in an options block:
+
+```groovy
+options {
+	withOBS(endpointUrl:"https://obs.cn-north-1.myhuaweicloud.com",region:'cn-north-1',credentials:'ZJTEST')
+}
+stages {
+	...
+}
+```
+## obsUpload
+
+Upload a file from the workspace (or a String) to an OBS bucket.
+```groovy
+options {
+  withOBS(endpointUrl:"https://obs.cn-north-1.myhuaweicloud.com",region:'cn-north-1',credentials:'ZJTEST')
+}
+steps {
+  obsUpload(file:'ploaded5959630964693432219.jpi', bucket:'obs-test', path:'/')
+}
+```
+
+
+## invokeFunction
+
+Invoke a function.
+
+The step returns the object returned by the function.
+```groovy
+steps {
+  script {
+    def result = invokeFunction(functionName: 'test002', payloadAsString: '{"key": "value"}')
+    echo "Testing the ${result} browser"
+ }
+}
+```

@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa" rx="10" ry="10"/>
+  
+  <!-- Title -->
+  <text x="400" y="30" font-family="Arial" font-size="20" text-anchor="middle" font-weight="bold">GitHub Actions工作流相似度比较流程</text>
+
+  <!-- Start -->
+  <rect x="350" y="60" width="100" height="40" rx="20" ry="20" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/>
+  <text x="400" y="85" font-family="Arial" font-size="14" text-anchor="middle" fill="white">开始</text>
+  
+  <!-- Load YAML files -->
+  <rect x="300" y="130" width="200" height="40" fill="#90CAF9" stroke="#1976D2" stroke-width="2"/>
+  <text x="400" y="155" font-family="Arial" font-size="14" text-anchor="middle">加载YAML文件</text>
+
+  <!-- Extract Jobs -->
+  <rect x="300" y="200" width="200" height="40" fill="#90CAF9" stroke="#1976D2" stroke-width="2"/>
+  <text x="400" y="225" font-family="Arial" font-size="14" text-anchor="middle">提取Jobs信息</text>
+
+  <!-- Fork - Two methods -->
+  <rect x="350" y="270" width="100" height="40" fill="#FFD54F" stroke="#FFA000" stroke-width="2"/>
+  <text x="400" y="295" font-family="Arial" font-size="14" text-anchor="middle">分析方法</text>
+
+  <!-- Job Content Similarity path -->
+  <rect x="100" y="340" width="200" height="40" fill="#AED581" stroke="#689F38" stroke-width="2"/>
+  <text x="200" y="365" font-family="Arial" font-size="14" text-anchor="middle">方法1: Job内容相似度</text>
+
+  <!-- Feature Similarity path -->
+  <rect x="500" y="340" width="200" height="40" fill="#AED581" stroke="#689F38" stroke-width="2"/>
+  <text x="600" y="365" font-family="Arial" font-size="14" text-anchor="middle">方法2: 特征相似度</text>
+
+  <!-- Job Content Analysis -->
+  <rect x="75" y="410" width="250" height="90" fill="#E1BEE7" stroke="#8E24AA" stroke-width="2"/>
+  <text x="200" y="430" font-family="Arial" font-size="12" text-anchor="middle">分析每个Job的内容：</text>
+  <text x="200" y="450" font-family="Arial" font-size="12" text-anchor="middle">• runs-on相似度 (15%)</text>
+  <text x="200" y="470" font-family="Arial" font-size="12" text-anchor="middle">• needs相似度 (15%)</text>
+  <text x="200" y="490" font-family="Arial" font-size="12" text-anchor="middle">• steps相似度 (70%)</text>
+
+  <!-- Feature Analysis -->
+  <rect x="475" y="410" width="250" height="110" fill="#E1BEE7" stroke="#8E24AA" stroke-width="2"/>
+  <text x="600" y="430" font-family="Arial" font-size="12" text-anchor="middle">分析整体特征：</text>
+  <text x="600" y="450" font-family="Arial" font-size="12" text-anchor="middle">• runs-on相似度 (15%)</text>
+  <text x="600" y="470" font-family="Arial" font-size="12" text-anchor="middle">• needs相似度 (15%)</text>
+  <text x="600" y="490" font-family="Arial" font-size="12" text-anchor="middle">• strategy相似度 (20%)</text>
+  <text x="600" y="510" font-family="Arial" font-size="12" text-anchor="middle">• steps相似度 (40%)</text>
+
+  <!-- Calculate Final Similarity -->
+  <rect x="300" y="550" width="200" height="40" fill="#FFB74D" stroke="#F57C00" stroke-width="2"/>
+  <text x="400" y="575" font-family="Arial" font-size="14" text-anchor="middle">计算最终相似度</text>
+
+  <!-- Combining Equation -->
+  <rect x="150" y="550" width="130" height="40" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1" stroke-dasharray="5,5"/>
+  <text x="215" y="575" font-family="Arial" font-size="10" text-anchor="middle">70% 权重</text>
+
+  <rect x="520" y="550" width="130" height="40" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1" stroke-dasharray="5,5"/>
+  <text x="585" y="575" font-family="Arial" font-size="10" text-anchor="middle">30% 权重</text>
+
+  <!-- Steps Comparison Details -->
+  <rect x="60" y="280" width="180" height="50" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1" rx="5" ry="5"/>
+  <text x="150" y="300" font-family="Arial" font-size="10" text-anchor="middle" font-style="italic">Job的steps相似度包括：</text>
+  <text x="150" y="320" font-family="Arial" font-size="10" text-anchor="middle" font-style="italic">uses相似度和run相似度</text>
+
+  <!-- Feature Extraction Details -->
+  <rect x="560" y="280" width="180" height="50" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1" rx="5" ry="5"/>
+  <text x="650" y="300" font-family="Arial" font-size="10" text-anchor="middle" font-style="italic">特征提取包括：</text>
+  <text x="650" y="320" font-family="Arial" font-size="10" text-anchor="middle" font-style="italic">所有job的集合特征分析</text>
+
+  <!-- Connect Lines -->
+  <!-- Start to Load YAML -->
+  <line x1="400" y1="100" x2="400" y2="130" stroke="#333" stroke-width="2"/>
+  
+  <!-- Load YAML to Extract Jobs -->
+  <line x1="400" y1="170" x2="400" y2="200" stroke="#333" stroke-width="2"/>
+  
+  <!-- Extract Jobs to Fork -->
+  <line x1="400" y1="240" x2="400" y2="270" stroke="#333" stroke-width="2"/>
+  
+  <!-- Fork to Job Content -->
+  <line x1="400" y1="290" x2="400" y2="310" stroke="#333" stroke-width="2"/>
+  <line x1="400" y1="310" x2="200" y2="310" stroke="#333" stroke-width="2"/>
+  <line x1="200" y1="310" x2="200" y2="340" stroke="#333" stroke-width="2"/>
+  
+  <!-- Fork to Feature -->
+  <line x1="400" y1="310" x2="600" y2="310" stroke="#333" stroke-width="2"/>
+  <line x1="600" y1="310" x2="600" y2="340" stroke="#333" stroke-width="2"/>
+
+  <!-- Job Content to Analysis -->
+  <line x1="200" y1="380" x2="200" y2="410" stroke="#333" stroke-width="2"/>
+  
+  <!-- Feature to Analysis -->
+  <line x1="600" y1="380" x2="600" y2="410" stroke="#333" stroke-width="2"/>
+  
+  <!-- Analysis to Final -->
+  <line x1="200" y1="500" x2="200" y2="530" stroke="#333" stroke-width="2"/>
+  <line x1="200" y1="530" x2="400" y2="530" stroke="#333" stroke-width="2"/>
+  <line x1="600" y1="520" x2="600" y2="530" stroke="#333" stroke-width="2"/>
+  <line x1="600" y1="530" x2="400" y2="530" stroke="#333" stroke-width="2"/>
+  <line x1="400" y1="530" x2="400" y2="550" stroke="#333" stroke-width="2"/>
+
+  <!-- Similarity Calculation Formula -->
+  <rect x="275" y="600" width="250" height="40" fill="#FFCCBC" stroke="#E64A19" stroke-width="1" rx="5" ry="5"/>
+  <text x="400" y="620" font-family="Arial" font-size="12" text-anchor="middle" font-style="italic">final_similarity = 0.7 * job_sim + 0.3 * feature_sim</text>
+  <line x1="400" y1="590" x2="400" y2="600" stroke="#333" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- Detail information arrows -->
+  <line x1="150" y1="330" x2="150" y2="340" stroke="#9E9E9E" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="650" y1="330" x2="650" y2="340" stroke="#9E9E9E" stroke-width="1" stroke-dasharray="3,3"/>
+</svg>

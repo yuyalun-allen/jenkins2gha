@@ -1,0 +1,15 @@
+# Frugal Testing Jenkins plugin
+
+This plugin allows users to run tests from the [Frugal Testing cloud platform](https://www.frugaltesting.com).
+
+### Usage:
+
+1)Create an account on [Frugal Testing's website](https://www.frugaltesting.com/login)
+
+2)Install the Frugal Testing plugin in Jenkins
+
+3)Add your Frugal Testing Credentials to Jenkins by going to Jenkins -> Credentials -> Global credentials domain -> Add Credentials.
+
+4)In your Jenkins project, choose the Frugal Testing option from the Build Step menu. Select the required username, test and runtag and build your project.
+
+5)You're good to go! You can check out the report on the Frugal Testing site and even download the JTL report of the test using the Jenkins plugin.

@@ -1,0 +1,2 @@
+This plugin is obsolete: its functionality is built into Jenkins core as of 2.224.
+Please uninstall it.

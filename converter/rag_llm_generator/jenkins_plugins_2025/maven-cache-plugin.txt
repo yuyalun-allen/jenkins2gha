@@ -1,0 +1,31 @@
+# maven-cache
+
+## Introduction
+
+This plugin will turn any project as a remote server for storage of [Apache Maven build cache extension](https://maven.apache.org/extensions/maven-build-cache-extension/remote-cache.html
+) 
+## Getting started
+
+Just install the plugin and enable the cache at a project level and the job will host a cache server with url $joburl/maven-cache/repository
+
+Then you will be able to use this as a [remote cache server](https://maven.apache.org/extensions/maven-build-cache-extension/remote-cache.html) with using:
+```xml
+<remote enabled="true" id="my-cache">
+    <url>https://your-jenkins-host/$job/maven-cache/repository</url>
+</remote>
+```
+Or CLI
+```shell
+-Dmaven.build.cache.remote.url=https://your-jenkins-host/$job/maven-cache/repository -Dmaven.build.cache.remote.enabled=true -Dmaven.build.cache.remote.save.enabled=true -Daether.connector.http.preemptiveAuth[.local-remote-cache]=true
+```
+
+## Contributing
+
+TODO review the default [CONTRIBUTING](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md) file and make sure it is appropriate for your plugin, if not then add your own one adapted from the base file
+
+Refer to our [contribution guidelines](https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md)
+
+## LICENSE
+
+Licensed under Apache License, see [LICENSE](LICENSE.md)
+

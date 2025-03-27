@@ -1,0 +1,44 @@
+# useMango Runner for Jenkins 2.x
+
+This plugin allows useMango tests to be executed as a Jenkins job on Jenkins 2.x.
+
+Main features:
+- Execute useMango tests on Jenkins
+- Filter tests using account settings
+- Run tests in parallel across multiple nodes
+- Generate JUnit reports
+ 
+## Installation
+ 
+1) Clone this repository from GitHub
+
+2) Build the plugin:
+```
+mvn clean package
+```
+3. Install the plugin:
+    - Copy to your `%JENKINS_HOME%\plugins` directory, **OR**
+    - Login to Jenkins and upload your plugin (`Jenkins` -> `Manage Jenkins` -> `Manage Plugins` -> `Advanced`)
+
+## Usage
+
+###### Configuring
+
+1) Navigate to `Jenkins` -> `Manage Jenkins` -> `Configure System`
+
+2) Locate the `useMango Location` section and enter the `useMango URL` and your `useMango credentials`
+
+###### Creating a Job
+
+- Create a new Freestyle project and configure:
+    1. Add the build step `Run useMango tests` 
+    2. Enter your `Project ID` (i.e. the name of your project in your useMango account)
+    3. Add further filtering where needed
+    4. Click the `Validate` button to validate your settings (note: only the tests shown will be executed during the build)
+    5. Optional:  Add the post-build action `Publish JUnit test result report` and enter `results/*.xml` as the value for `Test report XMLs`.
+
+## Dependencies
+
+ - [Credentials](https://wiki.jenkins-ci.org/display/JENKINS/Credentials+Plugin)
+ - [Test Results Analyzer](https://wiki.jenkins.io/display/JENKINS/Test+Results+Analyzer+Plugin)
+ - Windows node(s) with useMango installed: To run useMango tests you must have Windows slave nodes configured in your Jenkins setup, with useMango installed on each node.  To run useMango tests on your Windows node(s), give each node the same label then check `Execute tests on labelled nodes` and enter the label as the value for `Label Expression`.

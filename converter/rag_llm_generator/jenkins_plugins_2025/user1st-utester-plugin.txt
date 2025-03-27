@@ -1,0 +1,36 @@
+# User1st uTester Ci/CD  Plugin
+
+[![Jenkins Version](https://img.shields.io/badge/Jenkins-2.89.1%2B-green.svg)](https://jenkins.io/download/)
+
+Jenkins plugin for Accessiblity Testing within your CI/CD Pipeline
+
+
+## Requirements
+
+* Jenkins 2.89.1 or greater.
+* uTester GWT Token
+
+## Known Limitations
+- Scenario Tasks Still Have Unpredictaqble Behavior Depending on th eBuild Enviornment 
+
+## Install
+
+1. Open Jenkins in a browser; for example http://jenkins_host:8080
+2. Browse to 'Manage Jenkins' --> 'Manage Plugins' and select the **Available** tab.
+3. Find the 'User1st uTester' or use the **Filter** if needed
+4. Check the box and click the **Install without restart** button
+
+If you are unable to find the plugin, you may need to refresh the 'Update Site'.
+
+1. Select the **Advanced** tab (under 'Manage Plugins')
+2. Click the **Check now** button at the bottom of the page.
+3. When 'Done' go back to the update centre and try again.
+
+## Manual install
+
+1. Open Jenkins in a browser; e.g. http://jenkins_host:8080
+2. Browse to 'Manage Jenkins' --> 'Manage Plugins’ and select the **Advanced** tab.
+3. Click the **Browse** button in the 'Upload Plugin' section. 
+4. Find the location of the 'uTesterStateless.hpi' file and click the **Open** button. 
+5. Click the **Download now and install after restart** button (this might be different on the newer version). 
+

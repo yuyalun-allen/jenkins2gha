@@ -1,0 +1,21 @@
+:toc:
+:toclevels: 4
+
+# CloudBees Feature Management Jenkins Plugin
+
+This plugin integrates with your https://app.rollout.io[CloudBees Feature Management] organization and allows you to view your feature flag configuration at build-time and view any changes between previous builds. This allows you to easily determine whether any flag changes have caused build failures.
+
+The plugin adds a build step that will download and store your flag configurations for a configured CloudBees Feature Management application/environment. It allows you to inspect the configuration and view a detailed difference and log of any changes between a build and the previous successful build.
+
+## Documentation
+
+Please see the https://docs.cloudbees.com/docs/cloudbees-feature-management/latest/integration/cb-fm-jenkins-plugin[CloudBees documentation].
+
+## Contributing
+
+Refer to the Jenkins Community link:https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md[contribution guidelines]
+
+## LICENSE
+
+Licensed under MIT, see link:LICENSE.md[LICENSE]
+

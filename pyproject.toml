@@ -1,0 +1,18 @@
+[project]
+name = "pipeline-migration"
+version = "0.1.0"
+description = "Jenkins file 到 Code Arts 迁移工具"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "colorlog>=6.9.0",
+    "dotenv>=0.9.9",
+    "faiss-cpu>=1.10.0",
+    "flask>=3.1.0",
+    "openai>=1.68.2",
+    "ruamel-yaml>=0.18.10",
+    "sentence-transformers>=4.0.1",
+]
+
+[tool.uv]
+index-url = "https://mirrors.aliyun.com/pypi/web/simple"

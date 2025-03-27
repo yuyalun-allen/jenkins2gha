@@ -1,0 +1,4 @@
+Jenkins Internet Meme Plugin
+==================
+
+Displays an internet meme on the build page of a Jenkins project. Plugin is inspired by the Chuck Norris Plugin.

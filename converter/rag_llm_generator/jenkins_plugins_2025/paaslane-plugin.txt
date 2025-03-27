@@ -1,0 +1,21 @@
+#paaslane-plugin#
+===============
+Plugin responsible for sending one or more compiled java artifacts to PaaSLane for processing through a licensed account.
+
+Parameters include:
+* url - The "PaaSLane URL" field specifies the root url, including the host, port and context that define the location of the PaaSLane profiling environment to use. For most SaaS customers, this will be https://app.paaslane.com/paaslaneagentserver. However, customers utilizing distributed profiling, will want to get their URL from their administrator.
+  
+* token - The "Authentication Token" field contains the PaaSLane token associated with a specific user in a specific tenant. This token can be gotten by logging into PaaSLane, clicking the username dropdown and selecting to "Get Token". Once you have this option you should be presented with the time sensitive token.
+  
+* include-regex - This value specifies the Ant style regular expression used to search for artifacts residing under "Path to Artifact(s)". For examples of Ant Style regular expressions, please see [examples](http://ant.apache.org/manual/dirtasks.html#patterns).
+    
+* exclude-regex - The "Exclude Regular Expressions" field contains a comma separated list of regular expression patterns that will be applied to every matched artifact. If any of the patterns match the path of the artifact being reviewed, then  artifact will not be sent to PaaSLane. Examples of these regular expressions can be found [here.](http://ocpsoft.org/opensource/guide-to-regular-expressions-in-java-part-1/)
+
+* name - The name field is used to specify the PaaSLane application that the artifacts mapped later will be associated with. For example, if the name of this field is "My Application" and you match 3 artifacts, there will be an application "My Application" with 3 modules that get profiled.
+
+* language - The "Language" selection specifies which language rules should be applied to the artifacts that are uploaded and profiled.
+
+* path - This required value specifies where to start looking for artifacts to include in the application. This, paired with "Regular Expression for Selecting Modules" and "Exclude Regular Expressions" help to specify included artifacts.
+
+* testOnly - The "Test, but don't send files" field, when checked, will only display the files that would have been sent, based on the parameters. Use this field to get the parameters correct.
+

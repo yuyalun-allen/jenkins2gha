@@ -1,0 +1,1 @@
+Jenkins plugin for building RPM packages in Copr.

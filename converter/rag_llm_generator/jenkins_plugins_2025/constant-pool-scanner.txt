@@ -1,0 +1,1 @@
+Simple utility to scan Java bytecode for class references in the constant pool.

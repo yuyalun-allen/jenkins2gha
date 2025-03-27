@@ -1,0 +1,365 @@
+[[http-request-plugin]]
+= Http Request Plugin
+:toc: macro
+:toc-title: HTTP Request Plugin ToC
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+link:https://ci.jenkins.io/job/Plugins/job/http-request-plugin/job/master/[image:https://ci.jenkins.io/job/Plugins/job/http-request-plugin/job/master/badge/icon[Build]]
+link:https://github.com/jenkinsci/http-request-plugin/graphs/contributors[image:https://img.shields.io/github/contributors/jenkinsci/http-request-plugin.svg?color=blue[Contributors]]
+link:https://plugins.jenkins.io/http_request/[image:https://img.shields.io/jenkins/plugin/i/http_request.svg?color=blue&label=installations[Jenkins Plugin Installs]]
+link:https://plugins.jenkins.io/http_request/[image:https://img.shields.io/jenkins/plugin/v/http_request.svg[Plugin]]
+link:https://github.com/jenkinsci/http-request-plugin/releases/latest[image:https://img.shields.io/github/release/jenkinsci/http-request-plugin.svg?label=changelog[GitHub release]]
+
+toc::[]
+
+[abstract]
+.Overview
+This plugin sends a HTTP/HTTPS request to a user specified URL. The request is made via job 
+execution in Jenkins and depending on the HTTP response the job can be marked as failed 
+(configurable). For example, responses such as 404 and 500 can make the job fail. When a
+job fails it will log the response to help identify the problem.
+
+According to the setting of HTTP mode the request will be performed either using HTTP GET or POST.
+If there is no such setting then it will use the default from global settings. Default there is POST.
+
+== Features
+
+The following powerful features are available in both Pipeline and traditional project types, giving you greater control and flexibility over your builds:
+
+* Programmable HTTP method:
+Choose from a variety of HTTP methods, including GET, POST, MKCOL, PUT, PATCH, DELETE, OPTIONS, or HEAD, to suit your project's specific needs.
+
+* Programmable range of expected response codes:
+Specify a range of expected response codes for your build, and if the response code falls outside the specified range, the build will fail, saving you time and hassle.
+
+* Supports Basic Authentication:
+Use Basic Authentication to ensure that only authorized users can access your project's resources, providing an additional layer of security.
+
+* Supports Form Authentication:
+Form Authentication enables users to authenticate themselves by submitting a username and password through a form, ensuring that only authorized users can access your resources.
+
+* Supports Certificate-based Authentication:
+Use a certificate from a Jenkins stored credential to authenticate your HTTPS requests to a remote server.
+
+* Specify a required string in the response:
+Ensure that a specific string is present in the response by specifying it beforehand. If the string is not present, the build will fail, alerting you to the issue.
+
+* Set a connection timeout limit:
+Prevent builds from taking too long by setting a connection timeout limit. If the limit is exceeded, the build will fail, saving you time and resources.
+
+* Set an "Accept" header directly:
+Set the "Accept" header directly, providing greater control over the type of data that the server returns in response to a request.
+
+* Set a "Content-Type" header directly:
+Set the "Content-Type" header directly, specifying the type of data that you are sending in your request, helping to ensure that the server can correctly process your request.
+
+* Set any custom header:
+Set any custom header that you require, enabling you to interact with APIs or web services that require specific headers or authentication protocols.
+
+=== Basic plugin features
+
+[NOTE]
+.Feature Availability
+====
+The following features are only present in the non-pipeline version of the plugin. For the Pipeline 
+version, these features are available programmatically.
+====
+
+* You can send the build parameters as URL query strings
+* You can store the response to a file, built-in to the plugin
+
+=== Pipeline features
+
+In a Pipeline job, you have total control over how the url is formed. Suppose you have a build 
+parameter called "`param1`", you can pass it to the HTTP request programmatically like so:
+
+[source,groovy]
+----
+httpRequest "http://httpbin.org/response-headers?param1=${param1}"
+----
+
+If you wish to save the response to a file, you need to grab a workspace. You can do this with a 
+`node` Pipeline step. For example:
+
+[source,groovy]
+----
+def response = httpRequest "http://httpbin.org/response-headers?param1=${param1}"
+node() {
+    writeFile file: 'response.txt', text: response.content
+}
+----
+
+You can access the response status code, content and headers programmatically:
+
+[source,groovy]
+----
+def response = httpRequest "http://httpbin.org/response-headers?param1=${param1}"
+println("Status: ${response.status}")
+println("Response: ${response.content}")
+println("Headers: ${response.headers}")
+----
+
+You may also send content in the body of the request, such as for a PATCH request:
+
+[source,groovy]
+----
+// create payload
+def patchOrg = """
+    {"description": "$description"}
+"""
+def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON',
+                           httpMode: 'PATCH', requestBody: patchOrg,
+                           url: "https://api.github.com/orgs/${orgName}"
+----
+
+You may also send content in the body of the request, such as for a POST request:
+
+[source,groovy]
+----
+httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON',
+            httpMode: 'POST', quiet: true,
+            requestBody: '''{
+               "display-name" : "my_Username",
+               "email" : "user@example.test",
+               "password" : {
+                  "value" : "my_password"
+               },
+            }''',
+            url: 'https://api.github.com/orgs/${orgName}'
+----
+
+
+You can also set custom headers:
+
+[source,groovy]
+----
+def response = httpRequest customHeaders: [[name: 'foo', value: 'bar']]
+----
+
+You can also set custom headers with mask set true:
+
+[source,groovy]
+----
+def response =  httpRequest customHeaders: [[maskValue: true, name: 'foo', value: 'bar']],
+                            url: 'https://api.github.com/orgs/${orgName}'
+----
+
+You can send ``multipart/form-data`` forms:
+
+[source,groovy]
+----
+def response = httpRequest httpMode: 'POST', formData: [
+               [contentType: 'application/json', name: 'model', body: '{"foo": "bar"}'],
+               [contentType: 'text/plain', name: 'file', fileName: 'readme.txt',
+               uploadFile: 'data/lipsum.txt']]
+----
+
+You can send a request with form-data:
+
+[source,groovy]
+----
+def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_FORM_DATA',
+                           formData: [[body: '''{
+                                         "name" : "example",
+                                         "type" : "bot"
+                                        }''',
+                           contentType: 'text/plain', fileName: 'sample', name: 'data',
+                           uploadFile: './files/readme.txt']],
+                           httpMode: 'POST', quiet: true, responseHandle: 'NONE', timeout: null,
+                           url: 'https://api.github.com/orgs/${orgName}',
+                           validResponseCodes: '200,404', validResponseContent: 'token'
+----
+
+You can send ``multipart file`` and ``multipart entity name``:
+
+[source,groovy]
+----
+def response = httpRequest acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_OCTETSTREAM',
+                           httpMode: 'POST', multipartName: 'file', quiet: true,
+                           responseHandle: 'NONE', timeout: null, uploadFile: './files/readme.txt',
+                           url: 'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request with SSL error ignored
+
+[source,groovy]
+----
+def response = httpRequest ignoreSslErrors: true, responseHandle: 'NONE',
+                           url: 'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request with http proxy
+
+[source,groovy]
+----
+def response = httpRequest httpProxy: 'http://proxy.local', responseHandle: 'NONE',
+                           url: 'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request with http proxy authenticate
+
+[source,groovy]
+----
+def response = httpRequest proxyAuthentication: Basic, 'http://proxy.local',
+               responseHandle: 'NONE', url: 'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request with accepted response codes
+
+[source,groovy]
+----
+def response = httpRequest responseHandle: 'NONE', validResponseCodes: '200,404',
+                           url: 'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request with accepted response content
+
+[source,groovy]
+----
+def response = httpRequest responseHandle: 'STRING',
+                           url: 'https://api.github.com/orgs/${orgName}',
+                           validResponseCodes: '200,404', validResponseContent: 'token'
+----
+
+You can send a request with connection timeout
+
+[source,groovy]
+----
+def response = httpRequest timeout: 30, url: 'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request where output is written to file
+
+[source,groovy]
+----
+def response = httpRequest outputFile: 'readme.txt', url:'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request where response is printed on the console
+
+[source,groovy]
+----
+def response = httpRequest consoleLogResponseBody: true,
+               url:'https://api.github.com/orgs/${orgName}'
+----
+
+You can send a request without logging output — with logs turned off
+
+[source,groovy]
+----
+def response = httpRequest quiet: true, url:'https://api.github.com/orgs/${orgName}'
+----
+
+You can handle response
+
+[source,groovy]
+----
+def response = httpRequest responseHandle: 'LEAVE_OPEN',
+                           url: "https://api.github.com/orgs/${orgName}"
+response.close() // must call response.close() after a LEAVE_OPEN
+----
+
+You can use a Jenkins credential to authenticate the request
+
+[source,groovy]
+----
+def response = httpRequest authentication: 'my-jenkins-credential-id',
+                           url: 'https://api.github.com/user/jenkinsci'
+----
+
+You can send an SSL request with authentication by user certificate;
+for a private CA, make sure to first add the CA certificate is as
+"Trusted", then add the user key along with certification chain up
+to same CA certificate, into your PKCS12 keystore file which you
+upload to Jenkins credentials, and you also must use a non-trivial
+password for that keystore. Keep in mind that for systems under test
+which create their own self-signed CA and HTTPS protection, you can
+programmatically create and upload the credentials, into a domain
+where the job has write access (its folder etc.)
+
+[source,groovy]
+----
+def response = httpRequest authentication: 'user_with_cert_and_ca',
+                           url: 'https://sut123.local.domain:8443/api/v1/status/debug'
+----
+
+A basic WebDAV upload can be built using ``MKCOL`` and ``PUT`` like so:
+
+[source,groovy]
+----
+// create directory aka a collection
+httpRequest authentication: 'my-jenkins-credential-id',
+            httpMode: 'MKCOL',
+            // on Apache httpd 201 = collection created, 405 = collection already exists
+            validResponseCodes: '201,405',
+            url: "https://example.com/webdav-enabled-server/reports/${version}/"
+// upload a file
+httpRequest authentication: 'my-jenkins-credential-id',
+            httpMode: 'PUT',
+            validResponseCodes: '201',
+            url: "https://example.com/reports/${version}/your-report-maybe.html",
+            uploadFile: './local/path/to/report.html'
+----
+
+For details on the Pipeline features, use the Pipeline snippet generator in the Pipeline job
+configuration.
+
+[WARNING]
+.Known Limitations
+====
+If Jenkins is restarted before the HTTP response comes back, the build will fail.
+====
+
+== Building
+
+The plugin can be built and tested locally using a Maven Docker container:
+
+[source, bash]
+----
+docker run -it --rm -v "$(pwd)":/usr/src/mymaven -w /usr/src/mymaven maven:3.3-jdk-8 mvn test
+----
+
+== Configure Global Settings
+
+image::docs/images/configure-http-request-global.png[]
+
+== Configure Build Step in your Jenkins job
+
+image::docs/images/configure-http-request-build-step.png[]
+
+== HTTP Request Parameters
+
+Parameters are escaped, which means if you try to pass another value inside a value, it will not 
+happen.
+
+In the example below, the key "`name`" will be passed with a value of "`jenkins&os=linux`". Note 
+that "`os`" is not a parameter - it is part of the value). At the HTTP server-side no parameter 
+named "`os`" will exist.
+
+[CAUTION]
+.Regarding Logging & Sensitive Information
+====
+Every execution will log all parameters. Be careful to not pass private information such as 
+passwords or personal information.
+====
+
+image:docs/images/log.png[]
+
+== Issues
+
+Report issues and enhancements in the https://issues.jenkins.io/[Jenkins issue tracker].
+Use the `http-request-plugin` component in the `JENKINS` project.
+
+== Contributing
+
+Refer to our https://github.com/jenkinsci/.github/blob/master/CONTRIBUTING.md[contribution guidelines].
+
+== License
+
+Licensed under link:LICENSE[the MIT License].
