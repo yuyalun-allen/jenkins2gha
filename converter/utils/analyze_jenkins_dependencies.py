@@ -1,9 +1,5 @@
 import re
 
-import re
-
-import re
-
 
 def analyze_jenkins_dependencies(content):
     """
@@ -20,7 +16,7 @@ def analyze_jenkins_dependencies(content):
 
     # 找出并行块容器
     parallel_containers = []
-    parallel_pattern = r'stage\s*\(\s*[\'"]([^\'"]+)[\'"]\s*\)\s*\{\s*parallel\s*\{'
+    parallel_pattern = r'stage\s*\(\s*[\'"](.*?)[\'"]\s*\)\s*\{[^{}]*?parallel\s*\{'
 
     for match in re.finditer(parallel_pattern, content):
         container_name = match.group(1)

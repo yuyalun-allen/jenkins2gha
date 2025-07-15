@@ -1,5 +1,7 @@
 import json
 import re
+import os
+from dotenv import load_dotenv
 from openai import OpenAI
 from ruamel.yaml import YAML
 from typing import Dict, Any
@@ -13,6 +15,7 @@ from converter.utils.yaml_to_string import yaml_to_string
 # 设置日志
 logger = setup_logging()
 
+load_dotenv()
 
 def construct_system_prompt() -> str:
     system_instructions = (
@@ -42,12 +45,10 @@ def construct_system_prompt() -> str:
         "    \"steps\": [\n"
         "      {\"name\": str, \"uses\": str, \"run\": str, ...}  # GitHub Actions steps\n"
         "    ],\n"
-        "    \"x-jenkins-*\": any,  # Unrecognized options\n"
         "    \"notes\": [str]       # Human-readable guidance\n"
         "  }\n"
         "- Keys must match GitHub Actions schema exactly\n"
         "- Include BOTH code and guidance for complex conversions\n"
-        "- For Jenkins-specific features, add 'x-jenkins-' prefixed keys\n"
         "- Never use markdown or non-JSON content"
     )
     return system_instructions
@@ -412,11 +413,14 @@ def query_llm_deepseek(prompt):
     logger.info(f"=== User Prompt ===:\n {prompt} \n === User Prompt End ===")
 
     try:
-        client = OpenAI(api_key="sk-UPv7HRJmWcsqlojI73nvcFrpyYEhZktWDbkK7u3dP4pxpCGP", base_url="https://sg.uiuiapi.com/v1/")
+        api_key = os.getenv("SK")
+        base_url = os.getenv("LLM_URL")
+        model = os.getenv("MODEL", "deepseek-v3")
+        
+        client = OpenAI(api_key=api_key, base_url=base_url)
         # 调用API
         response = client.chat.completions.create(
-            # model="deepseek-reasoner",
-            model="deepseek-v3",
+            model=model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},

@@ -2,6 +2,6 @@
 .idea/
 __pycache__/
 .env
-log/
+logs/
 tags
 tags.*

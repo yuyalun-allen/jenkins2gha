@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 from typing import Dict, Any
 from ruamel.yaml import YAML
 from converter.utils.getLogger import setup_logging
@@ -16,7 +17,7 @@ from converter.utils.JenkinsComparisonSingle import JenkinsComparisonSingle
 logger = setup_logging()
 
 
-def convert_jenkins_to_actions_string(jenkins_content):
+def convert_jenkins_to_actions_string(jenkins_content, silent):
     """
     将Jenkins配置文件内容转换为GitHub Actions工作流配置
 
@@ -55,6 +56,9 @@ def convert_jenkins_to_actions_string(jenkins_content):
     # 合并组件
     components = [env_component, param_component, post_component, stage_component, tool_component, trigger_component]
     merged_workflow = merge_yaml_components(components)
+    if silent:
+        merged_workflow = remove_notes_field(merged_workflow)
+
     logger.info(f"merged_workflow: {merged_workflow}")
 
     # # 输出到文件
@@ -71,23 +75,63 @@ def convert_jenkins_to_actions_string(jenkins_content):
     jenkins_comparison.clear()
     return result
 
+def remove_notes_field(yaml_dict: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    递归删除YAML字典中的notes字段
+    
+    Args:
+        yaml_dict: 要处理的YAML字典
+        
+    Returns:
+        Dict[str, Any]: 删除notes字段后的YAML字典
+    """
+    if not isinstance(yaml_dict, dict):
+        return yaml_dict
+    
+    # 创建新字典，避免修改原字典
+    result = {}
+    
+    for key, value in yaml_dict.items():
+        # 跳过notes字段
+        if key == 'notes':
+            continue
+            
+        if isinstance(value, dict):
+            # 递归处理字典
+            result[key] = remove_notes_field(value)
+        elif isinstance(value, list):
+            # 处理列表中的字典元素
+            result[key] = []
+            for item in value:
+                if isinstance(item, dict):
+                    result[key].append(remove_notes_field(item))
+                else:
+                    result[key].append(item)
+        else:
+            # 保留其他类型的值
+            result[key] = value
+    
+    return result
 
 def main():
+    parser = ArgumentParser(description="Jenkinsfile 转化为 CodeArts 的 yml")
+    parser.add_argument('--input-file', '-i', type=str, required=True, help='输入 Jenkinsfille 文件的路径')
+    parser.add_argument('--output-file', '-o',  type=str, required=True, help='输出 CodeArts yml 文件的路径')
+    parser.add_argument('--silent', '-s', action='store_true', help='不生成 notes 字段')
+
+    args = parser.parse_args()
+
     # 读取 Jenkinsfile.groovy 内容
-    try:
-        with open('Jenkinsfile2.groovy', 'r', encoding='utf-8') as f:
-            jenkinsfile_content = f.read()
-    except FileNotFoundError:
-        try:
-            # 检查父目录
-            with open('../Jenkinsfile.groovy', 'r') as f:
-                jenkinsfile_content = f.read()
-        except FileNotFoundError:
-            logger.error("Jenkinsfile.groovy not found in the current directory or parent directory.")
-            return
-    str = convert_jenkins_to_actions_string(jenkins_content=jenkinsfile_content)
+    with open(args.input_file, 'r', encoding='utf-8') as f:
+        jenkinsfile_content = f.read()
+
+    yml_dict = convert_jenkins_to_actions_string(jenkins_content=jenkinsfile_content, silent=args.silent)
     logger.info(f"str : {str}")
+
+    with open(args.output_file, 'w', encoding='utf-8') as f:
+        f.write(yml_dict['actions_file_content'])
 
 
 if __name__ == "__main__":
     main()
+
