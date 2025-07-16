@@ -11,9 +11,7 @@ env:
 jobs:
   prepare_puppet_project:
     runs-on: ubuntu-latest
-    timeout-minutes:
-    strategy:
-      retry:
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v3
       - name: Run Shell Command
@@ -29,18 +27,14 @@ jobs:
   syntax:
     runs-on: ubuntu-latest
     needs: [prepare_puppet_project]
-    timeout-minutes:
-    strategy:
-      retry:
+    timeout-minutes: 15
     steps:
       - name: Run Shell Command
         run: bundle exec rake lint
   profiles:
     runs-on: ubuntu-latest
     needs: [prepare_puppet_project]
-    timeout-minutes:
-    strategy:
-      retry:
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v3
       - name: Run Shell Command
@@ -48,9 +42,7 @@ jobs:
   roles:
     runs-on: ubuntu-latest
     needs: [prepare_puppet_project]
-    timeout-minutes:
-    strategy:
-      retry:
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v3
       - name: Run Shell Command

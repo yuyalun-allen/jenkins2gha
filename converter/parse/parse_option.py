@@ -48,6 +48,7 @@ def construct_system_prompt() -> str:
         "    \"notes\": [str]       # Human-readable guidance\n"
         "  }\n"
         "- Keys must match GitHub Actions schema exactly\n"
+        "- If a key does not have a value, just leave it out, don't use null in the output\n"
         "- Include BOTH code and guidance for complex conversions\n"
         "- Never use markdown or non-JSON content"
     )
