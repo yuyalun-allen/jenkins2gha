@@ -29,7 +29,6 @@ def convert_jenkins_to_actions_string(jenkins_content, silent):
     """
     jenkins_comparison = JenkinsComparisonSingle()
     jenkins_comparison.set_jenkinsfile_content(jenkins_content)
-    dependencies = analyze_jenkins_dependencies(jenkins_content)
 
     remove_groovy_comments_jenkinsfile_content = remove_groovy_comments(jenkins_content)
     env_component = environment_to_yaml(remove_groovy_comments_jenkinsfile_content)
@@ -43,6 +42,8 @@ def convert_jenkins_to_actions_string(jenkins_content, silent):
 
     option_component = option_to_yaml(remove_groovy_comments_jenkinsfile_content)
     logger.info(f"option: {option_component}")
+
+    dependencies = analyze_jenkins_dependencies(remove_groovy_comments_jenkinsfile_content)
 
     post_component = post_to_yaml(remove_groovy_comments_jenkinsfile_content, dependencies)
     logger.info(f"post: {post_component}")
@@ -122,7 +123,7 @@ def main():
     # args = parser.parse_args()
 
     # 读取 Jenkinsfile.groovy 内容
-    with open("../example/input/JenkinsFile.yml", 'r', encoding='utf-8') as f:
+    with open("../example/input/Jenkinsfile_3f307095", 'r', encoding='utf-8') as f:
         jenkinsfile_content = f.read()
 
     yml_dict = convert_jenkins_to_actions_string(jenkins_content=jenkinsfile_content, silent=True)
