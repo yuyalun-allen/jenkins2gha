@@ -54,7 +54,7 @@ def convert_jenkins_to_actions_string(jenkins_content, silent):
     logger.info(f"stages: {stage_component}")
 
     # 合并组件
-    components = [env_component, param_component, post_component, stage_component, tool_component, trigger_component]
+    components = [env_component, param_component, stage_component, post_component, tool_component, trigger_component]
     merged_workflow = merge_yaml_components(components)
     if silent:
         merged_workflow = remove_notes_field(merged_workflow)
@@ -114,21 +114,21 @@ def remove_notes_field(yaml_dict: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 def main():
-    parser = ArgumentParser(description="Jenkinsfile 转化为 CodeArts 的 yml")
-    parser.add_argument('--input-file', '-i', type=str, required=True, help='输入 Jenkinsfille 文件的路径')
-    parser.add_argument('--output-file', '-o',  type=str, required=True, help='输出 CodeArts yml 文件的路径')
-    parser.add_argument('--silent', '-s', action='store_true', help='不生成 notes 字段')
-
-    args = parser.parse_args()
+    # parser = ArgumentParser(description="Jenkinsfile 转化为 CodeArts 的 yml")
+    # parser.add_argument('--input-file', '-i', type=str, required=True, help='输入 Jenkinsfille 文件的路径')
+    # parser.add_argument('--output-file', '-o',  type=str, required=True, help='输出 CodeArts yml 文件的路径')
+    # parser.add_argument('--silent', '-s', action='store_true', help='不生成 notes 字段')
+    #
+    # args = parser.parse_args()
 
     # 读取 Jenkinsfile.groovy 内容
-    with open(args.input_file, 'r', encoding='utf-8') as f:
+    with open("../example/input/JenkinsFile.yml", 'r', encoding='utf-8') as f:
         jenkinsfile_content = f.read()
 
-    yml_dict = convert_jenkins_to_actions_string(jenkins_content=jenkinsfile_content, silent=args.silent)
+    yml_dict = convert_jenkins_to_actions_string(jenkins_content=jenkinsfile_content, silent=True)
     logger.info(f"str : {str}")
 
-    with open(args.output_file, 'w', encoding='utf-8') as f:
+    with open("../example/output/codeArtsPipeline.yml", 'w', encoding='utf-8') as f:
         f.write(yml_dict['actions_file_content'])
 
 
