@@ -6,6 +6,7 @@ from converter.utils.extract_block import extract_block
 from converter.utils.getLogger import setup_logging
 from converter.utils.split_steps_content import split_steps_content
 from converter.plugins.load_plugins import load_plugins
+from converter.parse import parse_environment
 from converter.parse.parse_tool import tool_to_yaml
 from converter.parse.parse_post import post_to_yaml
 from converter.parse.parse_environment import environment_to_yaml
@@ -415,4 +416,8 @@ def stage_to_yaml(jenkinsfile_content: str, options_component, dependencies) -> 
     # 初始化转换器
     converter = GitHubActionsConverter(plugins)
     github_actions_yaml_dict = converter.generate_yaml(stages, options_component, dependencies)
+    if parse_environment.GITHUB_PATH_VALUE and 'jobs' in github_actions_yaml_dict:
+        for job in github_actions_yaml_dict['jobs']:
+            if 'steps' in github_actions_yaml_dict['jobs'][job]:
+                github_actions_yaml_dict['jobs'][job]['steps'].insert(0, {"name": "Set PATH environment", "run": f'echo "{parse_environment.GITHUB_PATH_VALUE}" >> $GITHUB_PATH'})
     return github_actions_yaml_dict
