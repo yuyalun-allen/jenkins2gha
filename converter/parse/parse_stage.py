@@ -315,13 +315,17 @@ def parse_stages_block(jenkinsfile_content: str) -> List[Dict[str, Any]]:
         stage_body = stages_content[stage_start: pos - 1].strip()
         logger.info(f"Current stage name = {stage_name}, body = {stage_body}")
 
-        # ---- 解析外层 stage 内的元信息 ----
-        tools_yaml = tool_to_yaml(stage_body, "stage") or []
-        post_yaml = post_to_yaml(stage_body, [], "stage") or []
-        env_yaml = environment_to_yaml(stage_body, "stage") or {}
-        option_yaml = option_to_yaml(stage_body, "stage") or []
-        matrix_yaml = convert_jenkins_matrix(stage_body) or {}
-        when_yaml = convert_jenkins_when_to_gha(stage_body) or {}
+        stages_match = re.search(r'^stages\s*\{', stage_body)
+        parallel_match = re.search(r'^parallel\s*\{', stage_body)
+        tools_yaml, post_yaml, env_yaml, option_yaml, matrix_yaml, when_yaml = [], [], {}, [], {}, {}
+        if not stages_match and not parallel_match:
+            # ---- 解析外层 stage 内的元信息 ----
+            tools_yaml = tool_to_yaml(stage_body, "stage") or []
+            post_yaml = post_to_yaml(stage_body, [], "stage") or []
+            env_yaml = environment_to_yaml(stage_body, "stage") or {}
+            option_yaml = option_to_yaml(stage_body, "stage") or []
+            matrix_yaml = convert_jenkins_matrix(stage_body) or {}
+            when_yaml = convert_jenkins_when_to_gha(stage_body) or {}
 
         # 检查是否有嵌套的 stages 块
         nested_stages_block = extract_block(stage_body, 'stages')

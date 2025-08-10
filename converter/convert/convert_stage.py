@@ -372,13 +372,13 @@ class GitHubActionsConverter:
             if stage.get('when'):
                 # 当 when 是字典类型时，直接添加 if 条件
                 if isinstance(stage['when'], dict) and 'if' in stage['when']:
-                    job_config['if'] = stage['when']['if']
+                    job_config['if'] = stage['when']['if'].replace('"', "'")
                 # 当 when 是非空列表时，处理列表中的条件
                 elif isinstance(stage['when'], list) and stage['when']:
                     # 如果列表中有字典元素且包含 if 键
                     for item in stage['when']:
                         if isinstance(item, dict) and 'if' in item:
-                            job_config['if'] = item['if']
+                            job_config['if'] = item['if'].replace('"', "'")
                             break
 
             # 添加运行环境配置（保持在 if 条件之后）
