@@ -23,9 +23,22 @@ def parse_when_block(stage_content: str) -> Optional[str]:
 
     logger.info(f"Found when block: {when_content}")
 
-    # 调用递归解析入口，把 when_content 转成条件表达式树
-    condition_expr = parse_when_conditions(when_content)
+    # 尝试提取 expression 块的内容
+    expression_match = re.search(r'expression\s*\{([^}]*)\}', when_content, re.DOTALL)
 
+    if expression_match:
+        # 提取 expression 块中的内容
+        expression_content = expression_match.group(1).strip()
+
+        # 移除可能的 return 关键字和分号
+        expression_content = re.sub(r'^\s*return\s*', '', expression_content)
+        expression_content = re.sub(r';\s*$', '', expression_content).strip()
+
+        logger.info(f"Extracted expression content: {expression_content}")
+        return expression_content
+
+    # 如果没有找到 expression 块，使用原有的处理逻辑
+    condition_expr = parse_when_conditions(when_content)
     logger.info(f"Converted Jenkins 'when' => GHA expression: {condition_expr}")
     return condition_expr
 
