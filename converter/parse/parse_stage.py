@@ -5,6 +5,7 @@ from converter.convert.convert_stage import GitHubActionsConverter
 from converter.utils.extract_block import extract_block
 from converter.utils.getLogger import setup_logging
 from converter.utils.split_steps_content import split_steps_content
+from converter.utils.normalize_job_name import normalize_identifier
 from converter.plugins.load_plugins import load_plugins
 from converter.parse import parse_environment
 from converter.parse.parse_tool import tool_to_yaml
@@ -409,6 +410,8 @@ def stage_to_yaml(jenkinsfile_content: str, options_component, dependencies) -> 
     # 输出解析后的 stages
     logger.info("Parsed Stages:")
     for stage in stages:
+        name = normalize_identifier(stage.get('name'))
+        stage['name'] = name
         logger.info(stage)
 
     # 加载插件

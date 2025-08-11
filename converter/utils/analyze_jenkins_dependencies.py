@@ -1,4 +1,5 @@
 import re
+from converter.utils.normalize_job_name import normalize_identifier
 
 
 def analyze_jenkins_dependencies(content):
@@ -186,8 +187,12 @@ def analyze_jenkins_dependencies(content):
         # 普通顺序依赖
         else:
             dependencies[current].append(prev)
+    new_dependencies = {
+        normalize_identifier(job_name): [normalize_identifier(name) for name in name_list]
+        for job_name, name_list in dependencies.items()
+    }
 
-    return dependencies
+    return new_dependencies
 
 
 def convert_dependencies_to_github_actions(dependencies):
